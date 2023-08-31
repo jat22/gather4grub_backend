@@ -1,6 +1,6 @@
 "use strict";
 
-require("doteng").config();
+require("dotenv").config();
 
 const SECRET_KEY = process.env.SECRET_KEY || "dev-secret";
 
@@ -10,7 +10,7 @@ const PORT = +process.env.PORT || 3001;
 function getDatabaseUri(){
 	return(process.env.NODE_ENV === "test")
 		? "gather4grub_test"
-		: process.env.DATABASE_URL || "gather4grub";
+		: process.env.DATABASE_URL || "postgresql:///gather4grub";
 }
 
 const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;

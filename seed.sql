@@ -1,5 +1,5 @@
 INSERT INTO users 
-		(username, password, first_name, last_name, email, phone, street_address, city, st, zip, tag_line, bio, birthdate, avatar_url)
+		(username, password, first_name, last_name, email, phone, street_address, city, state, zip, tag_line, bio, birthdate, avatar_url)
 	VALUES
 		(
 			'testuser1', 
