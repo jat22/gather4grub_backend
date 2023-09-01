@@ -1,0 +1,63 @@
+{"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"properties": {
+	  "currentPassword": {
+		"type": "string",
+		"minLength": 8,
+		"maxLength": 20
+	  },
+	  "newPassword": {
+		"type": "string",
+		"minLength": 8,
+		"maxLength": 20
+	  },
+	  "confirmNewPassword": {
+		"type": "string",
+		"minLength": 8,
+		"maxLength": 20
+	  },
+	  "firstName": {
+		"type": "string"
+	  },
+	  "lastName": {
+		"type": "string"
+	  },
+	  "email": {
+		"type": "string",
+		"format": "email"
+ 	  },
+	  "phone": {
+		"type": "string"
+	  },
+	  "streetAddress": {
+		"type": "string"
+	  },
+	  "state": {
+		"type": "string",
+		"minLength": 2,
+		"maxLength": 2
+	  },
+	  "zip": {
+		"type": "string",
+		"minLength": 5,
+		"maxLength": 5
+	  },
+	  "tagLine": {
+		"type": "string"
+	  },
+	  "bio": {
+		"type": "string"
+	  },
+	  "birthdate": {
+		"type" :"string",
+		"format": "date-time"
+	  },
+	  "avatarUrl": {
+		"type": "string"
+	  }
+	},
+	"additionalProperties": false,
+	"required": [
+	  "currentPassword"
+	]
+  }

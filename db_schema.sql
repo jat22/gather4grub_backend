@@ -1,6 +1,7 @@
 
 ---------------------- INTERNAL DATA -------------------------------
 CREATE TYPE status AS ENUM ('accept', 'decline', 'pending');
+CREATE TYPE role AS ENUM ('user', 'admin');
 
 CREATE TABLE users (
 	username VARCHAR(20) PRIMARY KEY,
@@ -8,6 +9,7 @@ CREATE TABLE users (
 	first_name TEXT NOT NULL,
 	last_name TEXT,
 	email TEXT NOT NULL UNIQUE,
+	role role DEFAULT 'user'::role,
 	phone TEXT,
 	street_address TEXT,
 	city TEXT,
@@ -55,14 +57,14 @@ CREATE TABLE connections (
 	status status DEFAULT 'pending'::status
 );
 
-CREATE TABLE connection_requests (
-	id SERIAL PRIMARY KEY,
-	requesting_id VARCHAR NOT NULL
-		REFERENCES users(username) ON DELETE CASCADE,
-	requested_id VARCHAR NOT NULL
-		REFERENCES users(username) ON DELETE CASCADE,
-	request_datetime TIMESTAMP
-);
+-- CREATE TABLE connection_requests (
+-- 	id SERIAL PRIMARY KEY,
+-- 	requesting_id VARCHAR NOT NULL
+-- 		REFERENCES users(username) ON DELETE CASCADE,
+-- 	requested_id VARCHAR NOT NULL
+-- 		REFERENCES users(username) ON DELETE CASCADE,
+-- 	request_datetime TIMESTAMP
+-- );
 
 CREATE TABLE parties (
 	id SERIAL PRIMARY KEY,
@@ -154,7 +156,7 @@ CREATE TABLE party_dishes (
 		REFERENCES party_courses(id) ON DELETE SET NULL
 );
 
-CREATE TABLE discussions (
+CREATE TABLE posts (
 	id SERIAL PRIMARY KEY,
 	title VARCHAR(50),
 	body TEXT,
@@ -168,7 +170,7 @@ CREATE TABLE comments (
 	id SERIAL PRIMARY KEY,
 	body TEXT,
 	discussion_id INTEGER NOT NULL
-		REFERENCES discussions(id) ON DELETE CASCADE,
+		REFERENCES posts(id) ON DELETE CASCADE,
 	author_id VARCHAR
 		REFERENCES users(username) ON DELETE SET NULL
 );

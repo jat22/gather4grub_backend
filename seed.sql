@@ -1,5 +1,5 @@
 INSERT INTO users 
-		(username, password, first_name, last_name, email, phone, street_address, city, state, zip, tag_line, bio, birthdate, avatar_url)
+		(username, password, first_name, last_name, email, role, phone, street_address, city, state, zip, tag_line, bio, birthdate, avatar_url)
 	VALUES
 		(
 			'testuser1', 
@@ -7,6 +7,7 @@ INSERT INTO users
 			'test1',
 			'user1',
 			'test1@testuser.com',
+			'user',
 			'111-111-1111',
 			'123 abc st',
 			'town',
@@ -18,11 +19,12 @@ INSERT INTO users
 			'http://www.pictures.com'
 		),
 		(
-			'testuser2', 
+			'testadmin', 
 			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
 			'test2',
-			'user2',
+			'admin2',
 			'test2@testuser.com',
+			'admin',
 			'222-222-2222',
 			'345 abc st',
 			'town2',

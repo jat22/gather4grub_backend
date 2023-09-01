@@ -14,6 +14,7 @@ function getDatabaseUri(){
 }
 
 const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
+const TOKEN_EXPIRATION = '1h'
 
 console.log("GatherForGrub Config:");
 console.log("SECRET_KEY:", SECRET_KEY);
@@ -25,5 +26,6 @@ module.exports = {
 	SECRET_KEY,
 	PORT,
 	BCRYPT_WORK_FACTOR,
-	getDatabaseUri
+	getDatabaseUri,
+	TOKEN_EXPIRATION
 }
