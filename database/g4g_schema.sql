@@ -49,24 +49,15 @@ CREATE TABLE user_allergies (
 
 CREATE TABLE connections (
 	id SERIAL PRIMARY KEY,
-	user2_id VARCHAR NOT NULL
+	user_from_id VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
-	user1_id VARCHAR NOT NULL
+	user_to_id VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
 	connect_date TIMESTAMP,
 	status status DEFAULT 'pending'::status
 );
 
--- CREATE TABLE connection_requests (
--- 	id SERIAL PRIMARY KEY,
--- 	requesting_id VARCHAR NOT NULL
--- 		REFERENCES users(username) ON DELETE CASCADE,
--- 	requested_id VARCHAR NOT NULL
--- 		REFERENCES users(username) ON DELETE CASCADE,
--- 	request_datetime TIMESTAMP
--- );
-
-CREATE TABLE parties (
+CREATE TABLE gatherings (
 	id SERIAL PRIMARY KEY,
 	host_id VARCHAR
 		REFERENCES users(username) ON DELETE SET NULL,
@@ -79,12 +70,23 @@ CREATE TABLE parties (
 	cover_img TEXT
 );
 
-
-
-CREATE TABLE party_guests (
+CREATE TABLE types_of_gatherings (
 	id SERIAL PRIMARY KEY,
-	party_id INTEGER NOT NULL
-		REFERENCES parties(id) ON DELETE CASCADE,
+	title TEXT
+);
+
+CREATE TABLE gatherings_types (
+	id SERIAL PRIMARY KEY
+	gathering_id INTEGER NOT NULL
+		REFERENCES gatherings(id) ON DELETE CASCADE,
+	type_id INTEGER NOT NULL
+		REFERENCES types_of_gathering(id)
+);
+
+CREATE TABLE guests (
+	id SERIAL PRIMARY KEY,
+	gathering_id INTEGER NOT NULL
+		REFERENCES gatherings(id) ON DELETE CASCADE,
 	guest_id VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
 	rsvp status DEFAULT 'pending'::status
@@ -95,12 +97,12 @@ CREATE TABLE courses (
 	name TEXT UNIQUE
 );
 
-CREATE TABLE party_courses (
+CREATE TABLE gathering_courses (
 	id SERIAL PRIMARY KEY,
 	course_id INTEGER NOT NULL
 		REFERENCES courses(id) ON DELETE CASCADE,
-	party_id INTEGER NOT NULL
-		REFERENCES parties(id) ON DELETE CASCADE,
+	gathering_id INTEGER NOT NULL
+		REFERENCES gatherings(id) ON DELETE CASCADE,
 	notes TEXT
 );
 
@@ -148,20 +150,20 @@ CREATE TABLE dish_diet_pref_tags (
 
 CREATE TABLE party_dishes (
 	id SERIAL PRIMARY KEY,
-	party_id INTEGER NOT NULL
-		REFERENCES parties(id) ON DELETE CASCADE,
+	gathering_id INTEGER NOT NULL
+		REFERENCES gatherings(id) ON DELETE CASCADE,
 	dish_id INTEGER NOT NULL
 		REFERENCES dishes(id) ON DELETE CASCADE,
 	course_id INTEGER
-		REFERENCES party_courses(id) ON DELETE SET NULL
+		REFERENCES gathering_courses(id) ON DELETE SET NULL
 );
 
 CREATE TABLE posts (
 	id SERIAL PRIMARY KEY,
 	title VARCHAR(50),
 	body TEXT,
-	party_id INTEGER NOT NULL
-		REFERENCES parties(id) ON DELETE CASCADE,
+	gathering_id INTEGER NOT NULL
+		REFERENCES gatherings(id) ON DELETE CASCADE,
 	author_id VARCHAR
 		REFERENCES users(username) ON DELETE SET NULL
 );

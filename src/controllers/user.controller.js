@@ -30,8 +30,45 @@ const deleteUser = async(req,res,next) => {
 	};
 };
 
+const listConnections = async(req,res,next) => {
+	try{
+
+	} catch(err) {
+		return next(err)
+	};
+};
+
+const createConnection = async(req,res,next) => {
+	try{
+
+	} catch(err) {
+		return next(err)
+	};
+};
+
+const updateConnection = async(req,res,next) => {
+	try{
+
+	} catch(err) {
+		return next(err)
+	};
+};
+
+const deleteConnection = async(req,res,next) => {
+	try{
+
+	} catch(err) {
+		return next(err)
+	};
+};
+
+
 module.exports = {
 	getUserAccount,
 	updateUser,
-	deleteUser
+	deleteUser,
+	listConnections,
+	createConnection,
+	updateConnection,
+	deleteConnection
 };
