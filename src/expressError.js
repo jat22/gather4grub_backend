@@ -35,10 +35,18 @@ class BadRequestError extends ExpressError {
 	}
 }
 
+/** 500 INTERNAL SERVER ERROR */
+class InternalServerError extends ExpressError {
+	constructor(message = "Internal Server Error"){
+		super(message, 500)
+	}
+}
+
 module.exports = {
 	ExpressError,
 	NotFoundError,
 	UnauthorizedError,
 	ForbiddenError,
-	BadRequestError
+	BadRequestError,
+	InternalServerError
 }

@@ -2,28 +2,57 @@
 
 const express = require("express")
 
-const authMiddleware = require("../../middleware/auth.middleware");
+const { ensureCorrectUser } = require("../../middleware/auth.middleware");
 const userControllers = require("../../controllers/user.controller");
+const connectionControllers = require("../../controllers/connections.controller")
+const dietaryTagControllers = require("../../controllers/dietaryTag.controller")
 const userUpdateSchema = require("../../validators/userUpdate.schema.json")
-const { validate } = require("../../middleware/validate.middleware")
-
+const { validate } = require("../../middleware/validate.middleware");
 
 const router = express.Router()
 
 router
 	.route('/:username')
-	.all(authMiddleware.ensureCorrectUser)
+	.all(ensureCorrectUser)
 	.get(userControllers.getUserAccount)
-	.patch(validate(userUpdateSchema), userControllers.updateUser)
+	.patch(
+		validate(userUpdateSchema), 
+		userControllers.updateUser)
 	.delete(userControllers.deleteUser);
 
 router
+	.route('/:username/dietary-tags')
+	.get(dietaryTagControllers.getUserDietaryTags)
+	.post(
+		ensureCorrectUser, 
+		dietaryTagControllers.addUserDietaryTags)
+	.delete(
+		ensureCorrectUser, 
+		dietaryTagControllers.removeUserDietaryTags);
+
+router
 	.route('/:username/connections')
-	.all(authMiddleware.ensureCorrectUser)
-	.get(userControllers.listConnections)
-	.post(userControllers.createConnection)
-	.patch(userControllers.updateConnection)
-	.delete(userControllers.deleteConnection)
+	.get(
+		ensureCorrectUser, 
+		connectionControllers.listConnections)
+
+router
+	.route('/:username/connections/:connectionId')
+	.delete(
+		ensureCorrectUser, 
+		connectionControllers.removeConnection)
+
+router
+	.route('/:username/connections/requests')
+	.all(ensureCorrectUser)
+	.get(connectionControllers.listConnectionRequests)
+	.post(connectionControllers.newConnectionRequest)
+
+router
+	.route('/:username/connections/requests/:reqId')
+	.all(ensureCorrectUser)
+	.put(connectionControllers.requestAcceptance)
+	.delete(connectionControllers.requestDenial)
 
 
 module.exports = router

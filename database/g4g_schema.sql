@@ -21,40 +21,48 @@ CREATE TABLE users (
 	avatar_url TEXT
 );
 
-CREATE TABLE dietary_pref_tags (
+CREATE TABLE dietary_prefs (
 	id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE user_dietary_pref (
+CREATE TABLE allergies (
 	id SERIAL PRIMARY KEY,
-	user_id VARCHAR
+	name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE user_pref_tags (
+	id SERIAL PRIMARY KEY,
+	username VARCHAR
 		REFERENCES users(username) ON DELETE CASCADE,
 	pref_id INTEGER
 		REFERENCES dietary_pref_tags(id) ON DELETE SET NULL
 );
 
-CREATE TABLE allergy_tags (
+CREATE TABLE user_allergy_tags (
 	id SERIAL PRIMARY KEY,
-	tag TEXT NOT NULL UNIQUE
-);
-
-CREATE TABLE user_allergies (
-	id SERIAL PRIMARY KEY,
-	user_id VARCHAR
+	username VARCHAR
 		REFERENCES users(username) ON DELETE CASCADE,
-	allergy_tag_id INTEGER
+	allergy_id INTEGER
 		REFERENCES allergy_tags(id) ON DELETE SET NULL
+)
+
+CREATE TABLE connection_requests(
+	id SERIAL PRIMARY KEY,
+	from_username VARCHAR NOT NULL
+		REFERENCES users(username) ON DELETE CASCADE,
+	to_username VARCHAR NOT NULL
+		REFERENCES users(username) ON DELETE CASCADE,
+	request_date TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE connections (
 	id SERIAL PRIMARY KEY,
-	user_from_id VARCHAR NOT NULL
+	user1_username VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
-	user_to_id VARCHAR NOT NULL
+	user2_username VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
-	connect_date TIMESTAMP,
-	status status DEFAULT 'pending'::status
+	connect_date TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE gatherings (

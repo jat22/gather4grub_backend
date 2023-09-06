@@ -1,3 +1,5 @@
+"use strict";
+
 const { BCRYPT_WORK_FACTOR } = require("../config")
 const { UnauthorizedError, BadRequestError, NotFoundError } = require("../expressError")
 const User = require("../models/user.model")
@@ -5,10 +7,16 @@ const authSerivces = require("../services/auth.services")
 const bcrypt = require("bcrypt")
 
 /**
- * Get user
+ * Get user's account information
  * @param {*} {string} username 
- * @param {*} {string} password 
  */
+
+const getUserAccount = async(username) => {
+	const user = await User.getAccount(username);
+	if(!user) throw new NotFoundError(`User: ${username}, does not exist`);
+	return user;
+}
+
 
 const createUser = async(userInput) => {
 	if(await User.usernameExists(userInput.username)){
@@ -67,10 +75,19 @@ const deleteUser = async(username, password) => {
 	if(user.username === username) return true;
 	
 	return false;
+};
+
+const checkIfUserExists = async(username) => {
+	if(!(await User.usernameExists(username))) {
+		throw new NotFoundError(`${username} does not exist`);
+	};
+	return true;
 }
 
 module.exports = {
+	getUserAccount,
 	createUser,
 	updateUser,
-	deleteUser
+	deleteUser,
+	checkIfUserExists
 }

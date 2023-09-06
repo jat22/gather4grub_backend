@@ -1,11 +1,11 @@
 "user strict";
 
 const userServices = require("../services/user.services");
-const User = require("../models/user.model");
+
 
 const getUserAccount = async(req,res,next) => {
 	try{
-		const user = await User.getAccount(req.params.username);
+		const user = await userServices.getUserAccount(req.params.username);
 		return res.json({ user })
 	}catch(err){
 		return next(err);
@@ -30,45 +30,9 @@ const deleteUser = async(req,res,next) => {
 	};
 };
 
-const listConnections = async(req,res,next) => {
-	try{
-
-	} catch(err) {
-		return next(err)
-	};
-};
-
-const createConnection = async(req,res,next) => {
-	try{
-
-	} catch(err) {
-		return next(err)
-	};
-};
-
-const updateConnection = async(req,res,next) => {
-	try{
-
-	} catch(err) {
-		return next(err)
-	};
-};
-
-const deleteConnection = async(req,res,next) => {
-	try{
-
-	} catch(err) {
-		return next(err)
-	};
-};
-
 
 module.exports = {
 	getUserAccount,
 	updateUser,
-	deleteUser,
-	listConnections,
-	createConnection,
-	updateConnection,
-	deleteConnection
+	deleteUser
 };

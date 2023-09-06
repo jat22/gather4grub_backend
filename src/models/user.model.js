@@ -1,6 +1,6 @@
 "use strict"
-const db = require("../db.js");
-const sql = require("../utils/sql.utils.js");
+const db = require("../db");
+const sql = require("../utils/sql.utils");
 
 
 class User {
@@ -115,7 +115,6 @@ class User {
 	}
 	
 	static _table = "users";
-
 	static _jsToSqlForUpdate = {
 		firstName : "first_name",
 		lastName : "last_name",
@@ -123,7 +122,6 @@ class User {
 		tagLine : "tag_line",
 		avatarUrl : "avatar_url"
 	};
-
 	static _returnAllColumns = 
 					`username,
 					first_name AS "firstName",
@@ -139,7 +137,6 @@ class User {
 					bio,
 					birthdate,
 					avatar_url AS "avatarUrl"`;
-
 	static _allColumns =
 					`username,
 					password, 
@@ -156,61 +153,13 @@ class User {
 					bio, 
 					birthdate, 
 					avatar_url`;
-
 	static _credentialColumns =
 					`username,
 					password,
 					role`;
-
 	static _allColParams = `$1 ,$2, $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12 ,$13, $14, $15`;
 
 	
 }
 
 module.exports = User;
-
-// static async authenticate(username, password) {
-	// 	const result = await db.query(
-	// 		`SELECT username, password 
-	// 			FROM ${this._table}
-	// 			WHERE username = $1`,
-	// 		[username]);
-
-	// 	const user = result.rows[0];
-
-	// 	if(user) {
-	// 		const isValid = await bcrypt.compare(password, user.password);
-	// 		if(isValid === true) {
-	// 			delete user.password;
-	// 			return user;
-	// 		}
-	// 	}
-
-	// 	throw new UnauthorizedError("Invalid username/password");
-	// }
-
-	
-
-	// static async getUserPrivateInfo(username) {
-	// 	const userResult = await db.query(
-	// 		`SELECT ${this._returnAllColumns}
-	// 			FROM ${this._table}
-	// 			WHERE username=$1`,
-	// 		[username]);
-
-	// 	const user = userResult.rows[0];
-
-	// 	if(!user) throw new NotFoundError(`${username} not found.`)
-
-	// 	return user
-	// }
-
-	
-
-	// static async remove(username, password){
-	// 	if(!password) throw new BadRequestError("Password required.")
-	// 	await this.authenticate(username, password);
-
-	
-	// 	if(!user) throw new NotFoundError(`No user found: ${username}`);
-	// }
