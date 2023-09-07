@@ -5,13 +5,19 @@ const db = require("../db");
 class Connections{
 	static async listUserConnections(username) {
 		const result = await db.query(
-			`SELECT ${this._listColumns}
-				FROM ${this._connectionsTable} AS c
+			`SELECT c.id AS "connectionId",
+					u.username, 
+					u.first_name AS "firstName", 
+					u.last_name AS "lastName", 
+					u.email,
+					u.avatar_url AS "avatarUrl",
+					u.tag_line AS "tagLine"
+				FROM connections AS c
 				JOIN users AS u 
-					ON c.user1_username = u.username
-					OR c.user2_username = u.username
-				WHERE c.user_from_username = $1
-					OR c.user_to_username = $1`,
+					ON (c.user1_username = u.username AND c.user1_username != $1) 
+					OR (c.user2_username = u.username AND c.user2_username != $1)
+				WHERE c.user1_username = $1
+					OR c.user2_username = $1`,
 				[username]);
 
 		return result.rows
@@ -19,10 +25,16 @@ class Connections{
 
 	static async listUserConnectionRequests(username){
 		const result = await db.query(
-			`SELECT ${this._listColumns}
-				FROM ${this._requestsTable} AS r
+			`SELECT r.id AS requestId,
+					u.username, 
+					u.first_name AS firstName, 
+					u.last_name AS lastName, 
+					u.email,
+					u.avatar_url AS avatarUrl,
+					u.tag_line AS tagLine
+				FROM connection_requests AS r
 				JOIN users AS u
-					ON r.to_username = u.username
+					ON r.from_username = u.username
 				WHERE r.to_username = $1`,
 				[username]);
 		return result.rows
@@ -30,10 +42,10 @@ class Connections{
 
 	static async createConnectionRequest(fromUsername, toUsername){
 		const result = await db.query(
-			`INSERT INTO ${this._requestsTable}
+			`INSERT INTO connection_requests
 				(from_username, to_username)
 				VALUES ($1, $2)
-				RETURNING id`
+				RETURNING id`,
 				[fromUsername, toUsername]);
 		return result.rows[0]
 	};
@@ -59,7 +71,7 @@ class Connections{
 
 	static async deleteConnectionWithId(connectionId, username){
 		const result = await db.query(
-			`DELETE FROM ${this._connectionsTable}
+			`DELETE FROM connections
 				WHERE id = $1
 					AND (user1_username = $2 OR user2_username = $2)
 				RETURNING id`,
@@ -70,8 +82,8 @@ class Connections{
 	static async getRequest(reqId){
 		const result = await db.query(
 			`SELECT id, 
-					from_username AS 'fromUsername',
-					to_username AS 'toUsername'
+					from_username AS "fromUsername",
+					to_username AS "toUsername"
 				FROM ${this._requestsTable}
 				WHERE id = $1`,
 				[reqId]);
@@ -82,11 +94,11 @@ class Connections{
 	static _requestsTable = "connection_requests";
  	static _listColumns = 
 		`u.username, 
-		u.first_name AS 'firstName', 
-		u.last_name AS 'lastName, 
+		u.first_name AS firstName, 
+		u.last_name AS lastName, 
 		u.email,
-		u.avatar,
-		u.tag_line AS 'tagLine'`;
+		u.avatar_url AS avatarUrl,
+		u.tag_line AS tagLine`;
 }
 
 module.exports = Connections

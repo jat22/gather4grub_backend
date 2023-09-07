@@ -36,7 +36,7 @@ INSERT INTO users
 			'http://www.pictures2.com'
 		);
 
-INSERT INTO dietary_pref_tags(name)
+INSERT INTO dietary_prefs(name)
 	VALUES 
 		('Vegan'), 
 		('Vegatarian'), 
@@ -48,7 +48,7 @@ INSERT INTO dietary_pref_tags(name)
 		('Whole-Food'),
 		('Plant-Based');
 
-INSERT INTO allergy_tags(tag)
+INSERT INTO allergies(name)
 	VALUES
 		('Gluten'),
 		('Dairy'),

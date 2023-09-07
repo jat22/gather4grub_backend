@@ -26,15 +26,16 @@ class DietaryTag {
 		return result.rows;
 	}
 
-	static async createNewUserAllergyTag(username, allergyId){
+	static async createNewUserAllergyTag({username, allergyId}){
 		const result = await db.query(
-			`INSERT INTO user_alergy_tags
+			`INSERT INTO user_allergy_tags
 				(username, allergy_id)
 				VALUES ($1, $2)
 				RETURNING id`,
 				[username, allergyId]
 		)
-		return result.rows[0]
+		debugger
+		return result.rows[0].id
 	};
 
 	static async createNewUserPrefTag(username, prefId){
@@ -43,7 +44,7 @@ class DietaryTag {
 				(username, pref_id)
 				VALUES ($1, $2)`,
 				[username, prefId]);
-		return result.rows[0]
+		return result.rows[0].id
 	}
 
 	static async createNewPreference(name){

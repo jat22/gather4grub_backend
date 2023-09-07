@@ -25,7 +25,7 @@ const listConnectionRequests = async(req,res,next) => {
 const newConnectionRequest = async(req, res, next) => {
 	try {
 		const connectionRequest = 
-			await connectionServices.createConnectionRequest(req.params.username, req.body)
+			await connectionServices.createConnectionRequest(req.params.username, req.body.toUsername)
 		return res.json({ connectionRequest })
 	} catch(err) {
 		return next(err)
@@ -52,7 +52,7 @@ const requestDenial = async(req,res,next) => {
 
 const removeConnection = async(req,res,next) => {
 	try{
-		await connectionServices.deleteExistingConnection(req.params.conectionId, req.params.username);
+		await connectionServices.deleteExistingConnection(req.params.connectionId, req.params.username);
 		return res.status(204).send();
 	} catch(err) {
 		return next(err);

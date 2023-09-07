@@ -36,7 +36,7 @@ CREATE TABLE user_pref_tags (
 	username VARCHAR
 		REFERENCES users(username) ON DELETE CASCADE,
 	pref_id INTEGER
-		REFERENCES dietary_pref_tags(id) ON DELETE SET NULL
+		REFERENCES dietary_prefs(id) ON DELETE SET NULL
 );
 
 CREATE TABLE user_allergy_tags (
@@ -44,8 +44,8 @@ CREATE TABLE user_allergy_tags (
 	username VARCHAR
 		REFERENCES users(username) ON DELETE CASCADE,
 	allergy_id INTEGER
-		REFERENCES allergy_tags(id) ON DELETE SET NULL
-)
+		REFERENCES allergies(id) ON DELETE SET NULL
+);
 
 CREATE TABLE connection_requests(
 	id SERIAL PRIMARY KEY,
@@ -78,13 +78,13 @@ CREATE TABLE gatherings (
 	cover_img TEXT
 );
 
-CREATE TABLE types_of_gatherings (
+CREATE TABLE types_of_gathering (
 	id SERIAL PRIMARY KEY,
 	title TEXT
 );
 
 CREATE TABLE gatherings_types (
-	id SERIAL PRIMARY KEY
+	id SERIAL PRIMARY KEY,
 	gathering_id INTEGER NOT NULL
 		REFERENCES gatherings(id) ON DELETE CASCADE,
 	type_id INTEGER NOT NULL
@@ -144,8 +144,8 @@ CREATE TABLE dish_allergy_tags (
 	id SERIAL PRIMARY KEY,
 	dish_id INTEGER
 		REFERENCES dishes(id) ON DELETE CASCADE,
-	allergy_tag_id INTEGER
-		REFERENCES allergy_tags(id) ON DELETE CASCADE
+	allergy_id INTEGER
+		REFERENCES allergies(id) ON DELETE CASCADE
 );
 
 CREATE TABLE dish_diet_pref_tags (
@@ -153,10 +153,10 @@ CREATE TABLE dish_diet_pref_tags (
 	dish_id INTEGER
 		REFERENCES dishes(id) ON DELETE CASCADE,
 	pref_id INTEGER
-		REFERENCES dietary_pref_tags(id) ON DELETE SET NULL
+		REFERENCES dietary_prefs(id) ON DELETE SET NULL
 );
 
-CREATE TABLE party_dishes (
+CREATE TABLE gathering_dishes (
 	id SERIAL PRIMARY KEY,
 	gathering_id INTEGER NOT NULL
 		REFERENCES gatherings(id) ON DELETE CASCADE,

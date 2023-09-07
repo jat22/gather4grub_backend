@@ -4,7 +4,7 @@ const express = require("express");
 const cors = require("cors");
 
 const morgan = require("morgan");
-const authMiddleware = require("../src/middleware/auth.middleware")
+const authMiddleware = require("./middleware/auth.middleware")
 const authRoutes = require("./routes/v1/auth.route");
 const userRoutes = require("./routes/v1/users.route")
 const { NotFoundError } = require("./expressError");

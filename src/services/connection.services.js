@@ -14,7 +14,7 @@ const getConnectionsForUser = async (username) => {
 
 const getConnectionRequestsForUser = async (username) => {
 	const pendingList = 
-		await Connections.listConnectionRequests(username);
+		await Connections.listUserConnectionRequests(username);
 	return pendingList.length > 0 ? pendingList : null
 };
 
@@ -30,6 +30,7 @@ const createConnectionRequest = async (fromUsername, toUsername) => {
 
 const handleRequestAccepted = async (username, reqId) => {
 	const connectionRequest = await Connections.getRequest(reqId);
+
 	if(connectionRequest.toUsername !== username){
 		throw new BadRequestError();
 	};
@@ -68,5 +69,6 @@ module.exports = {
 	getConnectionRequestsForUser,
 	createConnectionRequest,
 	handleRequestAccepted,
+	handleRequestDenial,
 	deleteExistingConnection
 }
