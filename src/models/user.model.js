@@ -7,8 +7,21 @@ class User {
 
 	static async getAccount(username) {
 		const result = await db.query(
-			`SELECT ${this._returnAllColumns}
-				FROM ${this._table}
+			`SELECT username,
+					first_name AS "firstName",
+					last_name AS "lastName",
+					email,
+					role,
+					phone,
+					street_address AS "streetAddress",
+					city,
+					state,
+					zip,
+					tag_line AS "tagLine",
+					bio,
+					birthdate,
+					avatar_url AS "avatarUrl"
+				FROM users
 				WHERE username = $1`,
 				[username]);
 
@@ -23,8 +36,10 @@ class User {
 	 */
 	static async getUserCredentials(username) {
 		const result = await db.query(
-			`SELECT ${this._credentialColumns}
-				FROM ${this._table}
+			`SELECT username,
+					password,
+					role
+				FROM users
 				WHERE username = $1`,
 				[username])
 		
@@ -38,16 +53,17 @@ class User {
 	 * @param {Object} userInput 
 	 * @returns {Promise<username:string, password:string, role:string}>}
 	 */
-	static async create(
-		{ username, password, firstName, lastName, email, role="user", phone=null, streetAddress=null, city=null, state=null, zip=null, tagLine=null, bio=null, birthdate=null, avatarUrl=null }) {
-
+	static async create(input) {
+		const { columns, placeholders, values } = sql.formatInsertData(input)
+		
 		const result = await db.query(
-			`INSERT INTO ${this._table}
-				(${this._allColumns})
-				VALUES (${this._allColParams})
-				RETURNING ${this._credentialColumns}`,
-				[username, password, firstName, lastName, email, role, phone,
-				streetAddress, city, state, zip, tagLine, bio, birthdate, avatarUrl]);
+			`INSERT INTO users
+				(${columns})
+				VALUES (${placeholders})
+				RETURNING 	username,
+							password,
+							role`,
+				values);
 
 		const user = result.rows[0];
 
@@ -56,13 +72,26 @@ class User {
 
 	static async update(username, input){
 
-		const { columns, values } = sql.generateUpdateColVals(input, this._jsToSqlForUpdate);
+		const { columns, values } = sql.formatUpdateData(input);
 
 		const result = await db.query(
-			`UPDATE ${this._table}
+			`UPDATE users
 				SET ${columns}
 				WHERE username=$${values.length + 1}
-				RETURNING ${this._returnAllColumns}`,
+				RETURNING 	username,
+							first_name AS "firstName",
+							last_name AS "lastName",
+							email,
+							role,
+							phone,
+							street_address AS "streetAddress",
+							city,
+							state,
+							zip,
+							tag_line AS "tagLine",
+							bio,
+							birthdate,
+							avatar_url AS "avatarUrl"`,
 			[...values, username]);
 		
 		const user = result.rows[0];
@@ -72,7 +101,7 @@ class User {
 	static async remove(username){
 		const result = await db.query(
 			`DELETE
-				FROM ${this._table}
+				FROM users
 				WHERE username = $1
 				RETURNING username`,
 				[username]);
@@ -89,7 +118,7 @@ class User {
 	static async usernameExists (username){
 		const result = await db.query(
 			`SELECT username
-				FROM ${this._table}
+				FROM users
 				WHERE username = $1`,
 				[username]);
 
@@ -105,7 +134,7 @@ class User {
 	static async emailExists(email){
 		const result = await db.query(
 			`SELECT username
-				FROM ${this._table}
+				FROM users
 				WHERE email = $1`,
 				[email]);
 
@@ -113,53 +142,6 @@ class User {
 
 		return false
 	}
-	
-	static _table = "users";
-	static _jsToSqlForUpdate = {
-		firstName : "first_name",
-		lastName : "last_name",
-		streetAddress : "street_address",
-		tagLine : "tag_line",
-		avatarUrl : "avatar_url"
-	};
-	static _returnAllColumns = 
-					`username,
-					first_name AS "firstName",
-					last_name AS "lastName",
-					email,
-					role,
-					phone,
-					street_address AS "streetAddress",
-					city,
-					state,
-					zip,
-					tag_line AS "tagLine",
-					bio,
-					birthdate,
-					avatar_url AS "avatarUrl"`;
-	static _allColumns =
-					`username,
-					password, 
-					first_name, 
-					last_name, 
-					email,
-					role, 
-					phone,
-					street_address,
-					city, 
-					state, 
-					zip, 
-					tag_line,
-					bio, 
-					birthdate, 
-					avatar_url`;
-	static _credentialColumns =
-					`username,
-					password,
-					role`;
-	static _allColParams = `$1 ,$2, $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12 ,$13, $14, $15`;
-
-	
 }
 
 module.exports = User;

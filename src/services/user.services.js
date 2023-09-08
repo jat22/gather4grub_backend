@@ -19,12 +19,12 @@ const getUserAccount = async(username) => {
 
 
 const createUser = async(userInput) => {
-	if(await User.usernameExists(userInput.username)){
-		throw new BadRequestError(`${userInput.username} is already taken. Select another username.`);
-	};
-	if(await User.emailExists(userInput.email)){
-		throw new BadRequestError(`${userInput.email} is already associated with an account.`);
-	};
+	// if(await User.usernameExists(userInput.username)){
+	// 	throw new BadRequestError(`${userInput.username} is already taken. Select another username.`);
+	// };
+	// if(await User.emailExists(userInput.email)){
+	// 	throw new BadRequestError(`${userInput.email} is already associated with an account.`);
+	// };
 
 	const hashedPassword = await bcrypt.hash(
 									userInput.password, BCRYPT_WORK_FACTOR);

@@ -3,12 +3,16 @@
 const express = require("express");
 
 const { ensureCorrectUser, ensureLoggedIn } = require('../../middleware/auth.middleware');
-const { ensureParticipant, ensureHost } = require('../../middleware/gatherings.middleware')
+const { ensureParticipant, ensureHost, ensureDishOwnerOrHost,
+		ensurePostAuthor, ensurePostAuthorOrHost, ensureCommentAuthor, ensureCommentAuthorOrHost } = require('../../middleware/gathering.middleware')
 const { validate } = require("../../middleware/validate.middleware");
 const gatheringControllers = require("../../controllers/gatherings.controller");
+const guestControllers = require("../../controllers/guest.controller")
 const dishControllers = require('../../controllers/dishes.controller');
-const postControllers = require('../../controllers/posts.controller')
-const createGatheringSchema = require("../../validators/createGathering.json")
+const postControllers = require('../../controllers/posts.controller');
+const newGatheringSchema = require("../../validators/newGathering.schema.json");
+const updateGatheringSchema = require('../../validators/updateGathering.schema.json')
+const rsvpSchema = require("../../validators/rsvp.schema.json");
 
 const router = express.Router();
 
@@ -16,66 +20,89 @@ router
 	.route('/')
 	.post(
 		ensureLoggedIn,
-		validate(createGatheringSchema), 
+		validate(newGatheringSchema), 
 		gatheringControllers.createGathering);
 
 router
-	.route('/gatherings/:gatheringId')
+	.route('/gatherings/:gatheringId/basic')
 	.get(
 		ensureParticipant, 
-		gatheringControllers.getGatheringDetails)
+		gatheringControllers.getBasicDetailsOfGathering)
 	.put(
 		ensureHost, 
-		gatheringControllers.updateDetails)
+		gatheringControllers.updateBasicDetails)
 	.delete(
 		ensureHost,
+		validate(updateGatheringSchema),
 		gatheringControllers.deleteGathering);
+
+router
+	.route('/gatherings/:gatheringId/full')
+	.get(
+		ensureParticipant, 
+		gatheringControllers.getFullDetailsOfGathering)
 
 router
 	.route('/gatherings/:gatheringId/guests')
 	.get(
 		ensureParticipant,
-		gatheringControllers.getGatheringGuests)
+		guestControllers.getGatheringGuests)
 	.post(
 		ensureHost,
-		gatheringControllers.addGuestsToGathering)
-	.delete(
-		ensureHost, 
-		gatheringControllers.removeGuestFromGathering)
+		guestControllers.addGuestsToGathering)
 
 router
 	.route('/gatherings/:gatheringId/guests/:username')
 	.put(
-		ensureCorrectUser, 
-		gatheringControllers.updateRSVP)
+		ensureCorrectUser,
+		validate(rsvpSchema), 
+		guestControllers.updateRSVP)
+	.delete(
+		ensureHost, 
+		guestControllers.removeGuestFromGathering)
 
 router
 	.route('/gatherings/:gatheringId/dishes')
 	.all(ensureParticipant)
 	.get(dishControllers.getGatheringDishes)
-	.post(dishControllers.addDishToGathering)
+
+router
+	.route('/gatherings/:gatheringId/dishes/:dishId')
+	.post(
+		ensureParticipant, 
+		dishControllers.addDishToGathering)
 	.delete(
 		ensureDishOwnerOrHost,
-		dishControllers.removeDishFromGathering)
+		dishControllers.removeDishFromGathering);;
 
 router
 	.route('/gatherings/:gatheringId/posts')
 	.all(ensureParticipant)
 	.get(postControllers.getGatheringPosts)
 	.post(postControllers.createPost)
+	
+router
+	.route('/gatherings/:gatheringsId/posts/:postId')
+	.all(ensureParticipant)
 	.put(
-		ensurePostOwnerOrHost,
-		postControllers.updatePost)
+		ensurePostAuthor,
+		postControllers.editPost)
 	.delete(
-		ensurePostOwnerOrHost,
+		ensurePostAuthorOrHost,
 		postControllers.deletePost)
 
 router
 	.route('/gatherings/:gatheringId/posts/:postId/comments')
 	.all(ensureParticipant)
-	.get(postControllers.getPostComments)
-	.post(postControllers.createPostComment)
-	.delete()
+	.post(postControllers.createComment)
 
-	
+router
+	.route('/gatherings/:gatheringId/posts/:postId/comments/:commentId')
+	.put(
+		ensureCommentAuthor,
+		postControllers.editComment)
+	.delete(
+		ensurePostAuthorOrHost,
+		postControllers.deleteComment)
+
 module.exports = router

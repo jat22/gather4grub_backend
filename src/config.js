@@ -14,7 +14,7 @@ function getDatabaseUri(){
 }
 
 const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
-const TOKEN_EXPIRATION = '1h'
+const TOKEN_EXPIRATION = { expiresIn : '12h' }
 
 console.log("GatherForGrub Config:");
 console.log("SECRET_KEY:", SECRET_KEY);

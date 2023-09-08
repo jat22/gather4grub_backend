@@ -1,80 +1,64 @@
 "use strict";
 
 const gatheringServces = require('../services/gatherings.services');
+const guestServices = require('../services/guests.services')
 
-const createGathering = async({ details }) => {
+const createGathering = async(req,res,next) => {
 	try{
-
+		const gathering = await gatheringServces.createGathering(req.body.details)
+		return res.json({ gathering })
 	} catch(err){
 		return next(err)
 	}
 };
 
-const getGatheringDetails = async(gatheringId) => {
+const getBasicDetailsOfGathering = async(req,res,next) => {
 	try{
+		const gathering = 
+			await gatheringServces.getBasicDetailsOfGathering(req.params.gatheringId);
+		return res.json({ gathering })
+	} catch(err){
+		return next(err)
+	}
+}
 
+const getFullDetailsOfGathering = async(req,res,next) => {
+	try{
+		const gathering = 
+			await gatheringServces.getFullDetailsOfGathering(req.params.gatheringId);
+		return res.json({ gathering })
 	} catch(err){
 		return next(err)
 	}
 };
 
-const updateGatheringDetails = async(gatheringId) => {
+const updateBasicDetails = async(req,res,next) => {
 	try{
-
+		const gathering = 
+			await gatheringServces.updateBasicDetails(req.params.gatheringId, req.params.data);
+		return res.json({ gathering })
 	} catch(err){
 		return next(err)
 	}
 };
 
-const deleteGathering = async(gatheringId) => {
+const deleteGathering = async(req,res,next) => {
 	try{
-
+		await gatheringServces.deleteGathering(req.params.gatheringId);
+		return res.status(204).send()
 	} catch(err){
 		return next(err)
 	}
 };
 
-const getGatheringGuests = async() => {
-	try{
 
-	} catch(err){
-		return next(err)
-	}
-};
-
-const addGuestsToGathering = async() => {
-	try{
-
-	} catch(err){
-		return next(err)
-	}
-};
-
-const removeGuestFromGathering = async() => {
-	try{
-
-	} catch(err){
-		return next(err)
-	}
-};
-
-const updateRSVP = async() => {
-	try{
-
-	} catch(err){
-		return next(err)
-	}
-};
 
 
 
 module.exports = {
 	createGathering,
-	getGatheringDetails,
-	updateGatheringDetails,
-	deleteGathering,
-	getGatheringGuests,
-	addGuestsToGathering,
-	removeGuestFromGathering,
-	updateRSVP
+	getBasicDetailsOfGathering,
+	getFullDetailsOfGathering,
+	updateBasicDetails,
+	deleteGathering
 }

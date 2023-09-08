@@ -13,7 +13,7 @@ const generateToken = (user) => {
 		role : user.role
 	}
 
-	return jwt.sign(payload, SECRET_KEY, { expiresIn : TOKEN_EXPIRATION})
+	return jwt.sign(payload, SECRET_KEY)
 }
 
 module.exports = {

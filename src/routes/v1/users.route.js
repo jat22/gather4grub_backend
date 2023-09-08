@@ -46,23 +46,3 @@ router
 
 
 module.exports = router
-
-// router
-// 	.route('/:username/dietary')
-// 	.get(dietaryTagControllers.getUserDietaryTags)
-
-// router
-// 	.route('/:username/dietary/allergies')
-// 	.get()
-// 	.post()
-// 	.delete()
-
-// router
-// 	.route('/:username/dietary/preferences')
-
-// 	.post(
-// 		ensureCorrectUser, 
-// 		dietaryTagControllers.addUserDietaryTags)
-// 	.delete(
-// 		ensureCorrectUser, 
-// 		dietaryTagControllers.removeUserDietaryTags);

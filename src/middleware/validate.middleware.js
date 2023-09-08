@@ -9,10 +9,10 @@ const validate = (schema) => (req,res,next) => {
 			const errs = validator.errors.map(e => e.stack);
 			throw new BadRequestError(errs)
 		}
+		return next()
 	} catch(err){
 		return next(err)
 	}
-	return next()
 }
 
 module.exports = {

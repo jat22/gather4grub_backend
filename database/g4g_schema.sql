@@ -67,8 +67,9 @@ CREATE TABLE connections (
 
 CREATE TABLE gatherings (
 	id SERIAL PRIMARY KEY,
-	host_id VARCHAR
+	host VARCHAR
 		REFERENCES users(username) ON DELETE SET NULL,
+	title TEXT,
 	date DATE,
 	start_time TIME,
 	end_time TIME,
@@ -95,7 +96,7 @@ CREATE TABLE guests (
 	id SERIAL PRIMARY KEY,
 	gathering_id INTEGER NOT NULL
 		REFERENCES gatherings(id) ON DELETE CASCADE,
-	guest_id VARCHAR NOT NULL
+	username VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
 	rsvp status DEFAULT 'pending'::status
 );
@@ -104,7 +105,7 @@ CREATE TABLE courses (
 	id SERIAL PRIMARY KEY,
 	name TEXT UNIQUE
 );
-
+s
 CREATE TABLE gathering_courses (
 	id SERIAL PRIMARY KEY,
 	course_id INTEGER NOT NULL
@@ -163,7 +164,9 @@ CREATE TABLE gathering_dishes (
 	dish_id INTEGER NOT NULL
 		REFERENCES dishes(id) ON DELETE CASCADE,
 	course_id INTEGER
-		REFERENCES gathering_courses(id) ON DELETE SET NULL
+		REFERENCES gathering_courses(id) ON DELETE SET NULL,
+	owner_username VARCHAR NOT NULL
+		REFERENCES users(username) ON DELETE CASCADE
 );
 
 CREATE TABLE posts (
@@ -172,15 +175,15 @@ CREATE TABLE posts (
 	body TEXT,
 	gathering_id INTEGER NOT NULL
 		REFERENCES gatherings(id) ON DELETE CASCADE,
-	author_id VARCHAR
+	author VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE SET NULL
 );
 
 CREATE TABLE comments (
 	id SERIAL PRIMARY KEY,
 	body TEXT,
-	discussion_id INTEGER NOT NULL
+	post_id INTEGER NOT NULL
 		REFERENCES posts(id) ON DELETE CASCADE,
-	author_id VARCHAR
+	author VARCHAR
 		REFERENCES users(username) ON DELETE SET NULL
 );

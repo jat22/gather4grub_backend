@@ -1,0 +1,44 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"properties": {
+	  "title": {
+		"type": "string"
+	  },
+	  "date": {
+		"type": "string",
+		"format": "sqlDate"
+	  },
+	  "startTime": {
+		"type": "string",
+		"format": "sqlTime"
+	  },
+	  "endTime": {
+		"type": "string",
+		"format": "sqlTime"
+	  },
+	  "location": {
+		"type": "string"
+	  },
+	  "theme": {
+		"type": "string"
+	  },
+	  "description": {
+		"type": "string"
+	  },
+	  "coverImg": {
+		"type": "string"
+	  }
+	},
+	"formats": {
+		"sqlDate" :{
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+			"errorMessage": "date must be in YYYY-MM-DD format"
+		},
+		"sqlTime": {
+			"pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d$",
+			"errorMessage": "time must be in HH:MM:SS format"
+		}
+	},
+	"additionalProperties": false
+  }
