@@ -23,7 +23,7 @@ const formatInsertData = (data) => {
 	const placeholders = [];
 	keys.forEach((name, idx) => {
 		columns.push(camelToSnakeCase(name))
-		placeholders.push(`${idx+1}`)
+		placeholders.push(`$${idx+1}`)
 	});
 
 	return { 

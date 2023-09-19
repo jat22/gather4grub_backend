@@ -32,6 +32,9 @@
 	  "streetAddress": {
 		"type": "string"
 	  },
+	  "city" : {
+		"type": "string"
+	  },
 	  "state": {
 		"type": "string",
 		"minLength": 2,

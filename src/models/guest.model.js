@@ -1,5 +1,5 @@
 "use strict";
-
+const db = require("../db")
 class Guest {
 	static async findForGathering(gatheringId){
 		const result = await db.query(
@@ -7,7 +7,8 @@ class Guest {
 					u.username,
 					u.first_name AS "firstName",
 					u.last_name AS "lastName",
-					u.email
+					u.email,
+					g.rsvp
 			FROM guests AS g
 			JOIN users AS u
 				ON g.username = u.username
@@ -19,6 +20,7 @@ class Guest {
 	}
 
 	static async addToGathering(gatheringId, username){
+		debugger
 		const result = await db.query(
 			`INSERT INTO guests
 				(gathering_id, username)

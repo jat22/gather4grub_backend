@@ -25,13 +25,13 @@ class Connections{
 
 	static async listUserConnectionRequests(username){
 		const result = await db.query(
-			`SELECT r.id AS requestId,
+			`SELECT r.id AS "requestId",
 					u.username, 
-					u.first_name AS firstName, 
-					u.last_name AS lastName, 
+					u.first_name AS "firstName", 
+					u.last_name AS "lastName", 
 					u.email,
-					u.avatar_url AS avatarUrl,
-					u.tag_line AS tagLine
+					u.avatar_url AS "avatarUrl",
+					u.tag_line AS "tagLine"
 				FROM connection_requests AS r
 				JOIN users AS u
 					ON r.from_username = u.username

@@ -24,7 +24,7 @@ router
 		gatheringControllers.createGathering);
 
 router
-	.route('/gatherings/:gatheringId/basic')
+	.route('/:gatheringId/basic')
 	.get(
 		ensureParticipant, 
 		gatheringControllers.getBasicDetailsOfGathering)
@@ -37,13 +37,13 @@ router
 		gatheringControllers.deleteGathering);
 
 router
-	.route('/gatherings/:gatheringId/full')
+	.route('/:gatheringId/full')
 	.get(
 		ensureParticipant, 
 		gatheringControllers.getFullDetailsOfGathering)
 
 router
-	.route('/gatherings/:gatheringId/guests')
+	.route('/:gatheringId/guests')
 	.get(
 		ensureParticipant,
 		guestControllers.getGatheringGuests)
@@ -52,7 +52,7 @@ router
 		guestControllers.addGuestsToGathering)
 
 router
-	.route('/gatherings/:gatheringId/guests/:username')
+	.route('/:gatheringId/guests/:username')
 	.put(
 		ensureCorrectUser,
 		validate(rsvpSchema), 
@@ -62,12 +62,12 @@ router
 		guestControllers.removeGuestFromGathering)
 
 router
-	.route('/gatherings/:gatheringId/dishes')
+	.route('/:gatheringId/dishes')
 	.all(ensureParticipant)
 	.get(dishControllers.getGatheringDishes)
 
 router
-	.route('/gatherings/:gatheringId/dishes/:dishId')
+	.route('/:gatheringId/dishes/:dishId')
 	.post(
 		ensureParticipant, 
 		dishControllers.addDishToGathering)
@@ -76,13 +76,13 @@ router
 		dishControllers.removeDishFromGathering);;
 
 router
-	.route('/gatherings/:gatheringId/posts')
+	.route('/:gatheringId/posts')
 	.all(ensureParticipant)
 	.get(postControllers.getGatheringPosts)
 	.post(postControllers.createPost)
 	
 router
-	.route('/gatherings/:gatheringsId/posts/:postId')
+	.route('/:gatheringsId/posts/:postId')
 	.all(ensureParticipant)
 	.put(
 		ensurePostAuthor,
@@ -92,17 +92,17 @@ router
 		postControllers.deletePost)
 
 router
-	.route('/gatherings/:gatheringId/posts/:postId/comments')
+	.route('/:gatheringId/posts/:postId/comments')
 	.all(ensureParticipant)
 	.post(postControllers.createComment)
 
 router
-	.route('/gatherings/:gatheringId/posts/:postId/comments/:commentId')
+	.route('/:gatheringId/posts/:postId/comments/:commentId')
 	.put(
 		ensureCommentAuthor,
 		postControllers.editComment)
 	.delete(
-		ensurePostAuthorOrHost,
+		ensureCommentAuthorOrHost,
 		postControllers.deleteComment)
 
 module.exports = router

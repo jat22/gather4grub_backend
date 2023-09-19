@@ -2,10 +2,11 @@
 
 const express = require("express")
 
-const { ensureCorrectUser } = require("../../middleware/auth.middleware");
+const { ensureCorrectUser, ensureLoggedIn } = require("../../middleware/auth.middleware");
 const userControllers = require("../../controllers/user.controller");
-const connectionControllers = require("../../controllers/connections.controller")
-const dietaryTagControllers = require("../../controllers/dietaryTag.controller")
+const connectionControllers = require("../../controllers/connections.controller");
+const gatheringControllers = require("../../controllers/gatherings.controller");
+const dishControllers = require("../../controllers/dishes.controller")
 const userUpdateSchema = require("../../validators/userUpdate.schema.json")
 const { validate } = require("../../middleware/validate.middleware");
 
@@ -44,5 +45,14 @@ router
 	.put(connectionControllers.requestAcceptance)
 	.delete(connectionControllers.requestDenial)
 
+router
+	.route('/:username/gatherings')
+	.all(ensureCorrectUser)
+	.get(gatheringControllers.getUsersGatherings)
+
+router
+	.route('/:username/dishes')
+	.all(ensureLoggedIn)
+	.get(dishControllers.getUsersDishes)
 
 module.exports = router

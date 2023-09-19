@@ -43,6 +43,15 @@ class Comment {
 		return result.rows[0]
 	};
 
+	static async getAuthor(commentId){
+		const result = await db.query(
+			`SELECT author
+				FROM comments
+				WHERE id = $1`,
+			[commentId]);
+		return result.rows[0].author
+	}
+
 	static async delete(commentId){
 		const result = await db.query(
 			`DELETE FROM comments

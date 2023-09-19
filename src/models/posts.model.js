@@ -59,6 +59,15 @@ class Post {
 		return result.rows[0]
 	};
 
+	static async getAuthor(postId){
+		const result = await db.query(
+			`SELECT author
+			FROM posts
+			WHERE id=$1`,
+			[postId]
+		)
+		return result.rows[0]
+	}
 }
 
 module.exports = Post

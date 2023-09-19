@@ -36,36 +36,3 @@ INSERT INTO users
 			'http://www.pictures2.com'
 		);
 
-INSERT INTO dietary_prefs(name)
-	VALUES 
-		('Vegan'), 
-		('Vegatarian'), 
-		('Pescatarian'), 
-		('Gluten-Free'), 
-		('Paleo'),
-		('Keto'),
-		('Mediterranean'),
-		('Whole-Food'),
-		('Plant-Based');
-
-INSERT INTO allergies(name)
-	VALUES
-		('Gluten'),
-		('Dairy'),
-		('Egg'),
-		('Peanuts'),
-		('Tree Nuts'),
-		('Shellfish'),
-		('Fish'),
-		('Wheat'),
-		('Soy');
-
-INSERT INTO courses (name)
-	VALUES
-		('Starters'),
-		('Mains'),
-		('Sides'),
-		('Meats'),
-		('Vegetables'),
-		('Desserts');
-

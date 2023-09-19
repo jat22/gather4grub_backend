@@ -7,18 +7,12 @@ const gatheringServices = require("../services/gatherings.services")
 
 
 const getGatheringGuests = async(gatheringId) => {
-	if(!(await gatheringServices.checkIfGatheringExists(gatheringId))){
-		throw new BadRequestError('gathering does not exist')
-	}
 	const guests =
 		await Guest.findForGathering(gatheringId);
 	return guests;
 };
 
 const addGuestToGathering = async(gatheringId, username) => {
-	if(!(await userServices.checkIfUserExists(username))){
-		throw new BadRequestError("user does not exist")
-	};
 	const guest = await Guest.addToGathering(gatheringId, username);
 	return guest
 };

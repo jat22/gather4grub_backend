@@ -7,25 +7,59 @@ const authSerivces = require("../services/auth.services")
 const bcrypt = require("bcrypt")
 
 /**
- * Get user's account information
- * @param {*} {string} username 
+ * @typedef {Object} User
+ * @property {string} username 
+ * @property {string} firstName 
+ * @property {string} lastName
+ * @property {string} email
+ * @property {string} role
+ * @property {string} phone - can be null
+ * @property {string} streetAddress - can be null
+ * @property {string} city - can be null
+ * @property {string} state - can be null
+ * @property {string} zip - can be null
+ * @property {string} tagLine - can be null
+ * @property {string} bio - can be null
+ * @property {string} birthdate - can be null
+ * @property {string} avatarUrl - can be null
  */
 
+/**
+ * @typedef {Object} UserRegistration
+ * @property {string} username 
+ * @property {string} password
+ * @property {string} firstName 
+ * @property {string} lastName
+ * @property {string} email
+ * @property {string} phone - can be null
+ * @property {string} streetAddress - can be null
+ * @property {string} city - can be null
+ * @property {string} state - can be null
+ * @property {string} zip - can be null
+ * @property {string} tagLine - can be null
+ * @property {string} bio - can be null
+ * @property {string} birthdate - can be null
+ * @property {string} avatarUrl - can be null
+ */
+
+/**
+ * Get user's account information
+ * @param {string} username
+ * @return {User} The user object.
+ * 
+ */
 const getUserAccount = async(username) => {
 	const user = await User.getAccount(username);
 	if(!user) throw new NotFoundError(`User: ${username}, does not exist`);
 	return user;
 }
 
-
+/**
+ * 
+ * @param {Object} UserRegistration 
+ * @returns {User} The user object.
+ */
 const createUser = async(userInput) => {
-	// if(await User.usernameExists(userInput.username)){
-	// 	throw new BadRequestError(`${userInput.username} is already taken. Select another username.`);
-	// };
-	// if(await User.emailExists(userInput.email)){
-	// 	throw new BadRequestError(`${userInput.email} is already associated with an account.`);
-	// };
-
 	const hashedPassword = await bcrypt.hash(
 									userInput.password, BCRYPT_WORK_FACTOR);
 
@@ -53,20 +87,23 @@ const updateUser = async(username, body) => {
 	if(body.newPassword && body.newPassword !== body.confirmNewPassword){
 		throw new BadRequestError(`New Password does not match.`);
 	};
-	const hashedPassword = await bcrypt.hash(
-									userInput.password, BCRYPT_WORK_FACTOR);
-	delete body.confirmNewPassword;
-	delete body.newPassword;
 
-	body.password = hashedPassword;	
+	if(body.newPassword){
+		const hashedPassword = await bcrypt.hash(
+						body.newPassword, BCRYPT_WORK_FACTOR);
+		delete body.confirmNewPassword;
+		delete body.newPassword;
+
+		body.password = hashedPassword;
+	}
+	
 	const user = await User.update(username, body);
 	
 	return user;
 };
 
 const deleteUser = async(username, password) => {
-	if(!await User.usernameExists()) throw new NotFoundError();
-	if(!authSerivces.checkUsernamePassword(username, password)){
+	if(! await authSerivces.checkUsernamePassword(username, password)){
 		throw new BadRequestError("Invalid password");
 	};
 

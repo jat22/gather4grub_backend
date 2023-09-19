@@ -1,13 +1,17 @@
 "use strict";
-const authSerivces = require("../services/auth.services");
+const authServices = require("../services/auth.services");
 const tokenServices = require("../services/token.services");
 const userServices = require("../services/user.services")
 
+/** Handles "auth/token" route
+ *	sends json response
+	{ "token" : <token string> }
+*/
 const token = async (req, res, next) => {
 	try {
 		const username = req.body.username;
 		const password = req.body.password;
-		const token = await authSerivces.getToken(username, password);
+		const token = await authServices.getToken(username, password);
 
 		return res.json({ token })
 	} catch(err){
@@ -16,9 +20,15 @@ const token = async (req, res, next) => {
 	
 }
 
+/** Handles auth/register route.
+ * 	Allows new user to register
+ * 	sends json response
+ * { "token" : <token string> }
+ */
 const register = async (req, res, next) => {
 	try{
-		const user = await userServices.createUser(req.body);
+		const newUserInfo = req.body
+		const user = await userServices.createUser(newUserInfo);
 		const token = tokenServices.generateToken(user);
 
 		return res.status(201).json({ token })

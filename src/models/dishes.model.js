@@ -1,8 +1,118 @@
 "use strict";
 
 const db = require("../db");
+const sql = require("../utils/sql.utils");
 
 class Dish {
+	/**
+	 * 
+	 * @param {*} details 
+	 * @param {Object}
+	 */
+	static async create(details){
+		const { columns, placehoders, values } = sql.formatInsertData(details)
+
+		const dishResult = await db.query(
+			`INSERT INTO dishes
+				(${columns})
+				VALUES(${placehoders})
+				RETURNING 	name,
+							source_name AS "sourceName",
+							source_url AS "sourceUrl",
+							added_by AS "addedBy",
+							description,
+							instructions,
+							img_url AS "imgUrl"`,
+				values);
+		return dishResult.rows[0];
+	}
+
+	static async addIngredient(name, dishId, amount){
+		const result = db.query(
+			`INSERT INTO ingredients
+				(name, dish_id, amount)
+				VALUES ($1,$2,$3)
+				RETUNRING 	id,
+							name,
+							dish_id AS "dishId,
+							amount`,
+			[name, dishId, amount]);
+		return result.rows[0]
+	}
+
+	static async editIngredient(id, name, amount){
+		const result = db.query(
+			`UPDATE ingredients
+				SET name = $1, amount = $2
+				WHERE id = $3
+			RETURNING id, name, amount`,
+			[name, amount, id]);
+
+		return result.rows[0]
+	}
+
+	static async getAllDisehs(){
+		const result = await db.query(
+			`SELECT id,
+					name,
+					source_name AS "sourceName",
+					source_url AS "sourceUrl",
+					added_by AS "addedBy",
+					description,
+					instructions,
+					img_url AS "imgUrl"
+			FROM dishes`)
+
+		return result.rows
+	}
+
+	static async getBasicDetails(dishId){
+		const result = await db.query(
+			`SELECT id,
+					name,
+					source_name AS "sourceName",
+					source_url AS "sourceUrl",
+					added_by AS "addedBy",
+					description,
+					instructions,
+					img_url AS "imgUrl"
+			FROM dishes
+			WHERE id = $1`,
+			[dishId]);
+		return result.rows[0]
+	}
+
+	static async editBasicDetails(dishId, details){
+		const { columns, values } = sql.formatUpdateData(details);
+
+		const result = await db.query(
+			`UPDATE dishes
+				SET ${columns}
+				WHERE id = ${values.length + 1}
+			RETURNING 	id,
+						name,
+						source_name AS "sourceName",
+						source_url AS "sourceUrl",
+						added_by AS "addedBy",
+						description,
+						instructions,
+						img_url AS "imgUrl"`,
+			[...values, dishId]);
+		
+		return result.rows[0];
+	}
+
+	static async getIngredients(dishId){
+		const result = await db.query(
+			`SELECT id,
+					name,
+					amount
+			FROM ingredients
+			WHERE dish_id = $1`,
+			[dishId])
+		return result.rows;
+	}
+
 	static async getGatheringDishes(gatheringId){
 		const result = await db.query(
 			`SELECT d.id,
@@ -11,7 +121,9 @@ class Dish {
 					d.img_url AS "imgUrl",
 					gd.course_id AS "courseId",
 					gd.owner_username AS "ownerUsername"
-				FROM gathering_dishes
+				FROM gathering_dishes AS gd
+				JOIN dishes AS d
+					ON gd.dish_id = d.id
 				WHERE gathering_id = $1`,
 			[gatheringId]
 		);
@@ -58,6 +170,21 @@ class Dish {
 			[id]
 		);
 		return result.rows[0].owner
+	}
+
+	static async getUsersDisehs(username){
+		const result = await db.query(
+			`SELECT id,
+					name,
+					source_name AS "sourceName",
+					source_url AS "sourceUrl",
+					added_by AS "addedBy",
+					description,
+					instructions,
+					img_url AS "imgUrl"
+			FROM dishes
+			WHERE added_by = $1`,
+			[username]);
 	}
 };
 

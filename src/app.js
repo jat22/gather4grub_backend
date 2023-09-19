@@ -6,7 +6,9 @@ const cors = require("cors");
 const morgan = require("morgan");
 const authMiddleware = require("./middleware/auth.middleware")
 const authRoutes = require("./routes/v1/auth.route");
-const userRoutes = require("./routes/v1/users.route")
+const userRoutes = require("./routes/v1/users.route");
+const gatheringRoutes = require("./routes/v1/gatherings.route");
+const dishRoutes = require("./routes/v1/dishes.route")
 const { NotFoundError } = require("./expressError");
 
 const app = express();
@@ -16,8 +18,10 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authMiddleware.authenticateToken);
 
-app.use("/auth", authRoutes)
-app.use("/users", userRoutes)
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
+app.use("/gatherings", gatheringRoutes);
+app.use("/dishes", dishRoutes);
 
 app.use(function (req, res, next){
 	return next(new NotFoundError());

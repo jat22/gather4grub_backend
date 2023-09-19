@@ -1,7 +1,10 @@
 const jsonschema = require("jsonschema")
 const { BadRequestError } = require("../expressError")
 
-
+/** Accepts a json schema file.
+ * Validates using jsconschema module.
+ * Validation failure results in BadRequestError
+*/
 const validate = (schema) => (req,res,next) => {
 	try{
 		const validator = jsonschema.validate(req.body, schema);
@@ -9,6 +12,7 @@ const validate = (schema) => (req,res,next) => {
 			const errs = validator.errors.map(e => e.stack);
 			throw new BadRequestError(errs)
 		}
+		debugger
 		return next()
 	} catch(err){
 		return next(err)

@@ -2,15 +2,56 @@
 
 const connectionServices = require("../services/connection.services")
 
+/**
+ *  Handles get request for a specific user's connections
+ * 	Request data - 
+ * 		params: username:<string>
+ * 
+ * 	Returns response with json body
+ * 		{
+ * 			connections : [
+ * 				{
+ * 					connectionId:<num>,
+ * 					username:<string>,
+ * 					firstName:<string>,
+ * 					lastName:<string>,
+ * 					email:<string>,
+ * 					avatarUrl:<string>,
+ * 					tagLine:<string>
+ * 				}
+ * 			]
+ * 		}
+ */
 const listConnections = async(req,res,next) => {
 	try{
+		const username = req.params.username
 		const connections = 
-			await connectionServices.getConnectionsForUser(req.params.username);
+			await connectionServices.getConnectionsForUser(username);
 		return res.json({ connections });
 	} catch(err) {
 		return next(err);
 	};
 };
+
+/** Handles get route for a specific users' pending connection requests.
+ * 	Request data - 
+ * 		params: username
+ * 
+ * 	Return response with json body
+ * 	{
+ * 		connectionRequests : [
+ * 			{
+ * 				requestId:<num>,
+ * 				username:<string>,
+ * 				firstName:<string>,
+ * 				lastName:<string>,
+ * 				email:<string>,
+ * 				avatarUrl:<string>,
+ * 				tagLine:<string>
+ * 			}
+ * 		]
+ * 	}
+ */
 
 const listConnectionRequests = async(req,res,next) => {
 	try {
@@ -22,6 +63,19 @@ const listConnectionRequests = async(req,res,next) => {
 	}
 };
 
+/** Handles post request for a connection request
+ * 	Request data - 
+ * 		params - username:<string>
+ * 		body - {toUsername:<string>}
+ * 
+ * 	Returns response with json body
+ * 	{
+		"connectionRequest": {
+			"id": <string>
+		}
+	}
+ */
+
 const newConnectionRequest = async(req, res, next) => {
 	try {
 		const connectionRequest = 
@@ -32,6 +86,14 @@ const newConnectionRequest = async(req, res, next) => {
 	}
 };
 
+/** Handles put request to accept connection request.
+ * 	Request Data - 
+ * 		params : 	{
+ * 						username: <string> (of the accepting user),
+ * 						reqId:<num> (id of connection request)
+ * 					}
+ * 	Returns response with status 200 and empty body.
+ */
 const requestAcceptance = async(req,res,next) => {
 	try {
 		await connectionServices.handleRequestAccepted(req.params.username, req.params.reqId);
@@ -41,6 +103,14 @@ const requestAcceptance = async(req,res,next) => {
 	}
 };
 
+/** Handles delete request to decline a connection request
+ * 	Request Data - 
+ *		params : 	{
+ * 						username: <string> (of the accepting user),
+ * 						reqId:<num> (id of connection request)
+ * 					}
+ * 	Returns response with status 204 and empty body.
+ */
 const requestDenial = async(req,res,next) => {
 	try {
 		await connectionServices.handleRequestDenial(req.params.username, req.params.reqId)
@@ -50,6 +120,14 @@ const requestDenial = async(req,res,next) => {
 	}
 };
 
+/** Handles delete route to remove a connection 
+ * Request Data - 
+ * 		params: 	{
+ * 						connectionId:<num>,
+ * 						username:<string>
+ * 					}
+ * Returns response with status 204 and empty body.
+*/
 const removeConnection = async(req,res,next) => {
 	try{
 		await connectionServices.deleteExistingConnection(req.params.connectionId, req.params.username);

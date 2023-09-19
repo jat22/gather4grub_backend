@@ -4,7 +4,8 @@ const guestServices = require("../services/guests.services");
 
 const getGatheringGuests = async(req,res,next) => {
 	try{
-		const guests = guestServices.getGatheringGuests(res.params.gatheringId)
+		const gatheringId = req.params.gatheringId;
+		const guests = await guestServices.getGatheringGuests(gatheringId)
 		return res.json({ guests })
 	} catch(err){
 		return next(err)
@@ -13,7 +14,9 @@ const getGatheringGuests = async(req,res,next) => {
 
 const addGuestsToGathering = async(req,res,next) => {
 	try{
-		const guest = guestServices.addGuestToGathering(req.body.guest)
+		const guestUsername = req.body.guest
+		const gatheringId = req.params.gatheringId
+		const guest = await guestServices.addGuestToGathering(gatheringId, guestUsername)
 		return res.json({ guest })
 	} catch(err){
 		return next(err)
@@ -31,8 +34,11 @@ const removeGuestFromGathering = async(req,res,next) => {
 
 const updateRSVP = async(req,res,next) => {
 	try{
+		const gatheringId = req.params.gatheringId;
+		const guestUsername = req.params.username;
+		const rsvp = req.body.rsvp
 		const guest = 
-			await guestServices.updateGatheringRSVP(req.params.username, req.body.rsvp);
+			await guestServices.updateGatheringRSVP(gatheringId, guestUsername, rsvp);
 		return res.json({ guest })
 	} catch(err){
 		return next(err)

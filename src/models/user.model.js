@@ -55,7 +55,7 @@ class User {
 	 */
 	static async create(input) {
 		const { columns, placeholders, values } = sql.formatInsertData(input)
-		
+
 		const result = await db.query(
 			`INSERT INTO users
 				(${columns})
@@ -116,12 +116,13 @@ class User {
 	 * @returns {Promise<boolean>}
 	 */
 	static async usernameExists (username){
+		debugger
 		const result = await db.query(
 			`SELECT username
 				FROM users
 				WHERE username = $1`,
 				[username]);
-
+		debugger
 		if(result.rows[0]) return true
 		
 		return false

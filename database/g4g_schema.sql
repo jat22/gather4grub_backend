@@ -21,32 +21,6 @@ CREATE TABLE users (
 	avatar_url TEXT
 );
 
-CREATE TABLE dietary_prefs (
-	id SERIAL PRIMARY KEY,
-	name TEXT NOT NULL UNIQUE
-);
-
-CREATE TABLE allergies (
-	id SERIAL PRIMARY KEY,
-	name TEXT NOT NULL UNIQUE
-);
-
-CREATE TABLE user_pref_tags (
-	id SERIAL PRIMARY KEY,
-	username VARCHAR
-		REFERENCES users(username) ON DELETE CASCADE,
-	pref_id INTEGER
-		REFERENCES dietary_prefs(id) ON DELETE SET NULL
-);
-
-CREATE TABLE user_allergy_tags (
-	id SERIAL PRIMARY KEY,
-	username VARCHAR
-		REFERENCES users(username) ON DELETE CASCADE,
-	allergy_id INTEGER
-		REFERENCES allergies(id) ON DELETE SET NULL
-);
-
 CREATE TABLE connection_requests(
 	id SERIAL PRIMARY KEY,
 	from_username VARCHAR NOT NULL
@@ -105,7 +79,7 @@ CREATE TABLE courses (
 	id SERIAL PRIMARY KEY,
 	name TEXT UNIQUE
 );
-s
+
 CREATE TABLE gathering_courses (
 	id SERIAL PRIMARY KEY,
 	course_id INTEGER NOT NULL
@@ -120,7 +94,7 @@ CREATE TABLE dishes (
 	name TEXT NOT NULL,
 	source_name TEXT,
 	source_url TEXT,
-	user_id VARCHAR
+	added_by VARCHAR
 		REFERENCES users(username) ON DELETE SET NULL,
 	description TEXT,
 	instructions TEXT,
@@ -129,32 +103,10 @@ CREATE TABLE dishes (
 
 CREATE TABLE ingredients (
 	id SERIAL PRIMARY KEY,
-	name TEXT
-);
-
-CREATE TABLE dish_ingredients (
-	id SERIAL PRIMARY KEY,
+	name TEXT NOT NULL,
 	dish_id INTEGER
 		REFERENCES dishes(id) ON DELETE CASCADE,
-	ingredient_id INTEGER
-		REFERENCES ingredients(id),
-	amount TEXT
-);
-
-CREATE TABLE dish_allergy_tags (
-	id SERIAL PRIMARY KEY,
-	dish_id INTEGER
-		REFERENCES dishes(id) ON DELETE CASCADE,
-	allergy_id INTEGER
-		REFERENCES allergies(id) ON DELETE CASCADE
-);
-
-CREATE TABLE dish_diet_pref_tags (
-	id SERIAL PRIMARY KEY,
-	dish_id INTEGER
-		REFERENCES dishes(id) ON DELETE CASCADE,
-	pref_id INTEGER
-		REFERENCES dietary_prefs(id) ON DELETE SET NULL
+	amount TEXT NOT NULL
 );
 
 CREATE TABLE gathering_dishes (

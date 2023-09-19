@@ -6,8 +6,8 @@ const Dish = require("../models/dishes.model");
 const Post = require("../models/posts.model");
 const guestServices = require("../services/guests.services");
 
-const createGathering = async(input) => {
-	const gathering = await Gathering.create(input);
+const createGathering = async(host, details) => {
+	const gathering = await Gathering.create(host, details);
 	return gathering
 };
 
@@ -18,7 +18,7 @@ const getBasicDetailsOfGathering = async(gatheringId) => {
 
 	const basicDetails = Gathering.getBasicDetails(gatheringId);
 
-	return { basicDetails }
+	return basicDetails
 }
 
 const getFullDetailsOfGathering = async(gatheringId) => {
@@ -28,8 +28,8 @@ const getFullDetailsOfGathering = async(gatheringId) => {
 
 	const basicDetailsPromise = Gathering.getBasicDetails(gatheringId);
 	const guestsPromise = guestServices.getGatheringGuests(gatheringId);
-	const dishesPromise = Dish.getDishes(gatheringId);
-	const postsPromise = Post.getPosts(gatheringId);
+	const dishesPromise = Dish.getGatheringDishes(gatheringId);
+	const postsPromise = Post.getForGathering(gatheringId);
 
 	const [ basicDetails, guests, dishes, posts ] = 
 		await Promise.all(
@@ -73,9 +73,16 @@ const checkIfGatheringExists = async(gatheringId) => {
 }
 
 const isGatheringHost = async(username, gatheringId) => {
-	const host = await Gathering.getHost(gatheringId);
+	const gatheringHost = await Gathering.getHost(gatheringId);
+	const host = gatheringHost.host
 	if(host === username) return true;
 	return false;
+}
+
+const getUsersGatherings = async(username) => {
+	const gatheringsGuest = await Gathering.getUsers(username);
+	const gatheringsHost = await Gathering.getHosting(username);
+	return {guest : gatheringsGuest, host : gatheringsHost}
 }
 
 module.exports = {
@@ -85,5 +92,6 @@ module.exports = {
 	updateBasicDetails,
 	deleteGathering,
 	checkIfGatheringExists,
-	isGatheringHost
+	isGatheringHost,
+	getUsersGatherings
 }
