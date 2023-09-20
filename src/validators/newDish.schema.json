@@ -2,50 +2,58 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"type": "object",
 	"properties": {
-	  "name": {
-		"type": "string"
-	  },
-	  "sourceName": {
-		"type": "string"
-	  },
-	  "sourceUrl": {
-		"type": "string"
-	  },
-	  "description": {
-		"type": "string"
-	  },
-	  "instructions": {
-		"type": "string"
-	  },
-	  "imgUrl": {
-		"type": "string"
-	  },
-	  "ingredients": {
-		"type": "array",
-		"items": [
-		  {
-			"type": "object",
+		"detials" : {
+			"type":"object",
 			"properties": {
-			  "name": {
-				"type": "string"
-			  },
-			  "amount": {
-				"type": "string"
-			  }
+				"name": {
+					"type": "string"
+				},
+				"sourceName": {
+					"type": "string"
+				},
+				"sourceUrl": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"instructions": {
+					"type": "string"
+				},
+				"imgUrl": {
+					"type": "string"
+				}
 			},
 			"required": [
-			  "name",
-			  "amount"
-			]
-		  }
-		],
-		"minLength": 1
-	  }
+				"name",
+				"description",
+				"instructions"
+			  ]	  
+		},
+		"ingredients": {
+			"type": "array",
+			"items": [
+				{
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"amount": {
+							"type": "string"
+						}
+						},
+					"required": [
+						"name",
+						"amount"
+					]
+				}
+			],
+			"minLength": 1
+		}
 	},
-	"required": [
-	  "name",
-	  "description",
-	  "instructions",
-	  "ingredients"
+	"required" : [
+		"details",
+		"ingredients"
 	]
   }

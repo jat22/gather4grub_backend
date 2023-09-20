@@ -9,14 +9,16 @@ class Dish {
 	 * @param {*} details 
 	 * @param {Object}
 	 */
-	static async create(details){
-		const { columns, placehoders, values } = sql.formatInsertData(details)
+	static async create(addedBy, details){
+		details.addedBy = addedBy;
+		const { columns, placeholders, values } = sql.formatInsertData(details)
 
 		const dishResult = await db.query(
 			`INSERT INTO dishes
 				(${columns})
-				VALUES(${placehoders})
-				RETURNING 	name,
+				VALUES(${placeholders})
+				RETURNING 	id,
+							name,
 							source_name AS "sourceName",
 							source_url AS "sourceUrl",
 							added_by AS "addedBy",
@@ -28,30 +30,35 @@ class Dish {
 	}
 
 	static async addIngredient(name, dishId, amount){
-		const result = db.query(
+		const result = await db.query(
 			`INSERT INTO ingredients
 				(name, dish_id, amount)
 				VALUES ($1,$2,$3)
-				RETUNRING 	id,
+				RETURNING 	id,
 							name,
-							dish_id AS "dishId,
+							dish_id AS "dishId",
 							amount`,
 			[name, dishId, amount]);
+
 		return result.rows[0]
 	}
 
-	static async editIngredient(id, name, amount){
-		const result = db.query(
+	static async editIngredient(data){
+		const id = data.id;
+		delete data.id
+		const { columns, values } = sql.formatUpdateData(data);
+
+		const result = await db.query(
 			`UPDATE ingredients
-				SET name = $1, amount = $2
-				WHERE id = $3
+				SET ${columns}
+				WHERE id = $${values.length + 1}
 			RETURNING id, name, amount`,
-			[name, amount, id]);
+			[...values, id]);
 
 		return result.rows[0]
 	}
 
-	static async getAllDisehs(){
+	static async getAll(){
 		const result = await db.query(
 			`SELECT id,
 					name,
@@ -84,11 +91,10 @@ class Dish {
 
 	static async editBasicDetails(dishId, details){
 		const { columns, values } = sql.formatUpdateData(details);
-
 		const result = await db.query(
 			`UPDATE dishes
 				SET ${columns}
-				WHERE id = ${values.length + 1}
+				WHERE id = $${values.length + 1}
 			RETURNING 	id,
 						name,
 						source_name AS "sourceName",
@@ -145,8 +151,8 @@ class Dish {
 	static async removeFromGathering(gatheringId, dishId){
 		const result = await db.query(
 			`DELETE FROM gathering_dishes
-			WHERE gathering_id = $1 AND dish_id = $2
-			RETURNING ud`,
+			WHERE gathering_id = $1 AND id = $2
+			RETURNING id`,
 			[gatheringId, dishId]
 		)
 		return result.rows[0]
@@ -172,7 +178,7 @@ class Dish {
 		return result.rows[0].owner
 	}
 
-	static async getUsersDisehs(username){
+	static async getUsersDishes(username){
 		const result = await db.query(
 			`SELECT id,
 					name,
@@ -185,6 +191,15 @@ class Dish {
 			FROM dishes
 			WHERE added_by = $1`,
 			[username]);
+		return result.rows
+	}
+	static async remove(dishId){
+		const result = await db.query(
+			`DELETE FROM dishes
+			WHERE id = $1
+			RETURNING id`, [dishId]);
+
+		return result.rows[0]
 	}
 };
 

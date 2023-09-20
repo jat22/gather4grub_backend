@@ -1,8 +1,36 @@
 "use strict";
 
 const gatheringServices = require('../services/gatherings.services');
-const guestServices = require('../services/guests.services')
 
+/** Handle Post request to create a new gathering.
+ * Request Data - 
+ * 		body
+ * 			{
+ * 				title:<string>, REQ
+ * 				date:<YYYY/MM/DD> , REQ
+ * 				startTime:<HH:MM:SS>,
+ * 				endTime:<HH:MM:SS>,
+ * 				location:<string>,
+ * 				theme:<string>,
+ * 				description:<string>,
+ * 				coverImg:<string>
+ * 			}
+ * Return response with json body.
+ * 		{
+ * 			"gathering": {
+				"id":<num>,
+				"host": <string>,
+				"title": "<string>,
+				"date": <string>,
+				"startTime": <string>,
+				"endTime": <string>,
+				"location": <string>,
+				"theme": <string>,
+				"description": <string>,
+				"coverImg": <string>
+			}
+ * 		}
+ */
 const createGathering = async(req,res,next) => {
 	try{
 		const host = res.locals.user.username;
@@ -14,10 +42,17 @@ const createGathering = async(req,res,next) => {
 	}
 };
 
+/** Handle get request for basic details of a gathering, ie. date, time, location,etc.
+ * 
+ * Request Data - 
+ * 		params.gatheringId
+ * Return response with json body
+ */
 const getBasicDetailsOfGathering = async(req,res,next) => {
 	try{
+		const gatheringId = req.params.gatheringId
 		const gathering = 
-			await gatheringServices.getBasicDetailsOfGathering(req.params.gatheringId);
+			await gatheringServices.getBasicDetailsOfGathering(gatheringId);
 		return res.json({ gathering })
 	} catch(err){
 		return next(err)

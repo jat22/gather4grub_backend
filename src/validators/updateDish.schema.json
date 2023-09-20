@@ -2,43 +2,52 @@
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"type": "object",
 	"properties": {
-	  "name": {
-		"type": "string"
-	  },
-	  "sourceName": {
-		"type": "string"
-	  },
-	  "sourceUrl": {
-		"type": "string"
-	  },
-	  "description": {
-		"type": "string"
-	  },
-	  "instructions": {
-		"type": "string"
-	  },
-	  "imgUrl": {
-		"type": "string"
-	  },
-	  "ingredients": {
-		"type": "array",
-		"items": [
-		  {
-			"type": "object",
+		"detials" : {
+			"type":"object",
 			"properties": {
-			  "name": {
-				"type": "string"
-			  },
-			  "amount": {
-				"type": "string"
-			  }
-			},
-			"required": [
-			  "name",
-			  "amount"
-			]
-		  }
-		]
-	  }
-	}
+				"name": {
+					"type": "string"
+				},
+				"sourceName": {
+					"type": "string"
+				},
+				"sourceUrl": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"instructions": {
+					"type": "string"
+				},
+				"imgUrl": {
+					"type": "string"
+				}
+			}  
+		},
+		"ingredients": {
+			"type": "array",
+			"items": [
+				{
+					"type": "object",
+					"properties": {
+						"id" : {
+							"type": "number"
+						},
+						"name": {
+							"type": "string"
+						},
+						"amount": {
+							"type": "string"
+						}
+					}
+				}
+			],
+			"minLength": 1
+		}
+	},
+	"required" : [
+		"details",
+		"ingredients"
+	]
   }

@@ -45,12 +45,11 @@ const ensureDishOwnerOrHost = async(req,res,next) => {
 		const dishId = req.params.dishId
 
 		const userIsOwner = 
-			await dishServices.isDishOwner(curUser.username, dishId);
+			await dishServices.isDishOwner(curUser, dishId);
 
 		const userIsHost = 
 			await gatheringServices
-					.isGatheringHost(user.username, gatheringId);
-
+					.isGatheringHost(curUser, gatheringId);
 		if(!(userIsOwner || userIsHost)) throw new UnauthorizedError();
 		return next()
 	} catch(err){

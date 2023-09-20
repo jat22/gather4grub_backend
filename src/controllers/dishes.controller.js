@@ -2,12 +2,54 @@
 
 const dishServices = require("../services/dishes.services")
 
-
+/** Handles dish post route, creating a new dish
+ * 	Request data - 
+ * 		current username (from locals)
+ * 		body : 	{
+ * 					detials :{
+ * 						name : <string>, REQ
+ * 						sourceName : <string>,
+ * 						sourceUrl : <string>,
+ * 						description : <string>, REQ
+ * 						instructions : <string>, REQ
+ * 						imgUrl : <string>,
+ * 					},
+ * 					ingredients : [
+ * 						{
+ * 							name : <string>, REQ
+ * 							amount : <string> REQ
+ * 						}
+ * 					] REQ
+ * 				}
+ * 	Return response with json body
+ * 		{ newDish: 
+ * 			{
+ * 				details: {
+ * 					id:<num>,
+ * 					name:<string>,
+ * 					sourceName:<string>,
+ * 					sourceUrl:<string>,
+ * 					addedBy:<string>,
+ * 					description:<string>,
+ * 					instructions:<string>,
+ * 					imgUrl:<string
+ * 				},
+ * 				ingredients: [
+ * 					{
+ * 						id:<num>,
+ * 						name:<string>,
+ * 						dishId:<num>,
+ * 						amount:<string>
+ * 					}
+ * 				]
+ * 			}
+ * 		}
+ */
 const postDish = async(req,res,next) =>{
 	try{
 		const user = res.locals.user.username;
 		const details = req.body.details;
-		const ingredients = req.body.ingredients; 
+		const ingredients = req.body.ingredients;
 		const newDish = await dishServices.createNewDish(user, details, ingredients)
 		return res.json({ newDish })
 	} catch(err) {
@@ -15,6 +57,34 @@ const postDish = async(req,res,next) =>{
 	}
 }
 
+/** Handle get request for a single dish
+ * 	Request Data - 
+ * 		params: dishId
+ * 
+ * 	Return response with json body
+ * 		{ dish: 
+ * 			{
+ * 				details: {
+ * 					id:<num>,
+ * 					name:<string>,
+ * 					sourceName:<string>,
+ * 					sourceUrl:<string>,
+ * 					addedBy:<string>,
+ * 					description:<string>,
+ * 					instructions:<string>,
+ * 					imgUrl:<string
+ * 				},
+ * 				ingredients: [
+ * 					{
+ * 						id:<num>,
+ * 						name:<string>,
+ * 						dishId:<num>,
+ * 						amount:<string>
+ * 					}
+ * 				]
+ * 			}
+ * 		}
+ */
 const getDish = async(req,res,next) =>{
 	try{
 		const dishId = req.params.dishId;
@@ -25,6 +95,23 @@ const getDish = async(req,res,next) =>{
 	}
 }
 
+/** Handles get request for all dishes.
+ * 	Returns response with json body
+ * 		{ 
+ * 			dishes: [
+ * 				{
+ * 					id:<num>,
+ * 					name:<string>,
+ * 					sourceName:<string>,
+ * 					sourceUrl:<string>,
+ * 					addedBy:<string>,
+ * 					description:<string>,
+ * 					instructions:<string>,
+ * 					imgUrl:<string>
+ * 				}
+ * 			]
+ * 		}
+ */
 const getAllDishes = async(req,res,next) => {
 	try{
 		const dishes = await dishServices.getAllDishes();
@@ -34,6 +121,56 @@ const getAllDishes = async(req,res,next) => {
 	}
 }
 
+/** Handle dish put request to edit dish.
+ * 	Request data - 
+ * 		params.dishId
+ * 		body:	{
+ * 				details: {
+ * 					id:<num>,
+ * 					name:<string>,
+ * 					sourceName:<string>,
+ * 					sourceUrl:<string>,
+ * 					addedBy:<string>,
+ * 					description:<string>,
+ * 					instructions:<string>,
+ * 					imgUrl:<string
+ * 				},
+ * 				ingredients: [
+ * 					{
+ * 						id:<num>,
+ * 						name:<string>,
+ * 						dishId:<num>,
+ * 						amount:<string>
+ * 					}
+ * 				]
+ * 			} 
+ * 		//// PASING ONLY Updating INformation
+ * 		//// EXISTING ingredient should pass its existing ID
+ * 	Return Response with json body
+ * 		{
+ * 			 dish: 
+ * 			{
+ * 				details: {
+ * 					id:<num>,
+ * 					name:<string>,
+ * 					sourceName:<string>,
+ * 					sourceUrl:<string>,
+ * 					addedBy:<string>,
+ * 					description:<string>,
+ * 					instructions:<string>,
+ * 					imgUrl:<string
+ * 				},
+ * 				ingredients: [
+ * 					{
+ * 						id:<num>,
+ * 						name:<string>,
+ * 						dishId:<num>,
+ * 						amount:<string>
+ * 					}
+ * 				]
+ * 			}
+ * 		}
+ */
 const putDish = async(req,res,next) =>{
 	try{
 		const dishId = req.params.dishId;
@@ -46,6 +183,11 @@ const putDish = async(req,res,next) =>{
 	}
 }
 
+/** Handle delete request which removes a dish
+ * Request Data -
+ * 		params.dishId
+ * Return status 204 empty body
+ */
 const deleteDish = async(req,res,next) =>{
 	try{
 		const dishId = req.params.dishId;
@@ -56,6 +198,25 @@ const deleteDish = async(req,res,next) =>{
 	}
 }
 
+
+/**
+ * Hande get request for dishes for a gathering.
+ * Request Data - 
+ * 		params.gatheringId
+ * Return response with json body.
+ * 		{
+			"dishes": [
+				{
+					"id": <num>,
+					"name": <string>,
+					"description": <string>,
+					"imgUrl": <string>,
+					"courseId": <string>,
+					"ownerUsername": <string>
+				}
+			]
+		}
+ */
 const getGatheringDishes = async(req,res,next) => {
 	try{
 		const gatheringId = req.params.gatheringId
@@ -67,6 +228,18 @@ const getGatheringDishes = async(req,res,next) => {
 	}
 };
 
+/** Handle post request to add dish to gathering.
+ * Request Data - 
+ * 		params.gatheringId
+ * 		params.dishId
+ * 		body : {courseId:<num>}
+ * Return response with json body.
+ * 		{
+			"dish": {
+				"gatheringDishId": 3
+			}
+ * 		}
+ */
 const addDishToGathering = async(req,res,next) => {
 	try{
 		const gatheringId = req.params.gatheringId;
@@ -81,6 +254,13 @@ const addDishToGathering = async(req,res,next) => {
 	}
 };
 
+/** Handle delete request to remove a dish from a party
+ * Request data - 
+ * 		params.gatheringId
+ * 		params.dishId
+ * 
+ * Return response with status 204, empty body.
+ */
 const removeDishFromGathering = async(req,res,next) => {
 	try{
 		const gatheringId = req.params.gatheringId;
@@ -92,10 +272,26 @@ const removeDishFromGathering = async(req,res,next) => {
 	}
 };
 
+/** Hande get request to get all dishes added by a user.
+ * Request data - 
+ * 		params.username
+ * Return Resposne with json body
+ * 		{"dishes": [
+				{
+					"id": <num>,
+					"name": <string>,
+					"description": <string>,
+					"imgUrl": <string>,
+					"courseId": <string>,
+					"ownerUsername": <string>
+				}
+			]
+ * 		}
+ */
 const getUsersDishes = async(req,res,next) => {
 	try{
 		const user = req.params.username;
-		const dishes = dishServices.getUsersDishes(user)
+		const dishes = await dishServices.getUsersDishes(user)
 		return res.json({ dishes })
 	} catch(err){
 		return next(err)

@@ -38,6 +38,7 @@ const removeDishFromGathering = async(gatheringId, dishId) => {
 	};
 
 	await Dish.removeFromGathering(gatheringId, dishId);
+	return 
 }
 
 const checkIfDishExists = async(dishId) => {
@@ -48,17 +49,18 @@ const checkIfDishExists = async(dishId) => {
 
 const isDishOwner = async(username, gatheringDishId) =>{
 	const owner = await Dish.getGatheringDishOwner(gatheringDishId);
+
 	if(owner && owner === username) return true;
 	return false
 }
 
 const getAllDishes = async() => {
-	const dishes = await Dish.getAllDishes();
+	const dishes = await Dish.getAll();
 	return dishes
 }
 
 const getUsersDishes = async(username) => {
-	const dishes = await Dish.getUsersDishs(username)
+	const dishes = await Dish.getUsersDishes(username)
 	return dishes
 }
 
@@ -67,17 +69,17 @@ const getDishRecipe = async(dishId) => {
 	const ingredientsPromise = Dish.getIngredients(dishId);
 	const [ basicDetails, ingredients ] = 
 				await Promise.all([basicDetailsPromise, ingredientsPromise]);
-
+	if(!basicDetails) return null
 	return 	{
-				basicDetails : basicDetails,
+				details : basicDetails,
 				ingredients : ingredients
 			}
 }
 
 const createNewDish = async(addedBy, details, ingredients) => {
 	const newDish = await Dish.create(addedBy, details);
-
-	const newDishIngredientPromises = ingredients.map(i => Dish.addIngredient(i));
+	const newDishIngredientPromises = 
+			ingredients.map(i => Dish.addIngredient(i.name, newDish.id, i.amount));
 	const newDishIngredients = await Promise.all(newDishIngredientPromises)
 	
 	return 	{
@@ -87,26 +89,28 @@ const createNewDish = async(addedBy, details, ingredients) => {
 }
 
 const editDishRecipe  = async(dishId, details, ingredients) => {
-	const updatedDetails = await Dish.editBasicDetails(dishId, details);
-
-	const updatedIngredientPromises = ingredients.map(async i => {
-		if(i.id){
-			return Dish.editIngredient(i.id, i.name, i.amount)
-		} else{
-			return Dish.addIngredient(i.name, i.dishId, i.amount)
-		}
-	});
-	const updatedIngredients = await Promise.all(updatedIngredientPromises);
-
-	return 	{
-				details: updatedDetails, 
-				ingredients: updatedIngredients
+	if(details) await Dish.editBasicDetails(dishId, details);
+	if(ingredients){
+		const updatedIngredientPromises = ingredients.map(async i => {
+			if(i.id){
+				return Dish.editIngredient(i)
+			} else{
+				return Dish.addIngredient(i.name, dishId, i.amount)
 			}
+		});
+		await Promise.all(updatedIngredientPromises);
+	}
+	
+	return await getDishRecipe(dishId)
 }
 
 const dishAddedBy = async(dishId) => {
 	const dish = await Dish.getBasicDetails(dishId)
 	return dish.addedBy
+}
+
+const deleteDish = async(dishId) => {
+	await Dish.remove(dishId)
 }
 
 module.exports = {
@@ -119,5 +123,6 @@ module.exports = {
 	getDishRecipe,
 	editDishRecipe,
 	getAllDishes,
-	getUsersDishes
+	getUsersDishes,
+	deleteDish
 }

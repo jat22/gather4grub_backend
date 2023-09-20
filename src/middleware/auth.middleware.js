@@ -78,7 +78,7 @@ const ensureAdmin = (req, res, next) => {
 
 const ensureDishAddedBy = async (req,res,next) => {
 	try{
-		const user = res.locals.user;
+		const user = res.locals.user.username;
 		const dishId = req.params.dishId
 		const dishAddedBy = await dishServices.dishAddedBy(dishId)
 		if(user !== dishAddedBy) throw new UnauthorizedError();

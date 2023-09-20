@@ -25,7 +25,6 @@ const formatInsertData = (data) => {
 		columns.push(camelToSnakeCase(name))
 		placeholders.push(`$${idx+1}`)
 	});
-
 	return { 
 		columns : columns.join(', '), 
 		placeholders : placeholders.join(', '), 
