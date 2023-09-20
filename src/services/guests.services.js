@@ -17,11 +17,8 @@ const addGuestToGathering = async(gatheringId, username) => {
 	return guest
 };
 
-const removeGuestFromGathering = async(guestId, gatheringId) => {
-	if(!(await checkIfGuestExistsOnGathering(guestId, gatheringId))){
-		throw new BadRequestError("guest does not exist")
-	};
-	const result = await Guest.removeFromGathering(gatheringId, guestId);
+const removeGuestFromGathering = async(gatheringId, username) => {
+	const result = await Guest.removeFromGathering(gatheringId, username);
 	return result
 };
 

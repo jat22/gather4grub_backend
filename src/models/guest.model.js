@@ -38,9 +38,9 @@ class Guest {
 	static async removeFromGathering(gatheringId, username){
 		const result = await db.query(
 			`DELETE FROM guests
-				WHERE gathering_id = $1
-					AND username = $2,
-				RETURNING id`,
+				WHERE 	gathering_id = $1
+				AND 	username = $2
+			RETURNING id`,
 			[gatheringId, username]
 		);
 
@@ -63,6 +63,7 @@ class Guest {
 	}
 
 	static async getGatheringGuestId(username, gatheringId){
+		debugger
 		const result = await db.query(
 			`SELECT id
 				FROM guests

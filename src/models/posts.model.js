@@ -6,15 +6,20 @@ const sqlUtility = require("../utils/sql.utils");
 class Post {
 	static async getForGathering(gatheringId){
 		const result = await db.query(
-			`SELECT id,
-					title,
-					body,
-					gathering_id AS gatheringId,
-					author
-			FROM posts
-			WHERE gathering_id = $1`,
+			`SELECT p.id,
+					p.title,
+					p.body,
+					p.gathering_id AS "gatheringId",
+					p.author AS "postAuthor",
+					JSON_AGG(c.*) AS comments
+			FROM posts AS p
+			JOIN gatherings AS g ON p.gathering_id = g.id
+			LEFT JOIN comments AS c ON p.id = c.post_id
+			WHERE g.id = $1
+			GROUP BY p.id`,
 			[gatheringId]
 		)
+
 		return result.rows
 	};
 
@@ -26,7 +31,7 @@ class Post {
 			RETURNING	id,
 						title,
 						body,
-						gathering_id AS "gatheringId,
+						gathering_id AS "gatheringId",
 						author`,
 			[title, body, gatheringId, author]
 		);

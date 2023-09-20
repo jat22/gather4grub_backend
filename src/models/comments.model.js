@@ -1,4 +1,5 @@
 "use strict";
+const db = require("../db")
 
 class Comment {
 
@@ -12,10 +13,12 @@ class Comment {
 			WHERE gathering_id = $1`,
 			[postId]
 		)
+		debugger
 		return result.rows
 	};
 
 	static async create(postId, author, body){
+		debugger
 		const result = await db.query(
 			`INSERT INTO comments
 			(body, post_id, author)

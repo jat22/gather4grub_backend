@@ -11,11 +11,9 @@ const getGatheringPosts = async(gatheringId) => {
 	return posts
 };
 
-const createPost = async(gatheringId, input) => {
+const createPost = async(gatheringId, input, author) => {
 	const title = input.title;
 	const body = input.body;
-	const author = input.author;
-
 	const post = 
 		await Post.create(title, body, gatheringId, author);
 	return post;
@@ -32,10 +30,8 @@ const deletePost = async(postId) => {
 	return post;
 };
 
-const createComment = async(postId, input) => {
-	const author = input.author;
+const createComment = async(postId, input, author) => {
 	const body = input.body;
-	
 	const comment = await Comment.create(postId, author, body);
 	return comment
 };

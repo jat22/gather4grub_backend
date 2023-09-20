@@ -14,8 +14,9 @@ const getGatheringPosts = async(req,res,next) => {
 const createPost = async(req,res,next) => {
 	try{
 		const gatheringId = req.params.gatheringId;
-		const body = req.body;
-		const post = await postServices.createPost(gatheringId, body);
+		const input = req.body;
+		const author = res.locals.user.username
+		const post = await postServices.createPost(gatheringId, input, author);
 		return res.json({ post })
 	} catch(err){
 		return next(err)
@@ -46,8 +47,9 @@ const deletePost = async(req,res,next) => {
 const createComment = async(req,res,next) => {
 	try{
 		const postId = req.params.postId;
-		const body = req.body;
-		const comment = await postServices.createComment(postId, body);
+		const input = req.body;
+		const author = res.locals.user.username
+		const comment = await postServices.createComment(postId, input, author);
 		return res.json({ comment });
 	} catch(err){
 		return next(err)

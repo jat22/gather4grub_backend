@@ -56,11 +56,10 @@ class Gathering {
 		const result = await db.query(
 			`UPDATE gatherings
 				SET ${columns}
-				WHERE id = ${values.length + 1}
+				WHERE id = $${values.length + 1}
 				RETURNING	id,
 							host,
 							title,
-							state,
 							start_time AS "startTime",
 							end_time AS "endTime",
 							location,
@@ -69,7 +68,7 @@ class Gathering {
 							cover_img AS "coverImg"`,
 			[...values, gatheringId]
 		);
-		return result.row[0]
+		return result.rows[0]
 		
 	}
 
@@ -111,7 +110,7 @@ class Gathering {
 					g.title,
 					g.date,
 					g.start_time AS "startTime",
-					g.start_time AS "startTime",
+					g.end_time AS "endTime",
 					g.location,
 					g.theme,
 					g.description,
@@ -133,8 +132,9 @@ class Gathering {
 					title,
 					date,
 					start_time AS "startTime",
-					start_time AS "startTime",
+					end_time AS "endTime",
 					location,
+					theme,
 					description,
 					cover_img AS "coverImg"
 			FROM gatherings
