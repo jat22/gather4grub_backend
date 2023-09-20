@@ -82,7 +82,7 @@ router
 	.post(postControllers.createPost)
 	
 router
-	.route('/:gatheringsId/posts/:postId')
+	.route('/:gatheringId/posts/:postId')
 	.all(ensureParticipant)
 	.put(
 		ensurePostAuthor,

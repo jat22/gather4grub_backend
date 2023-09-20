@@ -71,7 +71,7 @@ class Post {
 			WHERE id=$1`,
 			[postId]
 		)
-		return result.rows[0]
+		return result.rows[0].author
 	}
 }
 

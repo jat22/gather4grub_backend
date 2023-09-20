@@ -1,6 +1,30 @@
 
 const postServices = require("../services/posts.services")
 
+/** Handle get request to retrieve all posts for a gathering.
+ * Request data -
+ * 		params.gatheringId
+ * Return response with json body.
+ * 		{
+ * 			posts:[
+ * 
+	* 			{
+	* 				id:<num>,
+	* 				title: <string>,
+	* 				body:<string>,
+	* 				gatheringId:<num>,
+	* 				author:<string>,
+					comments: [
+						{
+							id:<num>,
+							body:<string>,
+							author:<string>
+						}
+					]
+	* 			}
+			]
+ * 		}
+ */
 const getGatheringPosts = async(req,res,next) => {
 	try{
 		const gatheringId = req.params.gatheringId;
@@ -11,6 +35,24 @@ const getGatheringPosts = async(req,res,next) => {
 	}
 };
 
+/** Handle post request to create a new post.
+ * Request data - 
+ * 		params.gatheringId
+ * 		body: {
+ * 			title:<string>,
+ * 			body:<string>,
+ * 		}
+ * Return response with json body.
+ * 		{
+ * 			post:{
+ * 				id:<num>,
+ * 				title: <string>,
+ * 				body:<string>,
+ * 				gatheringId:<num>,
+ * 				author:<string>
+ * 			}
+ * 		}
+ */
 const createPost = async(req,res,next) => {
 	try{
 		const gatheringId = req.params.gatheringId;
@@ -23,6 +65,23 @@ const createPost = async(req,res,next) => {
 	}
 };
 
+/** Handle put request to edit a post.
+ * Request data - 
+ * 		params.postId
+ * 		body: {
+ * 			body:<string>
+ * 		}
+ * Return response with json body.
+ * 		{
+ * 			post:{
+ * 				id:<num>,
+ * 				title: <string>,
+ * 				body:<string>,
+ * 				gatheringId:<num>,
+ * 				author:<string>
+ * 			}
+ * 		}
+ */
 const editPost = async(req,res,next) => {
 	try{
 		const postId = req.params.postId;
@@ -33,7 +92,12 @@ const editPost = async(req,res,next) => {
 		return next(err)
 	}
 };
-
+/** Hanlde delete request to remove a post.
+ * Request data - 
+ * 		params.postId
+ * 
+ * Returns response status 204 with empty body.
+ */
 const deletePost = async(req,res,next) => {
 	try{
 		const postId = req.params.postId;
@@ -44,6 +108,20 @@ const deletePost = async(req,res,next) => {
 	}
 }
 
+/** Hanldes post request to create a new comment on a post.
+ * Request Data - 
+ * 		params.postId
+ * 		body: { body: <string>}
+ * Returns response with json body.
+ * 		{
+ * 			"comment": {
+				"id": <num>,
+				"body": <string>,
+				"postid": <num>,
+				"author": <string>
+			}
+ * 		}
+ */
 const createComment = async(req,res,next) => {
 	try{
 		const postId = req.params.postId;
@@ -56,6 +134,20 @@ const createComment = async(req,res,next) => {
 	}
 };
 
+/** Handle put request to edit a particular comment.
+ * Request Data - 
+ * 		params.commentId
+ * 		body:{body:<string>}
+ * Return response with json body.
+ * 		{
+ * 			"comment": {
+				"id": <num>,
+				"body": <string>,
+				"postid": <num>,
+				"author": <string>
+			}
+ * 		}
+ */
 const editComment = async(req,res,next) => {
 	try{
 		const commentId = req.params.commentId;
@@ -67,6 +159,11 @@ const editComment = async(req,res,next) => {
 	}
 };
 
+/** Handle delete request to remove a comment.
+ * Request Data - 
+ * 		params.commentId
+ * Return response status 204 with empty body.
+ */
 const deleteComment = async(req,res,next) => {
 	try{
 		const commentId = req.params.commentId;

@@ -6,6 +6,7 @@ const guestServices = require("../services/guests.services");
 const dishServices = require("../services/dishes.services");
 const Post = require("../models/posts.model");
 const Gathering = require('../models/gatherings.model');
+const Comment = require('../models/comments.model')
 
 const ensureParticipant = async(req,res,next) => {
 	try{
@@ -15,6 +16,7 @@ const ensureParticipant = async(req,res,next) => {
 			await guestServices.
 					checkIfGuestExistsOnGathering(user, gatheringId);
 		const host = await Gathering.getHost(gatheringId)
+
 		if(userIsGuest || user === host.host ) return next();
 		throw new UnauthorizedError();
 	} catch(err){
@@ -101,9 +103,11 @@ const ensureCommentAuthor = async(req,res,next) => {
 const ensureCommentAuthorOrHost = async(req,res,next) => {
 	try{
 		const user = res.locals.user.username
+		const commentId = req.params.commentId
+		const gatheringId = req.params.gatheringId
 		const authorPromsie = Comment.getAuthor(commentId);
 		const hostPromise = Gathering.getHost(gatheringId);
-		const [ author, host ] = Promise.all([authorPromsie, hostPromise])
+		const [ author, host ] = await Promise.all([authorPromsie, hostPromise])
 
 		if(user === author || user === host) return next();
 		throw new UnauthorizedError();

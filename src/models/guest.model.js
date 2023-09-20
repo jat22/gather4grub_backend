@@ -63,7 +63,6 @@ class Guest {
 	}
 
 	static async getGatheringGuestId(username, gatheringId){
-		debugger
 		const result = await db.query(
 			`SELECT id
 				FROM guests

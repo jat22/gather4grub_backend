@@ -39,7 +39,7 @@ class Comment {
 			WHERE id = $2
 			RETURNING 	id,
 						body,
-						post_id AS postId
+						post_id AS postId,
 						author`,
 			[body, commentId]
 		)
