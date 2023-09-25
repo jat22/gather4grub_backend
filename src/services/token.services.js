@@ -4,9 +4,10 @@ const { SECRET_KEY, TOKEN_EXPIRATION } = require('../config')
 /**
  * Generate token
  * @param {Object} user
- * @returns {string}
+ * @property {string} username
+ * @property {string} role
+ * @returns {string} JWT Token
  */
-
 const generateToken = (user) => {
 	let payload = {
 		username : user.username,

@@ -4,6 +4,7 @@ class Guest {
 	static async findForGathering(gatheringId){
 		const result = await db.query(
 			`SELECT g.id,
+					g.gathering_id AS "gatheringId",
 					u.username,
 					u.first_name AS "firstName",
 					u.last_name AS "lastName",
@@ -28,6 +29,9 @@ class Guest {
 			RETURNING 	id,
 						gathering_id AS "gatheringId",
 						username,
+						first_name AS "firstName",
+						last_name AS "lastName,
+						email,
 						rsvp`,
 			[gatheringId, username]
 		);
@@ -55,6 +59,9 @@ class Guest {
 				RETURNING 	id,
 							gathering_id AS "gatheringId",
 							username,
+							first_name AS "firstName",
+							last_name AS "lastName,
+							email,
 							rsvp`,
 			[rsvp,username]
 		);
