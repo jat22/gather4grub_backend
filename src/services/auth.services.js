@@ -20,12 +20,21 @@ const getToken = async (username, password) => {
 	return token;
 }
 
+/**
+ * Check input password against stored password.
+ * @param {string} username 
+ * @param {string} password 
+ * @returns {boolean|object} if password matches returns credential object, otherwise false
+ * @param {string} username
+ * @param {role} user or admin
+ */
+
 const checkUsernamePassword = async(username, password) => {
 	const credentials = await User.getUserCredentials(username);
 	if(!credentials) return false;
 	const valid = await bcrypt.compare(password, credentials.password);
 	delete credentials.password;
-
+	debugger
 	if(valid) return credentials;
 
 	return false

@@ -77,13 +77,7 @@ CREATE TABLE guests (
 
 CREATE TABLE courses (
 	id SERIAL PRIMARY KEY,
-	name TEXT UNIQUE
-);
-
-CREATE TABLE gathering_courses (
-	id SERIAL PRIMARY KEY,
-	course_id INTEGER NOT NULL
-		REFERENCES courses(id) ON DELETE CASCADE,
+	name TEXT NOT NULL,
 	gathering_id INTEGER NOT NULL
 		REFERENCES gatherings(id) ON DELETE CASCADE,
 	notes TEXT

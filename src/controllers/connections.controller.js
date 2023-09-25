@@ -70,17 +70,15 @@ const listConnectionRequests = async(req,res,next) => {
  * 
  * 	Returns response with json body
  * 	{
-		"connectionRequest": {
-			"id": <string>
-		}
+		"connectionRequestId" : <num>
 	}
  */
 
 const newConnectionRequest = async(req, res, next) => {
 	try {
-		const connectionRequest = 
+		const connectionRequestId = 
 			await connectionServices.createConnectionRequest(req.params.username, req.body.toUsername)
-		return res.json({ connectionRequest })
+		return res.json({ connectionRequestId })
 	} catch(err) {
 		return next(err)
 	}

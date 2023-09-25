@@ -90,6 +90,18 @@ class Connections{
 		return result.rows[0]
 	}
 
+	static async getConnection(connectionId){
+		const result = await db.query(
+			`SELECT id,
+					user1_username AS user1,
+					user2_username AS user2
+			FROM connections
+			WHERE id = $1`,
+			[connectionId] 
+		)
+		return result.rows[0]
+	}
+
 	static _connectionsTable = "connections";
 	static _requestsTable = "connection_requests";
  	static _listColumns = 

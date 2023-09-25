@@ -1,6 +1,6 @@
 "use strict";
 
-const { BadRequestError } = require('../expressError');
+const { BadRequestError, NotFoundError } = require('../expressError');
 const Post = require('../models/posts.model');
 const Comment = require('../models/comments.model')
 const gatheringServices = require("../services/gatherings.services")
@@ -21,6 +21,7 @@ const createPost = async(gatheringId, input, author) => {
 
 const editPost = async(postId, input) => {
 	const post = await Post.edit(postId, input);
+	if(!post) throw new NotFoundError
 	return post;
 
 };
