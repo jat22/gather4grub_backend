@@ -5,6 +5,8 @@ const Gathering = require("../models/gatherings.model");
 const Dish = require("../models/dishes.model");
 const Post = require("../models/posts.model");
 const guestServices = require("../services/guests.services");
+const Guest = require("../models/guest.model");
+const { sortEventsByDate, sortPastUpcoming } = require('../utils/sort.utils')
 
 /**
  * Gathering Object
@@ -186,9 +188,27 @@ const isGatheringHost = async(username, gatheringId) => {
  * @property {Arry.<GatheringBasicDetails} host
  */
 const getUsersGatherings = async(username) => {
-	const gatheringsGuest = await Gathering.getUsers(username);
-	const gatheringsHost = await Gathering.getHosting(username);
-	return {guest : gatheringsGuest, host : gatheringsHost}
+	const gatherings = await Gathering.getUsers(username);
+	const sortedGatherings = sortEventsByDate(gatherings)
+
+	return sortPastUpcoming(sortedGatherings)
+}
+
+const getHostingUpcoming = async(username) => {
+	const events = await Gathering.getHosting(username);
+	const sortedEvents = sortEventsByDate(events);
+	return sortPastUpcoming(sortedEvents).upcoming;
+}
+
+const getUpcomingEvents = async(username) => {
+	const events = await Gathering.getUsers(username);
+	const sortedEvents = sortEventsByDate(events)
+	return sortPastUpcoming(sortedEvents).upcoming
+}
+
+const getUserInvitations = async(username) => {
+	const invitations = await Guest.getInvitations(username);
+	return invitations
 }
 
 module.exports = {
@@ -197,7 +217,9 @@ module.exports = {
 	getFullDetailsOfGathering,
 	updateBasicDetails,
 	deleteGathering,
-	checkIfGatheringExists,
 	isGatheringHost,
-	getUsersGatherings
+	getUsersGatherings,
+	getUserInvitations,
+	getUpcomingEvents,
+	getHostingUpcoming
 }

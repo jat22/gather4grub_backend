@@ -242,6 +242,35 @@ const getUsersGatherings = async(req,res,next) => {
 	}
 }
 
+const getUpcomingEvents = async(req,res,next) => {
+	try{
+		const user = req.params.username
+		const events = await gatheringServices.getUpcomingEvents(user)
+		return res.json({ events })
+	} catch(err){
+		return next(err)
+	}
+}
+
+const getUpcomingHosting = async(req,res,next) => {
+	try{
+		const user = req.params.username
+		const events = await gatheringServices.getHostingUpcoming(user)
+		return res.json({ events })
+	} catch(err){
+		return next(err)
+	}
+}
+
+const getUserInvitations = async(req,res,next) => {
+	try{
+		const user = req.params.username;
+		const invitations = await gatheringServices.getUserInvitations(user)
+		return res.json({ invitations })
+	} catch(err){
+		return next(err)
+	}
+}
 
 
 module.exports = {
@@ -250,5 +279,8 @@ module.exports = {
 	getFullDetailsOfGathering,
 	updateBasicDetails,
 	deleteGathering,
-	getUsersGatherings
+	getUsersGatherings,
+	getUserInvitations,
+	getUpcomingEvents,
+	getUpcomingHosting
 }

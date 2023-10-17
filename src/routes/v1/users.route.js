@@ -46,9 +46,24 @@ router
 	.delete(connectionControllers.requestDenial)
 
 router
-	.route('/:username/gatherings')
+	.route('/:username/gatherings/all')
 	.all(ensureCorrectUser)
 	.get(gatheringControllers.getUsersGatherings)
+
+router
+	.route('/:username/gatherings/upcoming')
+	.all(ensureCorrectUser)
+	.get(gatheringControllers.getUpcomingEvents)
+
+router
+	.route('/:username/gatherings/hosting')
+	.all(ensureCorrectUser)
+	.get(gatheringControllers.getUpcomingHosting)
+
+router
+	.route('/:username/invitations')
+	.all(ensureCorrectUser)
+	.get(gatheringControllers.getUserInvitations)
 
 router
 	.route('/:username/dishes')

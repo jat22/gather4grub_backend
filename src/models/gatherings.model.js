@@ -117,9 +117,9 @@ class Gathering {
 					g.cover_img AS "coverImg",
 					guests.rsvp AS "rsvp"
 			FROM gatherings AS g
-			JOIN guests
+			LEFT JOIN guests
 				ON g.id = guests.gathering_id
-			WHERE guests.username = $1`,
+			WHERE guests.username = $1 OR g.host = $1`,
 			[username]);
 		
 		return result.rows
@@ -143,6 +143,8 @@ class Gathering {
 		)
 		return result.rows
 	}
+
+	
 }
 
 module.exports = Gathering;

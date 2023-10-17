@@ -1,22 +1,38 @@
 "use strict";
 
-const sortDietaryTags = (tags) => {
-	const sortedTags = { prefernces : [], allergies : []}
-	for(let tag in tags){
-		if(tag.preference){
-			sortedTags.prefernces.append(
-				{id : tag.id, name : tag.name}
-			);
-		};
-		if(tag.allergy){
-			sortedTags.allergies.append(
-				{id : tag_id, name : tag.name}
-			);
-		};
+
+const sortEventsByDate = (events) => {
+	const result = events.sort((a,b) => {
+		const dateA = new Date(a.date);
+		const dateB = new Date(b.date);
+
+		if(dateA < dateB) return -1
+		else if(dateA > dateB) return 1
+		else return 0
+	})
+
+	return result
+}
+
+const sortPastUpcoming = (sortedEvents) => {
+	const upcoming = [];
+	const past = [];
+	const now = new Date();
+
+	for(let i = 0; i < sortedEvents.length; i++) {
+		const e = sortedEvents[i]
+		const date = new Date(e.date)
+		
+		if(date < now) past.push(e);
+		if(date > now) {
+			upcoming.push(...sortedEvents.slice(i, sortedEvents.length))
+			break
+		}
 	}
-	return sortedTags
+	return {past, upcoming}
 }
 
 module.exports = {
-	sortDietaryTags
+	sortEventsByDate,
+	sortPastUpcoming
 }

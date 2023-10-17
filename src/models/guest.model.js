@@ -79,6 +79,20 @@ class Guest {
 		);
 		return result.rows[0]
 	}
+
+	static async getInvitations(username){
+		const result = await db.query(
+			`SELECT guests.id AS id,
+					gatherings.title AS title,
+					gatherings.date
+				FROM guests
+					JOIN gatherings
+					ON guests.gathering_id = gatherings.id
+				WHERE guests.username = $1 AND guests.rsvp = 'pending'`,
+				[username]
+		)
+		return result.rows
+	}
 }
 
 module.exports = Guest
