@@ -84,12 +84,10 @@ const removeGuestFromGathering = async(req,res,next) => {
  */
 const updateRSVP = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId;
-		const guestUsername = req.params.username;
+		const inviteId = req.params.inviteId;
 		const rsvp = req.body.rsvp
-		const guest = 
-			await guestServices.updateGatheringRSVP(gatheringId, guestUsername, rsvp);
-		return res.json({ guest })
+		await guestServices.updateGatheringRSVP(inviteId, rsvp);
+		return res.status(201)
 	} catch(err){
 		return next(err)
 	}

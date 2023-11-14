@@ -51,19 +51,12 @@ class Guest {
 		return result.rows[0];
 	}
 
-	static async updateRsvp(username, rsvp){
+	static async updateRsvp(guestId, rsvp){
 		const result = await db.query(
 			`UPDATE guests
 				SET rsvp = $1
-				WHERE username = $2
-				RETURNING 	id,
-							gathering_id AS "gatheringId",
-							username,
-							first_name AS "firstName",
-							last_name AS "lastName,
-							email,
-							rsvp`,
-			[rsvp,username]
+				WHERE id = $2`,
+			[rsvp,guestId]
 		);
 
 		return result.rows[0]

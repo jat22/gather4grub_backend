@@ -57,11 +57,8 @@ const removeGuestFromGathering = async(gatheringId, username) => {
  * @param {string} rsvp 
  * @returns {Guest}
  */
-const updateGatheringRSVP = async(gatheringId, guestId, rsvp) => {
-	if(!(await checkIfGuestExistsOnGathering(guestId, gatheringId))){
-		throw new BadRequestError("guest does not exist")
-	};
-	const result = await Guest.updateRsvp(guestId, rsvp);
+const updateGatheringRSVP = async(inviteId, rsvp) => {
+	const result = await Guest.updateRsvp(inviteId, rsvp);
 	return result
 };
 

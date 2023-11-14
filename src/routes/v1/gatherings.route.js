@@ -52,7 +52,7 @@ router
 		guestControllers.addGuestsToGathering)
 
 router
-	.route('/:gatheringId/guests/:username')
+	.route('/:gatheringId/guests/:guestId')
 	.put(
 		ensureCorrectUser,
 		validate(rsvpSchema), 
@@ -104,5 +104,15 @@ router
 	.delete(
 		ensureCommentAuthorOrHost,
 		postControllers.deleteComment)
+
+router
+	.route('/invitations/:username/:inviteId')
+	.put(
+		ensureCorrectUser,
+		validate(rsvpSchema), 
+		guestControllers.updateRSVP)
+	.delete(
+		ensureHost, 
+		guestControllers.removeGuestFromGathering)
 
 module.exports = router
