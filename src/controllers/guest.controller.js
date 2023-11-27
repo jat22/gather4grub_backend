@@ -2,9 +2,9 @@
 
 const guestServices = require("../services/guests.services");
 
-/** Handle get request to retrieve all guests for a gathering.
+/** Handle get request to retrieve all guests for a event.
  * Request data -
- * 		params.gatheringId
+ * 		params.eventId
  * Return response with json body
  * 		{
  * 			guests: [
@@ -19,50 +19,50 @@ const guestServices = require("../services/guests.services");
  * 			]
  * 		}
  */
-const getGatheringGuests = async(req,res,next) => {
+const getEventGuests = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId;
-		const guests = await guestServices.getGatheringGuests(gatheringId)
+		const eventId = req.params.eventId;
+		const guests = await guestServices.getEventGuests(eventId)
 		return res.json({ guests })
 	} catch(err){
 		return next(err)
 	}
 };
-/** Handle post request to add a guest to a gathering.
+/** Handle post request to add a guest to a event.
  * Request Data - 
- * 		params.gatheringId,
+ * 		params.eventId,
  * 		body: {guest:<string: username>}
  * Return response with json body
  * 		{
  * 			"guest": {
 				"id": <num>,
-				"gatheringId": <num>,
+				"eventId": <num>,
 				"username": <string>,
 				"rsvp": <string: pending(default), accept, decline>
 			}
  * 		}
  */
-const addGuestsToGathering = async(req,res,next) => {
+const addGuestsToEvent = async(req,res,next) => {
 	try{
-		const guestUsername = req.body.guest
-		const gatheringId = req.params.gatheringId
-		const guest = await guestServices.addGuestToGathering(gatheringId, guestUsername)
-		return res.json({ guest })
+		const guestUsernames = req.body.usernames
+		const eventId = req.params.eventId
+		const updatedGuestList = await guestServices.addGuestsToEvent(eventId, guestUsernames)
+		return res.json({ guests: updatedGuestList })
 	} catch(err){
 		return next(err)
 	}
 };
-/** Handle delete request to remove guest from gathering.
+/** Handle delete request to remove guest from event.
  * Request data - 
  * 		params.username
- * 		params.gatheringId
+ * 		params.eventId
  * Returns response status 204 with empty body
  */
-const removeGuestFromGathering = async(req,res,next) => {
+const removeGuestFromEvent = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId;
+		const eventId = req.params.eventId;
 		const username = req.params.username
-		await guestServices.removeGuestFromGathering(gatheringId, username)
+		await guestServices.removeGuestFromEvent(eventId, username)
 		return res.status(204).send()
 	} catch(err){
 		return next(err)
@@ -70,13 +70,13 @@ const removeGuestFromGathering = async(req,res,next) => {
 };
 /** Handle put request for updating guest RSVP
  * Request data - 
- * 		params.gatheringId,
+ * 		params.eventId,
  * 		params.username
  * Return response with json body.
  * 		{
  * 			"guest": {
 				"id": <num>,
-				"gatheringId":<num>,
+				"eventId":<num>,
 				"username": <string>,
 				"rsvp": <string>
 			}
@@ -86,7 +86,7 @@ const updateRSVP = async(req,res,next) => {
 	try{
 		const inviteId = req.params.inviteId;
 		const rsvp = req.body.rsvp
-		await guestServices.updateGatheringRSVP(inviteId, rsvp);
+		await guestServices.updateEventRSVP(inviteId, rsvp);
 		return res.status(201)
 	} catch(err){
 		return next(err)
@@ -94,8 +94,8 @@ const updateRSVP = async(req,res,next) => {
 };
 
 module.exports = {
-	getGatheringGuests,
-	addGuestsToGathering,
-	removeGuestFromGathering,
+	getEventGuests,
+	addGuestsToEvent,
+	removeGuestFromEvent,
 	updateRSVP
 }

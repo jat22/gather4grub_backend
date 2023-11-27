@@ -1,8 +1,8 @@
 "use strict";
 
-const gatheringServices = require('../services/gatherings.services');
+const eventServices = require('../services/events.services');
 
-/** Handle Post request to create a new gathering.
+/** Handle Post request to create a new event.
  * Request Data - 
  * 		body
  * 			{
@@ -17,7 +17,7 @@ const gatheringServices = require('../services/gatherings.services');
  * 			}
  * Return response with json body.
  * 		{
- * 			"gathering": {
+ * 			"event": {
 				"id":<num>,
 				"host": <string>,
 				"title": "<string>,
@@ -31,24 +31,24 @@ const gatheringServices = require('../services/gatherings.services');
 			}
  * 		}
  */
-const createGathering = async(req,res,next) => {
+const createEvent = async(req,res,next) => {
 	try{
 		const host = res.locals.user.username;
 		const partyDetails = req.body
-		const gathering = await gatheringServices.createGathering(host, partyDetails)
-		return res.json({ gathering })
+		const event = await eventServices.createEvent(host, partyDetails)
+		return res.json({ event })
 	} catch(err){
 		return next(err)
 	}
 };
 
-/** Handle get request for basic details of a gathering, ie. date, time, location,etc.
+/** Handle get request for basic details of a event, ie. date, time, location,etc.
  * 
  * Request Data - 
- * 		params.gatheringId
+ * 		params.eventId
  * Return response with json body
  * 		{
- * 			"gathering": {
+ * 			"event": {
 				"id": <num>,
 				"host": <string>,
 				"title": <string>,
@@ -62,24 +62,24 @@ const createGathering = async(req,res,next) => {
 			}
  * 		}
  */
-const getBasicDetailsOfGathering = async(req,res,next) => {
+const getBasicDetailsOfEvent = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId
-		const gathering = 
-			await gatheringServices.getBasicDetailsOfGathering(gatheringId);
-		return res.json({ gathering })
+		const eventId = req.params.eventId
+		const event = 
+			await eventServices.getBasicDetailsOfEvent(eventId);
+		return res.json({ event })
 	} catch(err){
 		return next(err)
 	}
 }
 
-/** Handle get request for full details of a gathering, includes guest list, dishes, and posts.
+/** Handle get request for full details of a event, includes guest list, dishes, and posts.
  * 
  * Request Data - 
- * 		params.gatheringId
+ * 		params.eventId
  * Return response with json body
  * 		{
- * 			"gathering": {
+ * 			"event": {
  * 				"basic: {
 					"id": <num>,
 					"host": <string>,
@@ -88,62 +88,51 @@ const getBasicDetailsOfGathering = async(req,res,next) => {
 					"startTime": <string: HH:MM:SS>,
 					"endTime": <string: HH:MM:SS>,
 					"location": <string>,
-					"theme": <string>,
 					"description": <string>,
-					"coverImg": <string>
  				},
 				"guests": [
 					{
 						"id": <num>,
 						"username": <string>,
-						"firstName": <string>,
-						"lastName": <string>,
-						"email": <string>,
 						"rsvp": "rsvp": <string: pending(default), accept, decline>
 					}
 				],
-				"dishes" : [
+				"menu" : [
 					{
-						"id": <num>,
-						"name": <string>,
-						"description": <string>,
-						"imgUrl": <string>,
-						"courseId": <string>,
-						"ownerUsername": <string>
-					}
-				],
-				"posts" : [
-					{
-						"id": <string>,
-						"title": <string>,
-						"body": <string>,
-						"gatheringid": <num>,
-						"author": <string>,
-						"comments" : [
-							{
-								"id": <num>,
-								"body": <string>,
-								"post_id": <num>,
-								"author": <string>
+						courseName: <string>,
+						courseId:<num>
+						items: [
+							{	
+								id:<num>
+								name:<string>,
+								description:<string>,
+								user:<string>
 							}
 						]
+					}
+				],
+				"comments" : [
+					{
+						"id": <string>,
+						"content": <string>,
+						"user": <string>
 					}
 				]
 			}
  * 		}
  */
-const getFullDetailsOfGathering = async(req,res,next) => {
+const getFullDetailsOfEvent = async(req,res,next) => {
 	try{
-		const gathering = 
-			await gatheringServices.getFullDetailsOfGathering(req.params.gatheringId);
-		return res.json({ gathering })
+		const event = 
+			await eventServices.getFullDetailsOfEvent(req.params.eventId);
+		return res.json({ event })
 	} catch(err){
 		return next(err)
 	}
 };
-/** Handle put request to edit basic details of a gathering.
+/** Handle put request to edit basic details of a event.
  * Request Data -
- * 		params.gatheringId
+ * 		params.eventId
  * 		body:	{
  * 					title:<string>,
  * 					date:<string:YYYY/MM/DD>,
@@ -156,7 +145,7 @@ const getFullDetailsOfGathering = async(req,res,next) => {
  * 				} ALL OPTIONAL
  * Return response with json body
  * 		{
- * 			"gathering": {
+ * 			"event": {
 				"id": <num>,
 				"host": <string>,
 				"title": <string>,
@@ -172,36 +161,36 @@ const getFullDetailsOfGathering = async(req,res,next) => {
  */
 const updateBasicDetails = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId;
+		const eventId = req.params.eventId;
 		const input = req.body
-		const gathering = 
-			await gatheringServices.updateBasicDetails(gatheringId, input);
-		return res.json({ gathering })
+		const event = 
+			await eventServices.updateBasicDetails(eventId, input);
+		return res.json({ event })
 	} catch(err){
 		return next(err)
 	}
 };
-/** Handle delete request to delete a gathering.
+/** Handle delete request to delete a event.
  * Request data - 
- * 		params.gatheringId
+ * 		params.eventId
  * Return response status 204 with empty body.
  */
-const deleteGathering = async(req,res,next) => {
+const deleteEvent = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId;
-		await gatheringServices.deleteGathering(gatheringId);
+		const eventId = req.params.eventId;
+		await eventServices.deleteEvent(eventId);
 		return res.status(204).send()
 	} catch(err){
 		return next(err)
 	}
 };
 
-/** Handles get request to retreive gatherings that user is associated with.
+/** Handles get request to retreive events that user is associated with.
  * Request data - 
  * 		params.username
  * Return response with json body
  * 		{
- * 			"gatherings": {
+ * 			"events": {
 				"guest": [
 					{
 						"id": <num>,
@@ -232,11 +221,11 @@ const deleteGathering = async(req,res,next) => {
 			}
  * 		}
  */
-const getUsersGatherings = async(req,res,next) => {
+const getUsersEvents = async(req,res,next) => {
 	try{
 		const user = req.params.username
-		const gatherings = await gatheringServices.getUsersGatherings(user)
-		return res.json({ gatherings })
+		const events = await eventServices.getUsersEvents(user)
+		return res.json({ events })
 	} catch(err){
 		return next(err)
 	}
@@ -245,7 +234,7 @@ const getUsersGatherings = async(req,res,next) => {
 const getUpcomingEvents = async(req,res,next) => {
 	try{
 		const user = req.params.username
-		const events = await gatheringServices.getUpcomingEvents(user)
+		const events = await eventServices.getUpcomingEvents(user)
 		return res.json({ events })
 	} catch(err){
 		return next(err)
@@ -255,7 +244,7 @@ const getUpcomingEvents = async(req,res,next) => {
 const getUpcomingHosting = async(req,res,next) => {
 	try{
 		const user = req.params.username
-		const events = await gatheringServices.getHostingUpcoming(user)
+		const events = await eventServices.getHostingUpcoming(user)
 		return res.json({ events })
 	} catch(err){
 		return next(err)
@@ -265,7 +254,7 @@ const getUpcomingHosting = async(req,res,next) => {
 const getUserInvitations = async(req,res,next) => {
 	try{
 		const user = req.params.username;
-		const invitations = await gatheringServices.getUserInvitations(user)
+		const invitations = await eventServices.getUserInvitations(user)
 		return res.json({ invitations })
 	} catch(err){
 		return next(err)
@@ -274,12 +263,12 @@ const getUserInvitations = async(req,res,next) => {
 
 
 module.exports = {
-	createGathering,
-	getBasicDetailsOfGathering,
-	getFullDetailsOfGathering,
+	createEvent,
+	getBasicDetailsOfEvent,
+	getFullDetailsOfEvent,
 	updateBasicDetails,
-	deleteGathering,
-	getUsersGatherings,
+	deleteEvent,
+	getUsersEvents,
 	getUserInvitations,
 	getUpcomingEvents,
 	getUpcomingHosting

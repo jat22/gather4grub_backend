@@ -200,9 +200,9 @@ const deleteDish = async(req,res,next) =>{
 
 
 /**
- * Hande get request for dishes for a gathering.
+ * Hande get request for dishes for a event.
  * Request Data - 
- * 		params.gatheringId
+ * 		params.eventId
  * Return response with json body.
  * 		{
 			"dishes": [
@@ -217,37 +217,37 @@ const deleteDish = async(req,res,next) =>{
 			]
 		}
  */
-const getGatheringDishes = async(req,res,next) => {
+const getEventDishes = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId
+		const eventId = req.params.eventId
 		const dishes = 
-			await dishServices.getGatheringDishes(gatheringId);
+			await dishServices.getEventDishes(eventId);
 		return res.json({ dishes })
 	} catch(err){
 		return next(err)
 	}
 };
 
-/** Handle post request to add dish to gathering.
+/** Handle post request to add dish to event.
  * Request Data - 
- * 		params.gatheringId
+ * 		params.eventId
  * 		params.dishId
  * 		body : {courseId:<num>}
  * Return response with json body.
  * 		{
 			"dish": {
-				"gatheringDishId": 3
+				"eventDishId": 3
 			}
  * 		}
  */
-const addDishToGathering = async(req,res,next) => {
+const addDishToEvent = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId;
+		const eventId = req.params.eventId;
 		const dishId = req.params.dishId;
 		const courseId = req.body.courseId;
 		const owner = res.locals.user.username
 		const dish = 
-			await dishServices.addDishToGathering(gatheringId, dishId, courseId, owner);
+			await dishServices.addDishToEvent(eventId, dishId, courseId, owner);
 		return res.json({ dish });
 	} catch(err){
 		return next(err)
@@ -256,16 +256,16 @@ const addDishToGathering = async(req,res,next) => {
 
 /** Handle delete request to remove a dish from a party
  * Request data - 
- * 		params.gatheringId
+ * 		params.eventId
  * 		params.dishId
  * 
  * Return response with status 204, empty body.
  */
-const removeDishFromGathering = async(req,res,next) => {
+const removeDishFromEvent = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId;
+		const eventId = req.params.eventId;
 		const dishId = req.params.dishId;
-		await dishServices.removeDishFromGathering(gatheringId, dishId);
+		await dishServices.removeDishFromEvent(eventId, dishId);
 		return res.status(204).send()
 	} catch(err){
 		return next(err)
@@ -301,9 +301,9 @@ const getUsersDishes = async(req,res,next) => {
 
 
 module.exports = {
-	getGatheringDishes,
-	addDishToGathering,
-	removeDishFromGathering,
+	getEventDishes,
+	addDishToEvent,
+	removeDishFromEvent,
 	postDish,
 	getDish,
 	putDish,

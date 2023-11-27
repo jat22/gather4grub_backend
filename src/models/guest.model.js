@@ -1,51 +1,38 @@
 "use strict";
 const db = require("../db")
+const SqlUtils = require('../../src/utils/sql.utils')
+
 class Guest {
-	static async findForGathering(gatheringId){
+	static async findForEvent(eventId){
 		const result = await db.query(
-			`SELECT g.id,
-					g.gathering_id AS "gatheringId",
-					u.username,
-					u.first_name AS "firstName",
-					u.last_name AS "lastName",
-					u.email,
-					g.rsvp
-			FROM guests AS g
-			JOIN users AS u
-				ON g.username = u.username
-			WHERE g.gathering_id = $1`,
-			[gatheringId]
+			`SELECT id,
+					username,
+					rsvp
+			FROM guests
+			WHERE event_id = $1`,
+			[eventId]
 		);
 
 		return result.rows
 	}
 
-	static async addToGathering(gatheringId, username){
-		debugger
+	static async addToEvent(eventId, username){
 		const result = await db.query(
 			`INSERT INTO guests
-				(gathering_id, username)
-			VALUES ($1,$2)
-			RETURNING 	id,
-						gathering_id AS "gatheringId",
-						username,
-						first_name AS "firstName",
-						last_name AS "lastName,
-						email,
-						rsvp`,
-			[gatheringId, username]
+				(event_id, username)
+			VALUES ($1, $2)`,
+			[eventId, username]
 		);
-
-		return result.rows[0]
+		return 
 	}
 
-	static async removeFromGathering(gatheringId, username){
+	static async removeFromEvent(eventId, username){
 		const result = await db.query(
 			`DELETE FROM guests
-				WHERE 	gathering_id = $1
+				WHERE 	event_id = $1
 				AND 	username = $2
 			RETURNING id`,
-			[gatheringId, username]
+			[eventId, username]
 		);
 
 		return result.rows[0];
@@ -62,13 +49,13 @@ class Guest {
 		return result.rows[0]
 	}
 
-	static async getGatheringGuestId(username, gatheringId){
+	static async getEventGuestId(username, eventId){
 		const result = await db.query(
 			`SELECT id
 				FROM guests
 				WHERE username = $1
-					AND gathering_id = $2`,
-			[username, gatheringId]
+					AND event_id = $2`,
+			[username, eventId]
 		);
 		return result.rows[0]
 	}
@@ -76,11 +63,11 @@ class Guest {
 	static async getInvitations(username){
 		const result = await db.query(
 			`SELECT guests.id AS id,
-					gatherings.title AS title,
-					gatherings.date
+					events.title AS title,
+					events.date
 				FROM guests
-					JOIN gatherings
-					ON guests.gathering_id = gatherings.id
+					JOIN events
+					ON guests.event_id = events.id
 				WHERE guests.username = $1 AND guests.rsvp = 'pending'`,
 				[username]
 		)

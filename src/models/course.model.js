@@ -4,8 +4,8 @@ const db = require("../db");
 const sql = require("../utils/sql.utils")
 
 class Course {
-	static async create(gatheringId, input){
-		input.gatheringId = gatheringId
+	static async create(eventId, input){
+		input.eventId = eventId
 		const { columns, placeholders, values } = sql.formatInsertData(input)
 
 		const result = await db.query(
@@ -14,7 +14,7 @@ class Course {
 				VALUES (${placeholders})
 				RETURNING 	id,
 							name,
-							gathering_id AS gatheringID,
+							event_id AS eventID,
 							notes`,
 				values);
 

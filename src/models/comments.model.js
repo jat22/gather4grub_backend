@@ -10,7 +10,7 @@ class Comment {
 					post_id AS "postId,
 					author
 			FROM comments
-			WHERE gathering_id = $1`,
+			WHERE event_id = $1`,
 			[postId]
 		)
 		debugger

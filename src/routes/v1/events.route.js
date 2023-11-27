@@ -4,14 +4,14 @@ const express = require("express");
 
 const { ensureCorrectUser, ensureLoggedIn } = require('../../middleware/auth.middleware');
 const { ensureParticipant, ensureHost, ensureDishOwnerOrHost,
-		ensurePostAuthor, ensurePostAuthorOrHost, ensureCommentAuthor, ensureCommentAuthorOrHost } = require('../../middleware/gathering.middleware')
+		ensurePostAuthor, ensurePostAuthorOrHost, ensureCommentAuthor, ensureCommentAuthorOrHost } = require('../../middleware/event.middleware')
 const { validate } = require("../../middleware/validate.middleware");
-const gatheringControllers = require("../../controllers/gatherings.controller");
+const eventControllers = require("../../controllers/events.controller");
 const guestControllers = require("../../controllers/guest.controller")
 const dishControllers = require('../../controllers/dishes.controller');
 const postControllers = require('../../controllers/posts.controller');
-const newGatheringSchema = require("../../validators/newGathering.schema.json");
-const updateGatheringSchema = require('../../validators/updateGathering.schema.json')
+const newEventSchema = require("../../validators/newEvent.schema.json");
+const updateEventSchema = require('../../validators/updateEvent.schema.json')
 const rsvpSchema = require("../../validators/rsvp.schema.json");
 
 const router = express.Router();
@@ -20,69 +20,69 @@ router
 	.route('/')
 	.post(
 		ensureLoggedIn,
-		validate(newGatheringSchema), 
-		gatheringControllers.createGathering);
+		validate(newEventSchema), 
+		eventControllers.createEvent);
 
 router
-	.route('/:gatheringId/basic')
+	.route('/:eventId/basic')
 	.get(
 		ensureParticipant, 
-		gatheringControllers.getBasicDetailsOfGathering)
+		eventControllers.getBasicDetailsOfEvent)
 	.put(
 		ensureHost, 
-		gatheringControllers.updateBasicDetails)
+		eventControllers.updateBasicDetails)
 	.delete(
 		ensureHost,
-		validate(updateGatheringSchema),
-		gatheringControllers.deleteGathering);
+		validate(updateEventSchema),
+		eventControllers.deleteEvent);
 
 router
-	.route('/:gatheringId/full')
+	.route('/:eventId/full')
 	.get(
 		ensureParticipant, 
-		gatheringControllers.getFullDetailsOfGathering)
+		eventControllers.getFullDetailsOfEvent)
 
 router
-	.route('/:gatheringId/guests')
+	.route('/:eventId/guests')
 	.get(
 		ensureParticipant,
-		guestControllers.getGatheringGuests)
+		guestControllers.getEventGuests)
 	.post(
 		ensureHost,
-		guestControllers.addGuestsToGathering)
+		guestControllers.addGuestsToEvent)
 
 router
-	.route('/:gatheringId/guests/:guestId')
+	.route('/:eventId/guests/:username')
 	.put(
 		ensureCorrectUser,
 		validate(rsvpSchema), 
 		guestControllers.updateRSVP)
 	.delete(
 		ensureHost, 
-		guestControllers.removeGuestFromGathering)
+		guestControllers.removeGuestFromEvent)
 
 router
-	.route('/:gatheringId/dishes')
+	.route('/:eventId/dishes')
 	.all(ensureParticipant)
-	.get(dishControllers.getGatheringDishes)
+	.get(dishControllers.getEventDishes)
 
 router
-	.route('/:gatheringId/dishes/:dishId')
+	.route('/:eventId/dishes/:dishId')
 	.post(
 		ensureParticipant, 
-		dishControllers.addDishToGathering)
+		dishControllers.addDishToEvent)
 	.delete(
 		ensureDishOwnerOrHost,
-		dishControllers.removeDishFromGathering);;
+		dishControllers.removeDishFromEvent);;
 
 router
-	.route('/:gatheringId/posts')
+	.route('/:eventId/posts')
 	.all(ensureParticipant)
-	.get(postControllers.getGatheringPosts)
+	.get(postControllers.getEventPosts)
 	.post(postControllers.createPost)
 	
 router
-	.route('/:gatheringId/posts/:postId')
+	.route('/:eventId/posts/:postId')
 	.all(ensureParticipant)
 	.put(
 		ensurePostAuthor,
@@ -92,12 +92,12 @@ router
 		postControllers.deletePost)
 
 router
-	.route('/:gatheringId/posts/:postId/comments')
+	.route('/:eventId/posts/:postId/comments')
 	.all(ensureParticipant)
 	.post(postControllers.createComment)
 
 router
-	.route('/:gatheringId/posts/:postId/comments/:commentId')
+	.route('/:eventId/posts/:postId/comments/:commentId')
 	.put(
 		ensureCommentAuthor,
 		postControllers.editComment)
@@ -113,6 +113,6 @@ router
 		guestControllers.updateRSVP)
 	.delete(
 		ensureHost, 
-		guestControllers.removeGuestFromGathering)
+		guestControllers.removeGuestFromEvent)
 
 module.exports = router

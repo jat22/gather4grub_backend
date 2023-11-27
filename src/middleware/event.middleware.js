@@ -1,21 +1,23 @@
 "use strict";
 
 const { UnauthorizedError } = require('../expressError');
-const gatheringServices = require('../services/gatherings.services');
+const eventServices = require('../services/events.services');
 const guestServices = require("../services/guests.services");
 const dishServices = require("../services/dishes.services");
 const Post = require("../models/posts.model");
-const Gathering = require('../models/gatherings.model');
+const Event = require('../models/events.model');
 const Comment = require('../models/comments.model')
 
 const ensureParticipant = async(req,res,next) => {
 	try{
+		console.log(res.locals.user.username)
 		const user = res.locals.user.username
-		const gatheringId = req.params.gatheringId
+		const eventId = req.params.eventId
+		console.log(user, eventId)
 		const userIsGuest = 
 			await guestServices.
-					checkIfGuestExistsOnGathering(user, gatheringId);
-		const host = await Gathering.getHost(gatheringId)
+					checkIfGuestExistsOnEvent(user, eventId);
+		const host = await Event.getHost(eventId)
 
 		if(userIsGuest || user === host.host ) return next();
 		throw new UnauthorizedError();
@@ -28,10 +30,10 @@ const ensureParticipant = async(req,res,next) => {
 const ensureHost = async(req,res,next) => {
 	try{
 		const user = res.locals.user.username;
-		const gatheringId = req.params.gatheringId;
+		const eventId = req.params.eventId;
 		const userIsHost = 
-			await gatheringServices
-					.isGatheringHost(user, gatheringId);
+			await eventServices
+					.isEventHost(user, eventId);
 
 		if(!userIsHost) throw new UnauthorizedError();
 		return next()
@@ -43,15 +45,15 @@ const ensureHost = async(req,res,next) => {
 const ensureDishOwnerOrHost = async(req,res,next) => {
 	try{
 		const curUser = res.locals.user.username;
-		const gatheringId = req.params.gatheringId
+		const eventId = req.params.eventId
 		const dishId = req.params.dishId
 
 		const userIsOwner = 
 			await dishServices.isDishOwner(curUser, dishId);
 
 		const userIsHost = 
-			await gatheringServices
-					.isGatheringHost(curUser, gatheringId);
+			await eventServices
+					.isEventHost(curUser, eventId);
 		if(!(userIsOwner || userIsHost)) throw new UnauthorizedError();
 		return next()
 	} catch(err){
@@ -76,8 +78,8 @@ const ensurePostAuthorOrHost = async(req,res,next) => {
 	try{
 		const user = res.locals.user.username;
 		const postId = req.params.postId;
-		const gatheringId = req.params.gatheringId;
-		const host = await Gathering.getHost(gatheringId);
+		const eventId = req.params.eventId;
+		const host = await Event.getHost(eventId);
 		const author = await Post.getAuthor(postId);
 
 		if(user === author || user === host) return next();
@@ -104,9 +106,9 @@ const ensureCommentAuthorOrHost = async(req,res,next) => {
 	try{
 		const user = res.locals.user.username
 		const commentId = req.params.commentId
-		const gatheringId = req.params.gatheringId
+		const eventId = req.params.eventId
 		const authorPromsie = Comment.getAuthor(commentId);
-		const hostPromise = Gathering.getHost(gatheringId);
+		const hostPromise = Event.getHost(eventId);
 		const [ author, host ] = await Promise.all([authorPromsie, hostPromise])
 
 		if(user === author || user === host) return next();

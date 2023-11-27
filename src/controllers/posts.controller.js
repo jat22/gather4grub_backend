@@ -1,9 +1,9 @@
 
 const postServices = require("../services/posts.services")
 
-/** Handle get request to retrieve all posts for a gathering.
+/** Handle get request to retrieve all posts for a event.
  * Request data -
- * 		params.gatheringId
+ * 		params.eventId
  * Return response with json body.
  * 		{
  * 			posts:[
@@ -12,7 +12,7 @@ const postServices = require("../services/posts.services")
 	* 				id:<num>,
 	* 				title: <string>,
 	* 				body:<string>,
-	* 				gatheringId:<num>,
+	* 				eventId:<num>,
 	* 				author:<string>,
 					comments: [
 						{
@@ -25,10 +25,10 @@ const postServices = require("../services/posts.services")
 			]
  * 		}
  */
-const getGatheringPosts = async(req,res,next) => {
+const getEventPosts = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId;
-		const posts = await postServices.getGatheringPosts(gatheringId);
+		const eventId = req.params.eventId;
+		const posts = await postServices.getEventPosts(eventId);
 		return res.json({ posts });
 	} catch(err){
 		return next(err)
@@ -37,7 +37,7 @@ const getGatheringPosts = async(req,res,next) => {
 
 /** Handle post request to create a new post.
  * Request data - 
- * 		params.gatheringId
+ * 		params.eventId
  * 		body: {
  * 			title:<string>,
  * 			body:<string>,
@@ -48,17 +48,17 @@ const getGatheringPosts = async(req,res,next) => {
  * 				id:<num>,
  * 				title: <string>,
  * 				body:<string>,
- * 				gatheringId:<num>,
+ * 				eventId:<num>,
  * 				author:<string>
  * 			}
  * 		}
  */
 const createPost = async(req,res,next) => {
 	try{
-		const gatheringId = req.params.gatheringId;
+		const eventId = req.params.eventId;
 		const input = req.body;
 		const author = res.locals.user.username
-		const post = await postServices.createPost(gatheringId, input, author);
+		const post = await postServices.createPost(eventId, input, author);
 		return res.json({ post })
 	} catch(err){
 		return next(err)
@@ -77,7 +77,7 @@ const createPost = async(req,res,next) => {
  * 				id:<num>,
  * 				title: <string>,
  * 				body:<string>,
- * 				gatheringId:<num>,
+ * 				eventId:<num>,
  * 				author:<string>
  * 			}
  * 		}
@@ -176,7 +176,7 @@ const deleteComment = async(req,res,next) => {
 
 
 module.exports = {
-	getGatheringPosts,
+	getEventPosts,
 	createPost,
 	editPost,
 	deletePost,

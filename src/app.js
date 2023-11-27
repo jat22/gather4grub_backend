@@ -7,7 +7,7 @@ const morgan = require("morgan");
 const authMiddleware = require("./middleware/auth.middleware")
 const authRoutes = require("./routes/v1/auth.route");
 const userRoutes = require("./routes/v1/users.route");
-const gatheringRoutes = require("./routes/v1/gatherings.route");
+const eventRoutes = require("./routes/v1/events.route");
 const dishRoutes = require("./routes/v1/dishes.route")
 const { NotFoundError } = require("./expressError");
 
@@ -20,7 +20,7 @@ app.use(authMiddleware.authenticateToken);
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
-app.use("/gatherings", gatheringRoutes);
+app.use("/events", eventRoutes);
 app.use("/dishes", dishRoutes);
 
 app.use(function (req, res, next){

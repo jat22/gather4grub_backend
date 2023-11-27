@@ -1,38 +1,59 @@
 INSERT INTO users 
-		(username, password, first_name, last_name, email, role, phone, street_address, city, state, zip, tag_line, bio, birthdate, avatar_url)
+		(username, password, first_name, last_name, email)
 	VALUES
 		(
 			'testuser1', 
 			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
 			'test1',
 			'user1',
-			'test1@testuser.com',
-			'user',
-			'111-111-1111',
-			'123 abc st',
-			'town',
-			'US',
-			'11111',
-			'testing user info all day',
-			'Up for anything, hit me up bro.',
-			'1999-05-11',
-			'http://www.pictures.com'
+			'test1@testuser.com'
 		),
 		(
-			'testadmin', 
+			'testuser2', 
 			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
 			'test2',
-			'admin2',
-			'test2@testuser.com',
-			'admin',
-			'222-222-2222',
-			'345 abc st',
-			'town2',
-			'U2',
-			'22222',
-			'testing user2 info all day',
-			'Up for anything, hit me up bro2.',
-			'2000-05-11',
-			'http://www.pictures2.com'
+			'user2',
+			'test2@testuser.com'
+		),
+		(
+			'testuser3', 
+			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+			'test3',
+			'user3',
+			'test3@testuser.com'
+		),
+		(
+			'testuser4', 
+			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+			'test4',
+			'user4',
+			'test4@testuser.com'
+		),
+		(
+			'testuser5', 
+			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+			'test5',
+			'user5',
+			'test5@testuser.com'
 		);
 
+INSERT INTO events
+		(host, title, date)
+	VALUES
+		('testuser1', 'Test Event One', '2023-12-01'),
+		('testuser1', 'Test Event Two', '2023-12-01'),
+		('testuser2', 'Test Event Three', '2023-12-01'),
+		('testuser2', 'Test Event Four', '2023-12-01'),
+		('testuser3', 'Test Event Five', '2023-12-01');
+
+INSERT INTO connections
+		(user1_username, user2_username)
+	VALUES
+		('testuser1', 'testuser2'),
+		('testuser1', 'testuser3'),
+		('testuser1', 'testuser4'),
+		('testuser1', 'testuser5'),
+		('testuser2', 'testuser4'),
+		('testuser2', 'testuser5'),
+		('testuser5', 'testuser4'),
+		('testuser5', 'testuser3');

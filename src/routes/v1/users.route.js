@@ -5,7 +5,7 @@ const express = require("express")
 const { ensureCorrectUser, ensureLoggedIn } = require("../../middleware/auth.middleware");
 const userControllers = require("../../controllers/user.controller");
 const connectionControllers = require("../../controllers/connections.controller");
-const gatheringControllers = require("../../controllers/gatherings.controller");
+const eventControllers = require("../../controllers/events.controller");
 const dishControllers = require("../../controllers/dishes.controller")
 const userUpdateSchema = require("../../validators/userUpdate.schema.json")
 const { validate } = require("../../middleware/validate.middleware");
@@ -46,24 +46,24 @@ router
 	.delete(connectionControllers.requestDenial)
 
 router
-	.route('/:username/gatherings/all')
+	.route('/:username/events/all')
 	.all(ensureCorrectUser)
-	.get(gatheringControllers.getUsersGatherings)
+	.get(eventControllers.getUsersEvents)
 
 router
-	.route('/:username/gatherings/upcoming')
+	.route('/:username/events/upcoming')
 	.all(ensureCorrectUser)
-	.get(gatheringControllers.getUpcomingEvents)
+	.get(eventControllers.getUpcomingEvents)
 
 router
-	.route('/:username/gatherings/hosting')
+	.route('/:username/events/hosting')
 	.all(ensureCorrectUser)
-	.get(gatheringControllers.getUpcomingHosting)
+	.get(eventControllers.getUpcomingHosting)
 
 router
 	.route('/:username/invitations')
 	.all(ensureCorrectUser)
-	.get(gatheringControllers.getUserInvitations)
+	.get(eventControllers.getUserInvitations)
 
 router
 	.route('/:username/dishes')

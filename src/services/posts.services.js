@@ -6,11 +6,11 @@ const Comment = require('../models/comments.model')
 
 /**
  * Post object
- * @typedef {Object} GatheringPosts
+ * @typedef {Object} EventPosts
  * @property {number} id
  * @property {string} title
  * @property {string} body
- * @property {number} gatheringId
+ * @property {number} eventId
  * @property {string} postAuthor - username of post's author
  * @property {Array.<Comment>} comments
  */
@@ -25,30 +25,30 @@ const Comment = require('../models/comments.model')
  */
 
 /**
- * Get posts for a gathering
- * @param {number} gatheringId 
+ * Get posts for a event
+ * @param {number} eventId 
  * @returns {Array.<Post>} posts
  */
-const getGatheringPosts = async(gatheringId) => {
-	const posts = await Post.getForGathering(gatheringId);
+const getEventPosts = async(eventId) => {
+	const posts = await Post.getForEvent(eventId);
 
 	return posts
 };
 
 /**
- * Create a new post associated with a gathering
- * @param {number} gatheringId 
+ * Create a new post associated with a event
+ * @param {number} eventId 
  * @param {Object} input 
  * @property {string} title
  * @property {string} body
  * @param {*} author 
  * @returns {Post}
  */
-const createPost = async(gatheringId, input, author) => {
+const createPost = async(eventId, input, author) => {
 	const title = input.title;
 	const body = input.body;
 	const post = 
-		await Post.create(title, body, gatheringId, author);
+		await Post.create(title, body, eventId, author);
 	return post;
 };
 
@@ -116,7 +116,7 @@ const deleteComment = async(commentId) => {
 };
 
 module.exports = {
-	getGatheringPosts,
+	getEventPosts,
 	createPost,
 	editPost,
 	deletePost,

@@ -41,10 +41,22 @@ const camelToSnakeCase = (camel) =>{
 	return camel.replace(/[A-Z]/g, "_" + "$&").toLowerCase()
 }
 
+const generateMultiGuestAddValues = (values, eventId) => {
+
+	const rows = []
+	const placeholders = []
+	values.forEach((v,i) => {
+		rows.push(`(${eventId}, '${v}')`)
+		placeholders.push(`$${i+1}`)
+	})
+
+	return {rows:rows, placeholders:placeholders.join(', ')}
+}
 
 module.exports = {
 	formatUpdateData,
 	formatInsertData,
 	snakeToCamelCase,
-	camelToSnakeCase
+	camelToSnakeCase,
+	generateMultiGuestAddValues
 }

@@ -7,7 +7,7 @@ const Guest = require("../models/guest.model")
  * Guest object
  * @typedef {Object} Guest
  * @property {number} id
- * @property {number} gatheringId
+ * @property {number} eventId
  * @property {string} username
  * @property {string} firstName
  * @property {string} lastName
@@ -17,61 +17,66 @@ const Guest = require("../models/guest.model")
 
 /**
  * 
- * @param {number} gatheringId 
+ * @param {number} eventId 
  * @returns {Array.<Guest>} guests
  */
-const getGatheringGuests = async(gatheringId) => {
+const getEventGuests = async(eventId) => {
 	const guests =
-		await Guest.findForGathering(gatheringId);
+		await Guest.findForEvent(eventId);
+		
+
 	return guests;
 };
 
 
 /**
- * Add a guest to a gathering.
- * @param {number} gatheringId 
+ * Add a guest to a event.
+ * @param {number} eventId 
  * @param {string} username 
  * @returns {Guest}
  */
-const addGuestToGathering = async(gatheringId, username) => {
-	const guest = await Guest.addToGathering(gatheringId, username);
-	return guest
+const addGuestsToEvent = async(eventId, usernames) => {
+	const guestPromises = usernames.map(u => Guest.addToEvent(eventId, u));
+	await Promise.all(guestPromises);
+	
+	const guestList = await Guest.findForEvent(eventId);
+	return guestList
 };
 
 /**
  * 
- * @param {number} gatheringId 
+ * @param {number} eventId 
  * @param {string} username 
  * @returns {undefined}
  */
-const removeGuestFromGathering = async(gatheringId, username) => {
-	const result = await Guest.removeFromGathering(gatheringId, username);
+const removeGuestFromEvent = async(eventId, username) => {
+	const result = await Guest.removeFromEvent(eventId, username);
 	if(!result) throw new NotFoundError()
 	return
 };
 
 /**
  * Update a guest's RSVP
- * @param {number} gatheringId 
+ * @param {number} eventId 
  * @param {number} guestId 
  * @param {string} rsvp 
  * @returns {Guest}
  */
-const updateGatheringRSVP = async(inviteId, rsvp) => {
+const updateEventRSVP = async(inviteId, rsvp) => {
 	const result = await Guest.updateRsvp(inviteId, rsvp);
 	return result
 };
 
-const checkIfGuestExistsOnGathering = async(username, gatheringId) => {
-	const guest = await Guest.getGatheringGuestId(username, gatheringId);
+const checkIfGuestExistsOnEvent = async(username, eventId) => {
+	const guest = await Guest.getEventGuestId(username, eventId);
 	if(!guest) return false;
 	return true;
 }
 
 module.exports = {
-	getGatheringGuests,
-	addGuestToGathering,
-	removeGuestFromGathering,
-	updateGatheringRSVP,
-	checkIfGuestExistsOnGathering
+	getEventGuests,
+	addGuestsToEvent,
+	removeGuestFromEvent,
+	updateEventRSVP,
+	checkIfGuestExistsOnEvent
 }

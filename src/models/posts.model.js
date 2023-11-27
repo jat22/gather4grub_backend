@@ -4,36 +4,31 @@ const db = require("../db");
 const sqlUtility = require("../utils/sql.utils");
 
 class Post {
-	static async getForGathering(gatheringId){
+	static async getForEvent(eventId){
 		const result = await db.query(
-			`SELECT p.id,
-					p.title,
-					p.body,
-					p.gathering_id AS "gatheringId",
-					p.author AS "postAuthor",
-					JSON_AGG(c.*) AS comments
-			FROM posts AS p
-			JOIN gatherings AS g ON p.gathering_id = g.id
-			LEFT JOIN comments AS c ON p.id = c.post_id
-			WHERE g.id = $1
-			GROUP BY p.id`,
-			[gatheringId]
+			`SELECT id,
+					content,
+					event_id AS "eventId",
+					author AS "user"
+			FROM comments
+			WHERE event_id=$1`,
+			[eventId]
 		)
 
 		return result.rows
 	};
 
-	static async create(title, body, gatheringId, author){
+	static async create(title, body, eventId, author){
 		const result = await db.query(
 			`INSERT INTO posts
-			(title, body, gathering_id, author)
+			(title, body, event_id, author)
 			VALUES($1,$2,$3,$4)
 			RETURNING	id,
 						title,
 						body,
-						gathering_id AS "gatheringId",
+						event_id AS "eventId",
 						author`,
-			[title, body, gatheringId, author]
+			[title, body, eventId, author]
 		);
 		return result.rows[0]
 	};
@@ -47,7 +42,7 @@ class Post {
 			RETURNING 	id,
 						title,
 						body,
-						gathering_id AS gatheringId,
+						event_id AS eventId,
 						author`,
 			[...values, postId]
 		)

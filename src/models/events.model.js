@@ -3,13 +3,13 @@
 const db = require("../db");
 const sqlUtility = require("../utils/sql.utils")
 
-class Gathering {
+class Event {
 	static async create(host, details) {
 		const { columns, placeholders, values } = 
 			sqlUtility.formatInsertData(details);
 
 		const result = await db.query(
-			`INSERT INTO gatherings
+			`INSERT INTO events
 				(${columns}, host)
 				VALUES (${placeholders}, $${values.length + 1})
 				RETURNING 	id,
@@ -19,16 +19,14 @@ class Gathering {
 							start_time AS "startTime",
 							end_time AS "endTime",
 							location,
-							theme,
-							description,
-							cover_img AS "coverImg"`,
+							description`,
 				[...values, host]);
 		
-		const gathering = result.rows[0];
-		return gathering
+		const event = result.rows[0];
+		return event
 	};
 
-	static async getBasicDetails(gatheringId){
+	static async getBasicDetails(eventId){
 
 		const result = await db.query(
 			`SELECT id,
@@ -38,69 +36,66 @@ class Gathering {
 					start_time AS "startTime",
 					end_time AS "endTime",
 					location,
-					theme,
-					description,
-					cover_img AS "coverImg"
-			FROM gatherings
+					description
+			FROM events
 			WHERE id = $1`,
-			[gatheringId]
+			[eventId]
 		)
 
-		const gathering = result.rows[0];
-		return gathering;
+		const event = result.rows[0];
+		return event;
 	}
 
-	static async updateBasicDetails(gatheringId, data){
+	static async updateBasicDetails(eventId, data){
 		const { columns, values } = sqlUtility.formatUpdateData(data);
 
 		const result = await db.query(
-			`UPDATE gatherings
+			`UPDATE events
 				SET ${columns}
 				WHERE id = $${values.length + 1}
 				RETURNING	id,
 							host,
 							title,
+							date,
 							start_time AS "startTime",
 							end_time AS "endTime",
 							location,
-							theme,
-							description,
-							cover_img AS "coverImg"`,
-			[...values, gatheringId]
+							description`,
+			[...values, eventId]
 		);
 		return result.rows[0]
 		
 	}
 
-	static async remove(gatheringId){
+	static async remove(eventId){
 		const result = await db.query(
-			`DELETE FROM gatherings
+			`DELETE FROM events
 				WHERE id = $1
 				RETURNING id`,
-			[gatheringId]
+			[eventId]
 		);
 		return result.rows[0]
 	}
 
-	static async getHost(gatheringId){
+	static async getHost(eventId){
 		const result = await db.query(
 			`SELECT id, host
-			FROM gatherings
+			FROM events
 			WHERE id = $1`,
-			[gatheringId]
+			[eventId]
 		);
 		return result.rows[0]
 	}
 
-	static async exists(gatheringId){
+	static async exists(eventId){
 		const result = await db.query(
 			`SELECT id
-			FROM gatherings
+			FROM events
 			WHERE id = $1`,
-			[gatheringId]
+			[eventId]
 		)
-		const gathering = result.rows[0]
-		return gathering
+		const event = result.rows[0]
+		return event
 	}
 
 	static async getUsers(username){
@@ -116,9 +111,9 @@ class Gathering {
 					g.description,
 					g.cover_img AS "coverImg",
 					guests.rsvp AS "rsvp"
-			FROM gatherings AS g
+			FROM events AS g
 			LEFT JOIN guests
-				ON g.id = guests.gathering_id
+				ON g.id = guests.event_id
 			WHERE guests.username = $1 OR g.host = $1`,
 			[username]);
 		
@@ -137,7 +132,7 @@ class Gathering {
 					theme,
 					description,
 					cover_img AS "coverImg"
-			FROM gatherings
+			FROM events
 			WHERE host = $1`,
 			[username]
 		)
@@ -147,4 +142,4 @@ class Gathering {
 	
 }
 
-module.exports = Gathering;
+module.exports = Event;

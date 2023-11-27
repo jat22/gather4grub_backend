@@ -2,18 +2,18 @@
 
 const { BadRequestError, NotFoundError, InternalServerError } = require("../expressError");
 const Dish = require("../models/dishes.model");
-const gatheringServices = require("../services/gatherings.services");
+const eventServices = require("./events.services");
 const userServices = require("../services/user.services");
 
 /**
  * Object that associates a dish instance with a gatheirng instance.
- * @typedef {Object} GatheringDish
- * @property {number} id - gatheringDish id
+ * @typedef {Object} EventDish
+ * @property {number} id - eventDish id
  * @property {number} dishId - id of dishe
  * @property {string} name - dish name
  * @property {string} description - dish description
  * @property {string} imgUrl - image url
- * @property {string} courseId - course if for meal course of gathering.
+ * @property {string} courseId - course if for meal course of event.
  * @property {string} dishOwner - username of guest bringing this the dish
  */
 
@@ -58,29 +58,29 @@ const userServices = require("../services/user.services");
  */
 
 /**
- * Retrieve all dishes associated with a particular gathering.
- * @param {number} gatheringId 
- * @returns {Array.<GatheringDish>} Array of gatheringDish objects 
+ * Retrieve all dishes associated with a particular event.
+ * @param {number} eventId 
+ * @returns {Array.<EventDish>} Array of eventDish objects 
  */
-const getGatheringDishes = async(gatheringId) => {
-	if(!(await gatheringServices.checkIfGatheringExists(gatheringId))){
-		throw new BadRequestError("gathering does not exist")
+const getEventDishes = async(eventId) => {
+	if(!(await eventServices.checkIfEventExists(eventId))){
+		throw new BadRequestError("event does not exist")
 	}
-	const dishes = await Dish.getGatheringDishes(gatheringId);
+	const dishes = await Dish.getEventDishes(eventId);
 	return dishes;
 };
 
 /**
- * Adds a dish to a particular gathering.
- * @param {number} gatheringId 
+ * Adds a dish to a particular event.
+ * @param {number} eventId 
  * @param {number} dishId 
  * @param {number} courseId 
  * @param {string} owner - username of guest bringing dish
- * @returns {GatheringDish} gatheringDish object
+ * @returns {EventDish} eventDish object
  */
-const addDishToGathering = async(gatheringId, dishId, courseId, owner) => {
-	if(!(await gatheringServices.checkIfGatheringExists(gatheringId))){
-		throw new BadRequestError("gathering does not exist")
+const addDishToEvent = async(eventId, dishId, courseId, owner) => {
+	if(!(await eventServices.checkIfEventExists(eventId))){
+		throw new BadRequestError("event does not exist")
 	};
 	if(!(await checkIfDishExists(dishId))){
 		throw new BadRequestError("dish does not exist")
@@ -89,18 +89,18 @@ const addDishToGathering = async(gatheringId, dishId, courseId, owner) => {
 		throw new BadRequestError("user does not exist")
 	};
 
-	const gatheringDish = 
-		await Dish.addToGathering(gatheringId, dishId, courseId, owner)
-	return gatheringDish
+	const eventDish = 
+		await Dish.addToEvent(eventId, dishId, courseId, owner)
+	return eventDish
 }
 /**
- * Removes a dish from a gathering.
- * @param {number} gatheringId 
+ * Removes a dish from a event.
+ * @param {number} eventId 
  * @param {number} dishId 
  * @returns {undefined}
  */
-const removeDishFromGathering = async(gatheringId, dishId) => {
-	const result = await Dish.removeFromGathering(gatheringId, dishId);
+const removeDishFromEvent = async(eventId, dishId) => {
+	const result = await Dish.removeFromEvent(eventId, dishId);
 
 	if(!result) throw new NotFoundError("not found");
 
@@ -110,11 +110,11 @@ const removeDishFromGathering = async(gatheringId, dishId) => {
 /**
  * Checks if a user is the owner of the gatheirng dish(ie bringing the dish)
  * @param {string} username 
- * @param {number} gatheringDishId 
+ * @param {number} eventDishId 
  * @returns {boolean} if user matches owner true : false
  */
-const isDishOwner = async(username, gatheringDishId) =>{
-	const owner = await Dish.getGatheringDishOwner(gatheringDishId);
+const isDishOwner = async(username, eventDishId) =>{
+	const owner = await Dish.getEventDishOwner(eventDishId);
 
 	if(owner && owner === username) return true;
 	return false
@@ -224,9 +224,9 @@ const deleteDish = async(dishId) => {
 }
 
 module.exports = {
-	getGatheringDishes,
-	addDishToGathering,
-	removeDishFromGathering,
+	getEventDishes,
+	addDishToEvent,
+	removeDishFromEvent,
 	isDishOwner,
 	createNewDish,
 	dishAddedBy,

@@ -119,41 +119,38 @@ class Dish {
 		return result.rows;
 	}
 
-	static async getGatheringDishes(gatheringId){
+	static async getEventMenu(eventId){
 		const result = await db.query(
-			`SELECT d.id,
-					d.name,
-					d.description,
-					d.img_url AS "imgUrl",
-					gd.course_id AS "courseId",
-					gd.owner_username AS "ownerUsername"
-				FROM gathering_dishes AS gd
-				JOIN dishes AS d
-					ON gd.dish_id = d.id
-				WHERE gathering_id = $1`,
-			[gatheringId]
+			`SELECT id,
+					name,
+					added_by AS "username",
+					description,
+					course_id AS "courseId"
+			FROM dishes
+			WHERE event_id = $1`,
+			[eventId]
 		);
 		return result.rows
 	};
 
-	static async addToGathering(gatheringId, dishId, courseId, owner){
+	static async addToEvent(eventId, dishId, courseId, owner){
 		const result = await db.query(
-			`INSERT INTO gathering_dishes
-				(gathering_id, dish_id, course_id, owner_username)
+			`INSERT INTO event_dishes
+				(event_id, dish_id, course_id, owner_username)
 			VALUES ($1,$2,$3,$4)
-			RETURNING	id AS "gatheringDishId"`,
-			[gatheringId, dishId, courseId, owner]
+			RETURNING	id AS "eventDishId"`,
+			[eventId, dishId, courseId, owner]
 		)
 
 		return result.rows[0]
 	};
 
-	static async removeFromGathering(gatheringId, dishId){
+	static async removeFromEvent(eventId, dishId){
 		const result = await db.query(
-			`DELETE FROM gathering_dishes
-			WHERE gathering_id = $1 AND id = $2
+			`DELETE FROM event_dishes
+			WHERE event_id = $1 AND id = $2
 			RETURNING id`,
-			[gatheringId, dishId]
+			[eventId, dishId]
 		)
 		return result.rows[0]
 	}
@@ -168,10 +165,10 @@ class Dish {
 		return result.rows[0]
 	}
 
-	static async getGatheringDishOwner(id){
+	static async getEventDishOwner(id){
 		const result = await db.query(
 			`SELECT owner_username AS owner
-			FROM gathering_dishes
+			FROM event_dishes
 			WHERE id = $1`,
 			[id]
 		);
