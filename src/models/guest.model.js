@@ -64,7 +64,8 @@ class Guest {
 		const result = await db.query(
 			`SELECT guests.id AS id,
 					events.title AS title,
-					events.date
+					events.date,
+					events.id AS "eventId"
 				FROM guests
 					JOIN events
 					ON guests.event_id = events.id

@@ -61,35 +61,54 @@ router
 		ensureHost, 
 		guestControllers.removeGuestFromEvent)
 
-router
-	.route('/:eventId/dishes')
-	.all(ensureParticipant)
-	.get(dishControllers.getEventDishes)
+// router
+// 	.route('/:eventId/dishes')
+// 	.all(ensureParticipant)
+// 	.get(dishControllers.getEventDishes)
+
+// router
+// 	.route('/:eventId/dishes/:dishId')
+// 	.post(
+// 		ensureParticipant, 
+// 		dishControllers.addDishToEvent)
+// 	.delete(
+// 		ensureDishOwnerOrHost,
+// 		dishControllers.removeDishFromEvent);;
 
 router
-	.route('/:eventId/dishes/:dishId')
+	.route('/:eventId/menu')
+	.get(
+		ensureParticipant,
+		eventControllers.getMenu)
 	.post(
-		ensureParticipant, 
-		dishControllers.addDishToEvent)
-	.delete(
-		ensureDishOwnerOrHost,
-		dishControllers.removeDishFromEvent);;
+		ensureParticipant,
+		eventControllers.addMenuItem);
 
 router
-	.route('/:eventId/posts')
+	.route('/:eventId/menu/categories')
+	.get(
+		ensureParticipant,
+		eventControllers.getMenuCategories)
+	.post(
+		ensureParticipant,
+		dishControllers.addDishCategory)
+	.delete(
+		ensureHost,
+		dishControllers.removeDishCategory);
+
+router
+	.route('/:eventId/comments')
 	.all(ensureParticipant)
 	.get(postControllers.getEventPosts)
 	.post(postControllers.createPost)
 	
 router
-	.route('/:eventId/posts/:postId')
+	.route('/:eventId/comments/:commentId')
 	.all(ensureParticipant)
 	.put(
-		ensurePostAuthor,
 		postControllers.editPost)
 	.delete(
-		ensurePostAuthorOrHost,
-		postControllers.deletePost)
+		postControllers.deleteComment)
 
 router
 	.route('/:eventId/posts/:postId/comments')

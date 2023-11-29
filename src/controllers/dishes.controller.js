@@ -296,7 +296,30 @@ const getUsersDishes = async(req,res,next) => {
 	} catch(err){
 		return next(err)
 	}
-}
+};
+
+const addDishCategory = async(req,res,next) => {
+	try{
+		const eventId = req.params.eventId
+		const newCategory = req.body.newCategory
+		const updatedMenu = await dishServices.addDishCategory(eventId, newCategory)
+		return res.json({menu : updatedMenu})
+	} catch(err){
+		return next(err)
+	}
+};
+
+const removeDishCategory = async(req,res,next) => {
+	try{
+		const eventId = req.params.eventId
+		const updatedMenu = await dishServices.removeDishCategory(eventId, newCategory)
+		return res.json({menu : updatedMenu})
+	} catch(err){
+		return next(err)
+	}
+};
+
+
 
 
 
@@ -309,5 +332,7 @@ module.exports = {
 	putDish,
 	deleteDish,
 	getAllDishes,
-	getUsersDishes
+	getUsersDishes,
+	addDishCategory,
+	removeDishCategory
 }

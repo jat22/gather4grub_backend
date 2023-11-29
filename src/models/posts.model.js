@@ -18,19 +18,15 @@ class Post {
 		return result.rows
 	};
 
-	static async create(title, body, eventId, author){
+	static async create(eventId, comment, author){
+		console.log(comment)
 		const result = await db.query(
-			`INSERT INTO posts
-			(title, body, event_id, author)
-			VALUES($1,$2,$3,$4)
-			RETURNING	id,
-						title,
-						body,
-						event_id AS "eventId",
-						author`,
-			[title, body, eventId, author]
+			`INSERT INTO comments
+				(event_id, content, author)
+			VALUES($1,$2,$3)`,
+			[eventId, comment, author]
 		);
-		return result.rows[0]
+		return
 	};
 
 	static async edit(postId, input){
@@ -49,14 +45,13 @@ class Post {
 		return result.rows[0]
 	};
 
-	static async delete(postId){
+	static async delete(commentId){
 		const result = await db.query(
-			`DELETE FROM posts
-			WHERE id = $1
-			RETURNING id`,
-			[postId]
+			`DELETE FROM comments
+			WHERE id = $1`,
+			[commentId]
 		)
-		return result.rows[0]
+		return
 	};
 
 	static async getAuthor(postId){

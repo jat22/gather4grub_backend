@@ -28,7 +28,7 @@ const postServices = require("../services/posts.services")
 const getEventPosts = async(req,res,next) => {
 	try{
 		const eventId = req.params.eventId;
-		const posts = await postServices.getEventPosts(eventId);
+		const posts = await postServices.getEventComments(eventId);
 		return res.json({ posts });
 	} catch(err){
 		return next(err)
@@ -55,11 +55,12 @@ const getEventPosts = async(req,res,next) => {
  */
 const createPost = async(req,res,next) => {
 	try{
+		console.log(req.body)
 		const eventId = req.params.eventId;
-		const input = req.body;
-		const author = res.locals.user.username
-		const post = await postServices.createPost(eventId, input, author);
-		return res.json({ post })
+		const comment = req.body.comment
+		const author = req.body.author 
+		const comments = await postServices.createComment(eventId, comment, author);
+		return res.json({ comments })
 	} catch(err){
 		return next(err)
 	}
@@ -98,10 +99,10 @@ const editPost = async(req,res,next) => {
  * 
  * Returns response status 204 with empty body.
  */
-const deletePost = async(req,res,next) => {
+const deleteComment = async(req,res,next) => {
 	try{
-		const postId = req.params.postId;
-		await postServices.deletePost(postId);
+		const commentId = req.params.commentId;
+		await postServices.deleteComment(commentId);
 		return res.status(204).send();
 	} catch(err){
 		return next(err)
@@ -164,22 +165,21 @@ const editComment = async(req,res,next) => {
  * 		params.commentId
  * Return response status 204 with empty body.
  */
-const deleteComment = async(req,res,next) => {
-	try{
-		const commentId = req.params.commentId;
-		await postServices.deleteComment(commentId);
-		return res.status(204).send();
-	} catch(err){
-		return next(err)
-	}
-};
+// const deleteComment = async(req,res,next) => {
+// 	try{
+// 		const commentId = req.params.commentId;
+// 		await postServices.deleteComment(commentId);
+// 		return res.status(204).send();
+// 	} catch(err){
+// 		return next(err)
+// 	}
+// };
 
 
 module.exports = {
 	getEventPosts,
 	createPost,
 	editPost,
-	deletePost,
 	createComment,
 	editComment,
 	deleteComment

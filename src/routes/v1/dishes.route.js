@@ -23,11 +23,9 @@ router
 	.route('/:dishId')
 	.get(dishControllers.getDish)
 	.put(
-		ensureDishAddedBy,
 		validate(updateDishSchema),
 		dishControllers.putDish)
 	.delete(
-		ensureDishAddedBy,
 		dishControllers.deleteDish)
 
 module.exports = router

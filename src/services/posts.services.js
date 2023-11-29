@@ -29,9 +29,8 @@ const Comment = require('../models/comments.model')
  * @param {number} eventId 
  * @returns {Array.<Post>} posts
  */
-const getEventPosts = async(eventId) => {
+const getEventComments = async(eventId) => {
 	const posts = await Post.getForEvent(eventId);
-
 	return posts
 };
 
@@ -44,12 +43,10 @@ const getEventPosts = async(eventId) => {
  * @param {*} author 
  * @returns {Post}
  */
-const createPost = async(eventId, input, author) => {
-	const title = input.title;
-	const body = input.body;
-	const post = 
-		await Post.create(title, body, eventId, author);
-	return post;
+const createComment = async(eventId, comment, author) => {
+	await Post.create(eventId, comment, author);
+	const comments = await getEventComments(eventId)
+	return comments;
 };
 
 /**
@@ -71,25 +68,24 @@ const editPost = async(postId, input) => {
  * @param {number} postId 
  * @returns {undefined}
  */
-const deletePost = async(postId) => {
-	const post = await Post.delete(postId);
-	if(!post) throw new NotFoundError();
+const deleteComment = async(postId) => {
+	await Post.delete(postId);
 	return
 };
 
-/**
- * Create new comment
- * @param {number} postId 
- * @param {Object} input 
- * @property {string} body
- * @param {string} author 
- * @returns {Comment}
- */
-const createComment = async(postId, input, author) => {
-	const body = input.body;
-	const comment = await Comment.create(postId, author, body);
-	return comment
-};
+// /**
+//  * Create new comment
+//  * @param {number} postId 
+//  * @param {Object} input 
+//  * @property {string} body
+//  * @param {string} author 
+//  * @returns {Comment}
+//  */
+// const createComment = async(postId, input, author) => {
+// 	const body = input.body;
+// 	const comment = await Comment.create(postId, author, body);
+// 	return comment
+// };
 
 /**
  * Edit comment.
@@ -109,17 +105,15 @@ const editComment = async(commentId, input) => {
  * @param {number} commentId 
  * @returns {undefined}
  */
-const deleteComment = async(commentId) => {
-	const comment = await Comment.delete(commentId)
-	if(!comment) throw new NotFoundError()
-	return
-};
+// const deleteComment = async(commentId) => {
+// 	const comment = await Comment.delete(commentId)
+// 	if(!comment) throw new NotFoundError()
+// 	return
+// };
 
 module.exports = {
-	getEventPosts,
-	createPost,
+	getEventComments,
 	editPost,
-	deletePost,
 	createComment,
 	editComment,
 	deleteComment

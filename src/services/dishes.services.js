@@ -4,6 +4,7 @@ const { BadRequestError, NotFoundError, InternalServerError } = require("../expr
 const Dish = require("../models/dishes.model");
 const eventServices = require("./events.services");
 const userServices = require("../services/user.services");
+const Course = require("../models/course.model")
 
 /**
  * Object that associates a dish instance with a gatheirng instance.
@@ -63,10 +64,7 @@ const userServices = require("../services/user.services");
  * @returns {Array.<EventDish>} Array of eventDish objects 
  */
 const getEventDishes = async(eventId) => {
-	if(!(await eventServices.checkIfEventExists(eventId))){
-		throw new BadRequestError("event does not exist")
-	}
-	const dishes = await Dish.getEventDishes(eventId);
+	const dishes = await Dish.getEventMenu(eventId);
 	return dishes;
 };
 
@@ -79,19 +77,10 @@ const getEventDishes = async(eventId) => {
  * @returns {EventDish} eventDish object
  */
 const addDishToEvent = async(eventId, dishId, courseId, owner) => {
-	if(!(await eventServices.checkIfEventExists(eventId))){
-		throw new BadRequestError("event does not exist")
-	};
-	if(!(await checkIfDishExists(dishId))){
-		throw new BadRequestError("dish does not exist")
-	};
-	if(!(await userServices.checkIfUserExists(owner))){
-		throw new BadRequestError("user does not exist")
-	};
-
-	const eventDish = 
-		await Dish.addToEvent(eventId, dishId, courseId, owner)
-	return eventDish
+	// const eventDish = 
+	// 	await Dish.addToEvent(eventId, dishId, courseId, owner)
+	// return eventDish
+	return 'TEST'
 }
 /**
  * Removes a dish from a event.
@@ -208,8 +197,8 @@ const editDishRecipe  = async(dishId, details, ingredients) => {
  * @returns {string} username
  */
 const dishAddedBy = async(dishId) => {
-	const dish = await Dish.getBasicDetails(dishId)
-	return dish.addedBy
+	const addedBy = await Dish.getAddedBy(dishId)
+	return addedBy
 }
 
 /**
@@ -223,6 +212,12 @@ const deleteDish = async(dishId) => {
 	return
 }
 
+const addDishCategory = async(eventId, newCategory) => {
+	await Course.create(eventId, newCategory)
+	const updatedMenu = await eventServices.getMenu(eventId)
+	return updatedMenu
+}
+
 module.exports = {
 	getEventDishes,
 	addDishToEvent,
@@ -234,5 +229,6 @@ module.exports = {
 	editDishRecipe,
 	getAllDishes,
 	getUsersDishes,
-	deleteDish
+	deleteDish,
+	addDishCategory
 }

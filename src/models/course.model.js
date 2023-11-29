@@ -4,18 +4,17 @@ const db = require("../db");
 const sql = require("../utils/sql.utils")
 
 class Course {
-	static async create(eventId, input){
+	static async create(eventId, data){
+		const input = {eventId : eventId, name : data}
 		input.eventId = eventId
 		const { columns, placeholders, values } = sql.formatInsertData(input)
-
 		const result = await db.query(
 			`INSERT INTO courses
 				(${columns})
 				VALUES (${placeholders})
 				RETURNING 	id,
 							name,
-							event_id AS eventID,
-							notes`,
+							event_id AS eventID`,
 				values);
 
 		return result.rows[0];
@@ -28,6 +27,16 @@ class Course {
 			RETURNING id`
 		);
 		return result.rows[0];
+	}
+
+	static async getForEvent(eventId){
+		const result = await db.query(
+			`SELECT id, name
+			FROM courses
+			WHERE event_id = $1`,
+			[eventId]
+		)
+		return result.rows
 	}
 }
 

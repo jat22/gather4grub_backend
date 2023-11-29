@@ -43,6 +43,7 @@ class Event {
 		)
 
 		const event = result.rows[0];
+		console.log(event.date)
 		return event;
 	}
 
@@ -107,14 +108,12 @@ class Event {
 					g.start_time AS "startTime",
 					g.end_time AS "endTime",
 					g.location,
-					g.theme,
 					g.description,
-					g.cover_img AS "coverImg",
 					guests.rsvp AS "rsvp"
 			FROM events AS g
 			LEFT JOIN guests
 				ON g.id = guests.event_id
-			WHERE guests.username = $1 OR g.host = $1`,
+			WHERE guests.username = $1`,
 			[username]);
 		
 		return result.rows
@@ -129,9 +128,7 @@ class Event {
 					start_time AS "startTime",
 					end_time AS "endTime",
 					location,
-					theme,
-					description,
-					cover_img AS "coverImg"
+					description
 			FROM events
 			WHERE host = $1`,
 			[username]

@@ -2,6 +2,7 @@
 
 
 const sortEventsByDate = (events) => {
+	if(!events || events.length < 1) return null
 	const result = events.sort((a,b) => {
 		const dateA = new Date(a.date);
 		const dateB = new Date(b.date);
@@ -15,6 +16,8 @@ const sortEventsByDate = (events) => {
 }
 
 const sortPastUpcoming = (sortedEvents) => {
+	if(!sortedEvents) return null
+
 	const upcoming = [];
 	const past = [];
 	const now = new Date();
@@ -29,10 +32,30 @@ const sortPastUpcoming = (sortedEvents) => {
 			break
 		}
 	}
-	return {past, upcoming}
+	// console.log(`PAST: ${past}`)
+	// console.log(`UPCOMING: ${upcoming}`)
+	return {past: past, upcoming: upcoming}
 }
+
+const buildMenu = (courses, dishes) => {
+	const courseMap = {}
+
+	const menu = courses.map( (c, i) => {
+		courseMap[c.id] = i
+		return { courseName : c.name, courseId : c.id, dishes : []}
+	})
+	if(dishes || dishes.length > 0){
+		dishes.forEach( d => {
+			menu[courseMap[d.courseId]].dishes.push(d)
+		})
+	}
+	
+	return menu
+}
+
 
 module.exports = {
 	sortEventsByDate,
-	sortPastUpcoming
+	sortPastUpcoming,
+	buildMenu
 }

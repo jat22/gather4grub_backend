@@ -235,6 +235,7 @@ const getUpcomingEvents = async(req,res,next) => {
 	try{
 		const user = req.params.username
 		const events = await eventServices.getUpcomingEvents(user)
+		console.log(events)
 		return res.json({ events })
 	} catch(err){
 		return next(err)
@@ -261,6 +262,49 @@ const getUserInvitations = async(req,res,next) => {
 	}
 }
 
+const getMenuCategories = async(req,res,next) => {
+	try{
+		const eventId = req.params.eventId
+		const categories = await eventServices.getMenuCategories(eventId)
+		return res.json({ categories})
+	} catch(err){
+		return next(err)
+	}
+}
+
+const getMenu = async(req,res,next) => {
+	try{
+		const eventId = req.params.eventId
+		const menu = await eventServices.getMenu(eventId)
+		return res.json({menu})
+	} catch(err){
+		return next(err)
+	}
+}
+
+const addMenuItem = async(req,res,next) => {
+	try{
+		const eventId = req.params.eventId
+		const newItem = req.body.newItem
+		await eventServices.addMenuItem({...newItem, eventId:eventId})
+		const menu = await eventServices.getMenu(eventId)
+		return res.json({menu})
+	} catch(err){
+		return next(err)
+	}
+}
+
+const removeMenuItem = async(req,res,next) => {
+	try{
+		const eventId = req.params.eventId;
+		const dishId = req.params.body.dishId;
+		await eventServices.removeMenuItem(dishId)
+		return res.status(204)
+	} catch(err){
+		return next(err)
+	}
+}
+
 
 module.exports = {
 	createEvent,
@@ -271,5 +315,8 @@ module.exports = {
 	getUsersEvents,
 	getUserInvitations,
 	getUpcomingEvents,
-	getUpcomingHosting
+	getUpcomingHosting,
+	getMenuCategories,
+	getMenu,
+	addMenuItem
 }

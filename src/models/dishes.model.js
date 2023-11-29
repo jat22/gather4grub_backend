@@ -9,24 +9,16 @@ class Dish {
 	 * @param {*} details 
 	 * @param {Object}
 	 */
-	static async create(addedBy, details){
-		details.addedBy = addedBy;
+	static async addItem(details){
+		console.log(details)
 		const { columns, placeholders, values } = sql.formatInsertData(details)
 
-		const dishResult = await db.query(
+		await db.query(
 			`INSERT INTO dishes
 				(${columns})
-				VALUES(${placeholders})
-				RETURNING 	id,
-							name,
-							source_name AS "sourceName",
-							source_url AS "sourceUrl",
-							added_by AS "addedBy",
-							description,
-							instructions,
-							img_url AS "imgUrl"`,
+				VALUES(${placeholders})`,
 				values);
-		return dishResult.rows[0];
+		return;
 	}
 
 	static async addIngredient(name, dishId, amount){
@@ -119,7 +111,7 @@ class Dish {
 		return result.rows;
 	}
 
-	static async getEventMenu(eventId){
+	static async getEventDishes(eventId){
 		const result = await db.query(
 			`SELECT id,
 					name,
@@ -133,17 +125,17 @@ class Dish {
 		return result.rows
 	};
 
-	static async addToEvent(eventId, dishId, courseId, owner){
-		const result = await db.query(
-			`INSERT INTO event_dishes
-				(event_id, dish_id, course_id, owner_username)
-			VALUES ($1,$2,$3,$4)
-			RETURNING	id AS "eventDishId"`,
-			[eventId, dishId, courseId, owner]
-		)
+	// static async addToEvent(eventId, dishId, courseId, owner){
+	// 	const result = await db.query(
+	// 		`INSERT INTO dishes
+	// 			(event_id, course_id, owner_username)
+	// 		VALUES ($1,$2,$3,$4)
+	// 		RETURNING	id`,
+	// 		[eventId, dishId, courseId, owner]
+	// 	)
 
-		return result.rows[0]
-	};
+	// 	return result.rows[0]
+	// };
 
 	static async removeFromEvent(eventId, dishId){
 		const result = await db.query(
@@ -165,14 +157,14 @@ class Dish {
 		return result.rows[0]
 	}
 
-	static async getEventDishOwner(id){
+	static async getAddedBy(id){
 		const result = await db.query(
-			`SELECT owner_username AS owner
-			FROM event_dishes
+			`SELECT added_by AS "addedBy"
+			FROM dishes
 			WHERE id = $1`,
 			[id]
 		);
-		return result.rows[0].owner
+		return result.rows[0].addedBy
 	}
 
 	static async getUsersDishes(username){

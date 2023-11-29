@@ -7,6 +7,8 @@ const Post = require("../models/posts.model");
 const guestServices = require("./guests.services");
 const Guest = require("../models/guest.model");
 const { sortEventsByDate, sortPastUpcoming } = require('../utils/sort.utils')
+const Course = require('../models/course.model')
+const { buildMenu } = require('../utils/sort.utils')
 
 /**
  * Event Object
@@ -111,7 +113,7 @@ const getFullDetailsOfEvent = async(eventId) => {
 
 	const basicDetailsPromise = Event.getBasicDetails(eventId);
 	const guestsPromise = guestServices.getEventGuests(eventId);
-	const menuPromise = Dish.getEventMenu(eventId);
+	const menuPromise =	getMenu(eventId);
 	const postsPromise = Post.getForEvent(eventId);
 
 	const [ basicDetails, guests, menu, posts ] = 
@@ -124,7 +126,7 @@ const getFullDetailsOfEvent = async(eventId) => {
 		menu : menu,
 		comments : posts
 	};
-
+	console.log(allDetails)
 	return allDetails
 };
 
@@ -191,14 +193,50 @@ const getHostingUpcoming = async(username) => {
 }
 
 const getUpcomingEvents = async(username) => {
-	const events = await Event.getUsers(username);
-	const sortedEvents = sortEventsByDate(events)
-	return sortPastUpcoming(sortedEvents).upcoming
-}
+	const guestEvents = await Event.getUsers(username);
+	const allGuestEventsSorted = guestEvents ? sortEventsByDate(guestEvents) : null;
+	const upcomingHostEvents = await getHostingUpcoming(username);
+	const upcomingGuestEvents = allGuestEventsSorted ? sortPastUpcoming(allGuestEventsSorted).upcoming : null;
+	if(!upcomingGuestEvents && !upcomingHostEvents) return null
+
+	const allUpcoming = upcomingGuestEvents ? [...upcomingGuestEvents] : []
+	if(upcomingHostEvents){
+		upcomingHostEvents.forEach(e => {
+			e['isHost'] = true;
+			allUpcoming.push(e)
+		})
+	} 
+	const allUpcomingSorted = sortEventsByDate(allUpcoming)
+	return allUpcomingSorted
+}	
 
 const getUserInvitations = async(username) => {
 	const invitations = await Guest.getInvitations(username);
 	return invitations
+}
+
+const getMenuCategories = async(eventId) => {
+	const categories = await Course.getForEvent(eventId)
+	return categories
+}
+ 
+const getMenu = async(eventId) => {
+	const dishPromise = Dish.getEventDishes(eventId)
+	const coursePromise = Course.getForEvent(eventId)
+	const [ dishes, courses ] = await Promise.all([dishPromise, coursePromise])
+	return buildMenu(courses,dishes)
+}
+
+const addMenuItem = async (newItem) => {
+	const details = {
+		name: newItem.dishName,
+		description: newItem.description,
+		addedBy : newItem.username,
+		eventId: newItem.eventId,
+		courseId: newItem.courseId
+	}
+	await Dish.addItem(details)
+	return
 }
 
 module.exports = {
@@ -211,5 +249,8 @@ module.exports = {
 	getUsersEvents,
 	getUserInvitations,
 	getUpcomingEvents,
-	getHostingUpcoming
+	getHostingUpcoming,
+	getMenuCategories,
+	getMenu,
+	addMenuItem
 }

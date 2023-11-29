@@ -77,7 +77,7 @@ const ensureAdmin = (req, res, next) => {
 	}
 }
 
-const ensureDishAddedBy = async (req,res,next) => {
+const ensureDishAddedByOrHost = async (req,res,next) => {
 	try{
 		const user = res.locals.user.username;
 		const dishId = req.params.dishId
@@ -94,6 +94,5 @@ module.exports = {
 	ensureLoggedIn,
 	ensureCorrectUser,
 	ensureCorrectUserOrAdmin,
-	ensureAdmin,
-	ensureDishAddedBy
+	ensureAdmin
 }
