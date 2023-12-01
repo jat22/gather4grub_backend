@@ -143,6 +143,19 @@ class User {
 
 		return false
 	}
+
+	static async findUsers(input){
+		const result = await db.query(
+			`SELECT username,
+					first_name AS "firstName",
+					last_name AS "lastName",
+					email,
+					avatar_url AS avatarUrl
+				FROM users
+				WHERE email=$1 OR username=$1`,
+			[input])
+		return result.rows
+	}
 }
 
 module.exports = User;

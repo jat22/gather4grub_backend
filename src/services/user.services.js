@@ -157,10 +157,16 @@ const checkIfUserExists = async(username) => {
 	return true;
 }
 
+const findUsers = async(input) => {
+	const users = await User.findUsers(input)
+	return users
+}
+
 module.exports = {
 	getUserAccount,
 	createUser,
 	updateUser,
 	deleteUser,
-	checkIfUserExists
+	checkIfUserExists,
+	findUsers
 }

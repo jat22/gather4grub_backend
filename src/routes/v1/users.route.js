@@ -13,6 +13,10 @@ const { validate } = require("../../middleware/validate.middleware");
 const router = express.Router()
 
 router
+	.route('/find/:input')
+	.get(userControllers.findUsers)
+
+router
 	.route('/:username')
 	.all(ensureCorrectUser)
 	.get(userControllers.getUserAccount)
