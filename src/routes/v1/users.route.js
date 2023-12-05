@@ -26,6 +26,16 @@ router
 	.delete(userControllers.deleteUser);
 
 router
+	.route('/:username/password')
+	.patch(
+		userControllers.updatePassword
+	)
+
+router
+	.route('/:username/profile')
+	.get(userControllers.getUserProfile)
+
+router
 	.route('/:username/connections')
 	.get(
 		ensureCorrectUser, 

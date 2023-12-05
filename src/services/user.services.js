@@ -70,6 +70,11 @@ const getUserAccount = async(username) => {
 	const user = await User.getAccount(username);
 	if(!user) throw new NotFoundError(`User: ${username}, does not exist`);
 	return user;
+};
+
+const getUserProfile = async(username) => {
+	const profile = await User.getUserProfile(username);
+	return profile
 }
 
 /**
@@ -96,10 +101,10 @@ const createUser = async(userInput) => {
  * @returns {User}
  */
 const updateUser = async(username, body) => {
-	if(!authSerivces.checkUsernamePassword(username, body.currentPassword)){
-		throw new BadRequestError("Invalid password");
-	};
-	delete body.currentPassword;
+	// if(!authSerivces.checkUsernamePassword(username, body.currentPassword)){
+	// 	throw new BadRequestError("Invalid password");
+	// };
+	// delete body.currentPassword;
 
 	if(body.email){
 		const checkEmail = await User.emailExists(body.email);
@@ -162,11 +167,30 @@ const findUsers = async(input) => {
 	return users
 }
 
+const updatePassword = async (username, data) => {
+	console.log(data)
+	if(data.newPassword !== data.confirmNew){
+		throw new BadRequestError("New password does not match")
+	}
+	delete data.confirmNew
+	if(! await authSerivces.checkUsernamePassword(username, data.curPassword)){
+		throw new BadRequestError("Invalid password");
+	};
+	delete data.curPassword;
+	const hashedPassword = await bcrypt.hash(
+					data.newPassword, BCRYPT_WORK_FACTOR);
+	delete data.newPassword
+	const result = await User.updatePassword(username, hashedPassword)
+	return result
+}
+
 module.exports = {
 	getUserAccount,
+	getUserProfile,
 	createUser,
 	updateUser,
 	deleteUser,
 	checkIfUserExists,
-	findUsers
+	findUsers,
+	updatePassword
 }

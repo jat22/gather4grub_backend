@@ -33,6 +33,15 @@ const getUserAccount = async(req,res,next) => {
 	};
 };
 
+const getUserProfile = async(req,res,next) => {
+	try{
+		const profile = await userServices.getUserProfile(req.params.username);
+		return res.json({ profile })
+	} catch (err){
+		return next(err)
+	}
+}
+
 /** Handles single user put route.
  * 	returns response with json body
  * *{ user : 
@@ -85,10 +94,22 @@ const findUsers = async(req,res,next) => {
 	}
 }
 
+const updatePassword = async(req,res,next) => {
+	try{
+		const username = req.params.username;
+		const result = await userServices.updatePassword(username, req.body);
+		return res.json({result: result.username})
+	} catch(err) {
+		return next(err)
+	}	
+}
+
 
 module.exports = {
 	getUserAccount,
+	getUserProfile,
 	updateUser,
 	deleteUser,
-	findUsers
+	findUsers,
+	updatePassword
 };

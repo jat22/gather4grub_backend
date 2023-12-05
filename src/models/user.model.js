@@ -11,7 +11,6 @@ class User {
 					first_name AS "firstName",
 					last_name AS "lastName",
 					email,
-					role,
 					phone,
 					street_address AS "streetAddress",
 					city,
@@ -29,6 +28,20 @@ class User {
 		return user;
 	}
 
+	static async getUserProfile(username) {
+		const result = await db.query(
+			`SELECT username,
+				first_name AS "firstName",
+				last_name AS "lastName",
+				email,
+				tag_line AS "tagLine",
+				avatar_url AS "avatarUrl"
+			FROM users
+			WHERE username=$1`,
+			[username]
+		)
+		return result.rows[0]
+	}
 	/**
 	 * Query user credentials by username
 	 * @param {string} username 
@@ -155,6 +168,17 @@ class User {
 				WHERE email=$1 OR username=$1`,
 			[input])
 		return result.rows
+	}
+
+	static async updatePassword(username, hashedPassword){
+		const result = await db.query(
+			`UPDATE users
+				SET password = $1
+				WHERE username = $2
+			RETURNING username`,
+			[hashedPassword, username]
+		)
+		return result.rows[0]
 	}
 }
 

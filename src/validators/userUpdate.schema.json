@@ -2,17 +2,17 @@
 	"type": "object",
 	"properties": {
 	  "currentPassword": {
-		"type": "string",
+		"type": ["string", "null"],
 		"minLength": 8,
 		"maxLength": 20
 	  },
 	  "newPassword": {
-		"type": "string",
+		"type": ["string", "null"],
 		"minLength": 8,
 		"maxLength": 20
 	  },
 	  "confirmNewPassword": {
-		"type": "string",
+		"type": ["string", "null"],
 		"minLength": 8,
 		"maxLength": 20
 	  },
@@ -27,40 +27,37 @@
 		"format": "email"
  	  },
 	  "phone": {
-		"type": "string"
+		"type": ["string", "null"]
 	  },
 	  "streetAddress": {
-		"type": "string"
+		"type": ["string", "null"]
 	  },
 	  "city" : {
-		"type": "string"
+		"type": ["string", "null"]
 	  },
 	  "state": {
-		"type": "string",
+		"type": ["string", "null"],
 		"minLength": 2,
 		"maxLength": 2
 	  },
 	  "zip": {
-		"type": "string",
+		"type": ["string", "null"],
 		"minLength": 5,
 		"maxLength": 5
 	  },
 	  "tagLine": {
-		"type": "string"
+		"type": ["string", "null"]
 	  },
 	  "bio": {
-		"type": "string"
+		"type": ["string", "null"]
 	  },
 	  "birthdate": {
-		"type" :"string",
+		"type" :["string", "null"],
 		"format": "date-time"
 	  },
 	  "avatarUrl": {
-		"type": "string"
+		"type": ["string", "null"]
 	  }
 	},
-	"additionalProperties": false,
-	"required": [
-	  "currentPassword"
-	]
+	"additionalProperties": false
   }
