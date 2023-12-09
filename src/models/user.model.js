@@ -152,7 +152,7 @@ class User {
 				WHERE email = $1`,
 				[email]);
 
-		if(result.rows[0]) return ({ username : result.rows[0].username })
+		if(result.rows[0]) return true
 
 		return false
 	}

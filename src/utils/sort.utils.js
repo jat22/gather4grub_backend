@@ -32,8 +32,6 @@ const sortPastUpcoming = (sortedEvents) => {
 			break
 		}
 	}
-	// console.log(`PAST: ${past}`)
-	// console.log(`UPCOMING: ${upcoming}`)
 	return {past: past, upcoming: upcoming}
 }
 

@@ -19,7 +19,6 @@ class Post {
 	};
 
 	static async create(eventId, comment, author){
-		console.log(comment)
 		const result = await db.query(
 			`INSERT INTO comments
 				(event_id, content, author)

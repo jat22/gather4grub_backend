@@ -10,10 +10,8 @@ const Comment = require('../models/comments.model')
 
 const ensureParticipant = async(req,res,next) => {
 	try{
-		console.log(res.locals.user.username)
 		const user = res.locals.user.username
 		const eventId = req.params.eventId
-		console.log(user, eventId)
 		const userIsGuest = 
 			await guestServices.
 					checkIfGuestExistsOnEvent(user, eventId);

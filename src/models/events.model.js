@@ -43,7 +43,6 @@ class Event {
 		)
 
 		const event = result.rows[0];
-		console.log(event.date)
 		return event;
 	}
 

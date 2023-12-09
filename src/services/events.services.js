@@ -126,7 +126,6 @@ const getFullDetailsOfEvent = async(eventId) => {
 		menu : menu,
 		comments : posts
 	};
-	console.log(allDetails)
 	return allDetails
 };
 

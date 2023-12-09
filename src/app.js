@@ -29,6 +29,7 @@ app.use(function (req, res, next){
 
 app.use(function (err, req, res, next) {
 	if (process.env.NODE_ENV !== "test") console.error(err.stack);
+	console.log(err.message)
 	const status = err.status || 500;
 	const message = err.message;
   

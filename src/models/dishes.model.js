@@ -10,7 +10,6 @@ class Dish {
 	 * @param {Object}
 	 */
 	static async addItem(details){
-		console.log(details)
 		const { columns, placeholders, values } = sql.formatInsertData(details)
 
 		await db.query(

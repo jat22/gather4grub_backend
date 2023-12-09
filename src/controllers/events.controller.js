@@ -235,7 +235,6 @@ const getUpcomingEvents = async(req,res,next) => {
 	try{
 		const user = req.params.username
 		const events = await eventServices.getUpcomingEvents(user)
-		console.log(events)
 		return res.json({ events })
 	} catch(err){
 		return next(err)

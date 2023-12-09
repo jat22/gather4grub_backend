@@ -9,5 +9,7 @@ const router = new express.Router();
 
 router.post("/token", validate(tokenSchema), authControllers.token);
 router.post("/register", validate(registerSchema), authControllers.register);
+router.get('/check/username', authControllers.checkUsername)
+router.get('/check/email', authControllers.checkEmail)
 
 module.exports = router;

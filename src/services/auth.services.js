@@ -33,8 +33,6 @@ const checkUsernamePassword = async(username, password) => {
 	const credentials = await User.getUserCredentials(username);
 
 	if(!credentials) return false;
-	console.log('checksusernamepassword')
-	console.log(password)
 	const valid = await bcrypt.compare(password, credentials.password);
 
 	delete credentials.password;

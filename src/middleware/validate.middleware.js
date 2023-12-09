@@ -7,7 +7,6 @@ const { BadRequestError } = require("../expressError")
 */
 const validate = (schema) => (req,res,next) => {
 	try{
-		console.log(req.body)
 		const validator = jsonschema.validate(req.body, schema);
 		if(!validator.valid){
 			const errs = validator.errors.map(e => e.stack);

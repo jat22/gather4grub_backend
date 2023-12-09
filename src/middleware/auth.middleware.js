@@ -43,7 +43,6 @@ const ensureCorrectUser = (req, res, next) => {
 	try {
 		const currUser = res.locals.user;
 		const paramUsername = req.params.username
-		console.log(currUser, paramUsername)
 		if (!(currUser && currUser.username === paramUsername)){
 			throw new UnauthorizedError();
 		}

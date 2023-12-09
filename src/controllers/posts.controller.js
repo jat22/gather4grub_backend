@@ -55,7 +55,6 @@ const getEventPosts = async(req,res,next) => {
  */
 const createPost = async(req,res,next) => {
 	try{
-		console.log(req.body)
 		const eventId = req.params.eventId;
 		const comment = req.body.comment
 		const author = req.body.author 

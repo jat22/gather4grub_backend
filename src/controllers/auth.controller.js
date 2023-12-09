@@ -1,4 +1,5 @@
 "use strict";
+const { BadRequestError } = require("../expressError");
 const authServices = require("../services/auth.services");
 const tokenServices = require("../services/token.services");
 const userServices = require("../services/user.services")
@@ -37,7 +38,29 @@ const register = async (req, res, next) => {
 	}
 }
 
+const checkUsername = async(req,res,next) => {
+	try{
+		const usernameToCheck = req.query.username
+		const usernameExists = await userServices.checkIfUserExists(usernameToCheck)
+		return res.json({usernameExists})
+	} catch(err){
+		return next(err)
+	}
+}
+
+const checkEmail = async(req,res,next) => {
+	try{
+		const emailToCheck = req.query.email
+		const emailExists = await userServices.checkIfEmailExists(emailToCheck)
+		return res.json({emailExists})
+	} catch(err){
+		return next(err)
+	}
+}
+
 module.exports = {
 	token,
-	register
+	register,
+	checkUsername,
+	checkEmail
 }

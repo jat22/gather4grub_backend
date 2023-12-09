@@ -156,10 +156,18 @@ const deleteUser = async(username, password) => {
  * @returns {boolean} true if does exist
  */
 const checkIfUserExists = async(username) => {
-	if(!(await User.usernameExists(username))) {
-		throw new NotFoundError(`${username} does not exist`);
-	};
-	return true;
+	const userExists = await User.usernameExists(username)
+	return userExists
+}
+
+/**
+ * check if email exists
+ * @param {string} email 
+ * @returns {boolean} true if does exist
+ */
+const checkIfEmailExists = async(email) => {
+	const userExists = await User.emailExists(email)
+	return userExists
 }
 
 const findUsers = async(input) => {
@@ -168,7 +176,6 @@ const findUsers = async(input) => {
 }
 
 const updatePassword = async (username, data) => {
-	console.log(data)
 	if(data.newPassword !== data.confirmNew){
 		throw new BadRequestError("New password does not match")
 	}
@@ -192,5 +199,6 @@ module.exports = {
 	deleteUser,
 	checkIfUserExists,
 	findUsers,
-	updatePassword
+	updatePassword,
+	checkIfEmailExists
 }
