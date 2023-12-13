@@ -188,7 +188,7 @@ const getUsersEvents = async(username) => {
 const getHostingUpcoming = async(username) => {
 	const events = await Event.getHosting(username);
 	const sortedEvents = sortEventsByDate(events);
-	return sortPastUpcoming(sortedEvents).upcoming;
+	return sortPastUpcoming(sortedEvents)?.upcoming;
 }
 
 const getUpcomingEvents = async(username) => {

@@ -3,7 +3,10 @@
 const tokenService = require("../services/token.services");
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
-const { BadRequestError } = require("../expressError");
+const { BadRequestError, UnauthorizedError } = require("../expressError");
+const jwt = require('jsonwebtoken');
+const jsonschema = require("jsonschema")
+const { SECRET_KEY } = require("../config")
 
 /**
  * get a token
@@ -13,11 +16,16 @@ const { BadRequestError } = require("../expressError");
  */
 const getToken = async (username, password) => {
 	const credentials = await checkUsernamePassword(username, password);
-	if(!credentials) throw new BadRequestError("Invalid username/password");
+	if(!credentials) throw new UnauthorizedError("Invalid username/password");
 
 	const token = tokenService.generateToken(credentials);
 
 	return token;
+}
+
+const setUserLocals = async(token) => {
+	res.locals.user = await jwt.verify(token, SECRET_KEY);
+	return 
 }
 
 /**

@@ -11,12 +11,17 @@ const dishServices = require("../services/dishes.services")
  * 	otherwise does nothing
  * 	return next
  */
-const authenticateToken = (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
 	try {
+
 		const authHeader = req.headers && req.headers.authorization;
+		console.log('authHeader');
+		console.log(authHeader)
 		if (authHeader) {
 		  const token = authHeader.replace(/^[Bb]earer /, "").trim();
-		  res.locals.user = jwt.verify(token, SECRET_KEY);
+		  res.locals.user = await jwt.verify(token, SECRET_KEY);
+		  console.log('locals.user')
+		  console.log(res.locals.user)
 		}
 		return next();
 	} catch (err) {
@@ -42,6 +47,8 @@ const ensureLoggedIn = (req, res, next) => {
 const ensureCorrectUser = (req, res, next) => {
 	try {
 		const currUser = res.locals.user;
+		console.log('currUser')
+		console.log(currUser)
 		const paramUsername = req.params.username
 		if (!(currUser && currUser.username === paramUsername)){
 			throw new UnauthorizedError();

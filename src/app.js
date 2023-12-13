@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authMiddleware.authenticateToken);
 
-app.use("/auth", authRoutes);
+app.use("/auth", authRoutes); 
 app.use("/users", userRoutes);
 app.use("/events", eventRoutes);
 app.use("/dishes", dishRoutes);

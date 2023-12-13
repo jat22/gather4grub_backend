@@ -74,7 +74,6 @@ class User {
 				(${columns})
 				VALUES (${placeholders})
 				RETURNING 	username,
-							password,
 							role`,
 				values);
 

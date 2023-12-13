@@ -32,7 +32,7 @@ const register = async (req, res, next) => {
 		const user = await userServices.createUser(newUserInfo);
 		const token = tokenServices.generateToken(user);
 
-		return res.status(201).json({ token })
+		return res.status(201).json({ token, user })
 	} catch(err){
 		return next(err)
 	}
