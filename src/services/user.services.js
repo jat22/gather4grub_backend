@@ -106,12 +106,13 @@ const updateUser = async(username, body) => {
 	// };
 	// delete body.currentPassword;
 
-	if(body.email){
-		const checkEmail = await User.emailExists(body.email);
-		if(checkEmail && checkEmail.username !== username){
-			throw new BadRequestError(`${body.email} is already associated with an account`);
-		};
-	};
+	// if(body.email){
+	// 	const checkEmail = await User.emailExists(body.email);
+	// 	console.log(checkEmail)
+	// 	if(checkEmail?.username !== username){
+	// 		throw new BadRequestError(`${body.email} is already associated with an account`);
+	// 	};
+	// };
 
 	if(body.newPassword && body.newPassword !== body.confirmNewPassword){
 		throw new BadRequestError(`New Password does not match.`);
@@ -181,7 +182,7 @@ const updatePassword = async (username, data) => {
 	}
 	delete data.confirmNew
 	if(! await authSerivces.checkUsernamePassword(username, data.curPassword)){
-		throw new BadRequestError("Invalid password");
+		throw new UnauthorizedError("Invalid password");
 	};
 	delete data.curPassword;
 	const hashedPassword = await bcrypt.hash(

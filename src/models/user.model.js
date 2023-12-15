@@ -7,8 +7,7 @@ class User {
 
 	static async getAccount(username) {
 		const result = await db.query(
-			`SELECT username,
-					first_name AS "firstName",
+			`SELECT first_name AS "firstName",
 					last_name AS "lastName",
 					email,
 					phone,
@@ -17,8 +16,6 @@ class User {
 					state,
 					zip,
 					tag_line AS "tagLine",
-					bio,
-					birthdate,
 					avatar_url AS "avatarUrl"
 				FROM users
 				WHERE username = $1`,
@@ -94,15 +91,11 @@ class User {
 							first_name AS "firstName",
 							last_name AS "lastName",
 							email,
-							role,
-							phone,
 							street_address AS "streetAddress",
 							city,
 							state,
 							zip,
 							tag_line AS "tagLine",
-							bio,
-							birthdate,
 							avatar_url AS "avatarUrl"`,
 			[...values, username]);
 		
@@ -155,6 +148,7 @@ class User {
 
 		return false
 	}
+
 
 	static async findUsers(input){
 		const result = await db.query(

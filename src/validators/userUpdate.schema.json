@@ -48,13 +48,6 @@
 	  "tagLine": {
 		"type": ["string", "null"]
 	  },
-	  "bio": {
-		"type": ["string", "null"]
-	  },
-	  "birthdate": {
-		"type" :["string", "null"],
-		"format": "date-time"
-	  },
 	  "avatarUrl": {
 		"type": ["string", "null"]
 	  }
