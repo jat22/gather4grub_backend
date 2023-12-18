@@ -46,8 +46,8 @@ INSERT INTO events
 		('testuser2', 'Test Event Four', '2023-12-01'),
 		('testuser3', 'Test Event Five', '2023-12-01');
 
-INSERT INTO connections
-		(user1_username, user2_username)
+INSERT INTO following
+		(following_username, followed_username)
 	VALUES
 		('testuser1', 'testuser2'),
 		('testuser1', 'testuser3'),

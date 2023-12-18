@@ -21,7 +21,7 @@ CREATE TABLE users (
 	avatar_url TEXT
 );
 
-CREATE TABLE connection_requests(
+CREATE TABLE follow_requests(
 	id SERIAL PRIMARY KEY,
 	from_username VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
@@ -31,14 +31,14 @@ CREATE TABLE connection_requests(
 	CONSTRAINT unique_from_to_username UNIQUE (from_username, to_username)
 );
 
-CREATE TABLE connections (
-	id SERIAL PRIMARY KEY,
-	user1_username VARCHAR NOT NULL
+CREATE TABLE following (
+	id SERIAL PRIMARY KEY, 
+	following_username VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
-	user2_username VARCHAR NOT NULL
+	followed_username VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
-	connect_date TIMESTAMP DEFAULT NOW(),
-	CONSTRAINT unique_user_connections UNIQUE (user1_username, user2_username)
+	followed_date TIMESTAMP DEFAULT NOW(),
+	CONSTRAINT unique_user_connections UNIQUE (following_username, followed_username)
 );
 
 CREATE TABLE events (

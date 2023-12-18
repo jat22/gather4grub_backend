@@ -7,10 +7,15 @@ const SECRET_KEY = process.env.SECRET_KEY || "dev-secret";
 const PORT = +process.env.PORT || 3001;
 
 // Set Database URI
+// function getDatabaseUri(){
+// 	return(process.env.NODE_ENV === "test")
+// 		? "gather4grub_test"
+// 		: process.env.DATABASE_URL || "postgresql:///gather4grub";
+// }
 function getDatabaseUri(){
 	return(process.env.NODE_ENV === "test")
 		? "gather4grub_test"
-		: process.env.DATABASE_URL || "postgresql:///gather4grub";
+		: process.env.DATABASE_URL || "postgresql:///g4g_testing";
 }
 
 const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
