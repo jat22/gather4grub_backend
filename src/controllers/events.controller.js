@@ -123,8 +123,9 @@ const getBasicDetailsOfEvent = async(req,res,next) => {
  */
 const getFullDetailsOfEvent = async(req,res,next) => {
 	try{
+		const username = res.locals.user.username
 		const event = 
-			await eventServices.getFullDetailsOfEvent(req.params.eventId);
+			await eventServices.getFullDetailsOfEvent(username, req.params.eventId);
 		return res.json({ event })
 	} catch(err){
 		return next(err)

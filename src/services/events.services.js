@@ -78,7 +78,15 @@ const { buildMenu } = require('../utils/sort.utils')
  */
 
 const createEvent = async(host, details) => {
+	const courses = [...details.courses]
+	delete details.courses;
 	const event = await Event.create(host, details);
+	const eventId = event.id
+	const createCoursePromises = courses.map(c=>{
+		Course.create(eventId, c)
+	})
+	const addHostRsvpPromise = await Guest.addToEvent(eventId, host, 'host')
+	const res = await Promise.all([...createCoursePromises, addHostRsvpPromise])
 	return event
 };
 
@@ -106,26 +114,25 @@ const getBasicDetailsOfEvent = async(eventId) => {
  * @property {Array.<Dish>} dishes
  * @property {Array.<Post>} posts
  */
-const getFullDetailsOfEvent = async(eventId) => {
-	// if(!(await checkIfEventExists(eventId))){
-	// 	throw new BadRequestError("event does not exist")
-	// };
-
+const getFullDetailsOfEvent = async(username, eventId) => {
 	const basicDetailsPromise = Event.getBasicDetails(eventId);
 	const guestsPromise = guestServices.getEventGuests(eventId);
 	const menuPromise =	getMenu(eventId);
 	const postsPromise = Post.getForEvent(eventId);
+	const currUserRsvpPromise = Guest.getUserRsvp(username, eventId)
 
-	const [ basicDetails, guests, menu, posts ] = 
+	const [ basicDetails, guests, menu, posts, currUserRsvp ] = 
 		await Promise.all(
-			[basicDetailsPromise, guestsPromise, menuPromise, postsPromise]);
+			[basicDetailsPromise, guestsPromise, menuPromise, postsPromise, currUserRsvpPromise]);
 	
 	const allDetails = {
 		...basicDetails,
 		guests : guests,
 		menu : menu,
-		comments : posts
+		comments : posts,
+		currUserRsvp : currUserRsvp
 	};
+	console.log(allDetails)
 	return allDetails
 };
 

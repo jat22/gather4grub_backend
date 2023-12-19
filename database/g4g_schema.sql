@@ -1,7 +1,14 @@
 
 ---------------------- INTERNAL DATA -------------------------------
-CREATE TYPE status AS ENUM ('accept', 'decline', 'pending');
+CREATE TYPE status AS ENUM ('accept', 'decline', 'pending', 'host');
 CREATE TYPE role AS ENUM ('user', 'admin');
+
+
+CREATE TABLE avatars (
+	id SERIAL PRIMARY KEY,
+	name TEXT,
+	url TEXT
+); 
 
 CREATE TABLE users (
 	username VARCHAR(20) PRIMARY KEY,
@@ -18,7 +25,8 @@ CREATE TABLE users (
 	tag_line TEXT,
 	bio TEXT,
 	birthdate DATE,
-	avatar_url TEXT
+	avatar_url INTEGER
+		REFERENCES avatars(id) ON DELETE SET NULL
 );
 
 CREATE TABLE connection_requests(

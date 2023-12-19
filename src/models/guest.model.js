@@ -16,12 +16,12 @@ class Guest {
 		return result.rows
 	}
 
-	static async addToEvent(eventId, username){
+	static async addToEvent(eventId, username, rsvp="pending"){
 		const result = await db.query(
 			`INSERT INTO guests
-				(event_id, username)
-			VALUES ($1, $2)`,
-			[eventId, username]
+				(event_id, username, rsvp)
+			VALUES ($1, $2, $3)`,
+			[eventId, username, rsvp]
 		);
 		return 
 	}
@@ -42,7 +42,8 @@ class Guest {
 		const result = await db.query(
 			`UPDATE guests
 				SET rsvp = $1
-				WHERE id = $2`,
+				WHERE id = $2
+				RETURNING id, rsvp`,
 			[rsvp,guestId]
 		);
 
@@ -73,6 +74,17 @@ class Guest {
 				[username]
 		)
 		return result.rows
+	}
+
+	static async getUserRsvp(username, eventId){
+		console.log(username)
+		const result = await db.query(
+			`SELECT id, rsvp
+			FROM guests
+			WHERE username=$1 AND event_id=$2`,
+			[username, eventId]
+		)
+		return result.rows[0]
 	}
 }
 

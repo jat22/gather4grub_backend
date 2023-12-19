@@ -20,14 +20,11 @@
 	  "location": {
 		"type": "string"
 	  },
-	  "theme": {
-		"type": "string"
-	  },
 	  "description": {
 		"type": "string"
 	  },
-	  "coverImg": {
-		"type": "string"
+	  "courses" : {
+		"type" : "array"
 	  }
 	},
 	"formats": {

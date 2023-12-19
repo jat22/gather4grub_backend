@@ -73,10 +73,16 @@ const checkIfGuestExistsOnEvent = async(username, eventId) => {
 	return true;
 }
 
+const getUserRsvp = async(username, eventId) => {
+	const rsvp = await Guest.getUserRsvp(username, eventId)
+	return rsvp
+}
+
 module.exports = {
 	getEventGuests,
 	addGuestsToEvent,
 	removeGuestFromEvent,
 	updateEventRSVP,
-	checkIfGuestExistsOnEvent
+	checkIfGuestExistsOnEvent,
+	getUserRsvp
 }

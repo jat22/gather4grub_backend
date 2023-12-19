@@ -1,3 +1,24 @@
+INSERT INTO avatars
+		(name, url)
+	VALUES
+		('boy', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png'),
+		('smily star eyes', 'https://cdn.pixabay.com/photo/2016/09/01/08/25/smiley-1635456_1280.png'),
+		('smily', 'https://cdn.pixabay.com/photo/2016/09/01/08/24/smiley-1635449_1280.png'),
+		('man portrait', 'https://cdn.pixabay.com/photo/2016/10/07/12/35/man-1721463_1280.png'),
+		('cartoon dog', 'https://cdn.pixabay.com/photo/2016/03/31/20/27/avatar-1295773_1280.png'),
+		('blank woman', 'https://cdn.pixabay.com/photo/2014/04/02/14/10/female-306407_1280.png'),
+		('kitten', 'https://cdn.pixabay.com/photo/2020/10/11/19/51/cat-5646889_1280.jpg'),
+		('man maze head', 'https://cdn.pixabay.com/photo/2019/11/05/20/02/man-4604423_1280.png'),
+		('cute peguin face', 'https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295429_1280.png'),
+		('goatee man', 'https://cdn.pixabay.com/photo/2014/03/25/15/23/man-296678_1280.png'),
+		('red vamp face', 'https://cdn.pixabay.com/photo/2013/07/12/16/34/vampire-151178_1280.png'),
+		('smily money eyes', 'https://cdn.pixabay.com/photo/2016/09/01/08/25/smiley-1635464_1280.png'),
+		('evil', 'https://cdn.pixabay.com/photo/2017/03/21/13/27/evil-2162179_1280.png'),
+		('gnome', 'https://cdn.pixabay.com/photo/2022/09/08/17/19/gnome-7441442_1280.png'),
+		('witch', 'https://cdn.pixabay.com/photo/2020/10/12/23/25/witch-5650399_1280.png'),
+		('unicorn', 'https://cdn.pixabay.com/photo/2016/04/01/11/29/avatar-1300370_1280.png');
+
+
 INSERT INTO users 
 		(username, password, first_name, last_name, email)
 	VALUES

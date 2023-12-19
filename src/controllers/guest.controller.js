@@ -86,8 +86,8 @@ const updateRSVP = async(req,res,next) => {
 	try{
 		const inviteId = req.params.inviteId;
 		const rsvp = req.body.rsvp
-		await guestServices.updateEventRSVP(inviteId, rsvp);
-		return res.status(201)
+		const result = await guestServices.updateEventRSVP(inviteId, rsvp);
+		return res.status(201).json(result)
 	} catch(err){
 		return next(err)
 	}
