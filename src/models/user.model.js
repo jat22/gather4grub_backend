@@ -7,18 +7,17 @@ class User {
 
 	static async getAccount(username) {
 		const result = await db.query(
-			`SELECT first_name AS "firstName",
-					last_name AS "lastName",
-					email,
-					phone,
-					street_address AS "streetAddress",
-					city,
-					state,
-					zip,
-					tag_line AS "tagLine",
-					avatar_url AS "avatarUrl"
-				FROM users
-				WHERE username = $1`,
+			`SELECT u.first_name AS "firstName",
+					u.last_name AS "lastName",
+					u.email AS "email",
+					u.phone AS "phone",
+					u.street_address AS "streetAddress",
+					u.city AS "city",
+					u.state AS "state",
+					u.zip AS "zip",
+					u.tag_line AS "tagLine"
+				FROM users AS u
+				WHERE u.username = $1`,
 				[username]);
 
 		const user = result.rows[0];
@@ -28,12 +27,14 @@ class User {
 	static async getUserProfile(username) {
 		const result = await db.query(
 			`SELECT username,
-				first_name AS "firstName",
-				last_name AS "lastName",
-				email,
-				tag_line AS "tagLine",
-				avatar_url AS "avatarUrl"
-			FROM users
+				u.first_name AS "firstName",
+				u.last_name AS "lastName",
+				u.email AS email,
+				u.tag_line AS "tagLine",
+				a.url AS "avatarUrl"
+			FROM users AS u
+			LEFT JOIN avatars AS a
+				ON u.avatar_id = a.id
 			WHERE username=$1`,
 			[username]
 		)
@@ -95,8 +96,7 @@ class User {
 							city,
 							state,
 							zip,
-							tag_line AS "tagLine",
-							avatar_url AS "avatarUrl"`,
+							tag_line AS "tagLine"`,
 			[...values, username]);
 		
 		const user = result.rows[0];
@@ -172,6 +172,37 @@ class User {
 			[hashedPassword, username]
 		)
 		return result.rows[0]
+	}
+
+	static async getAllAvatars(){
+		const result = await db.query(
+			`SELECT id,
+					name,
+					url
+				FROM avatars`
+		)
+		return result.rows
+	}
+
+	static async getAvatar(username){
+		const result = await db.query(
+			`SELECT a.id AS id,
+					a.url AS url
+				FROM users as u
+				JOIN avatars AS a
+					ON u.avatar_id = a.id
+				WHERE u.username=$1`,
+			[username])
+		return result.rows[0]
+	}
+
+	static async updateAvatar(username, avatarId){
+		const result = await db.query(
+			`UPDATE users
+				SET avatar_id=$1
+				WHERE username=$2`,
+			[avatarId, username])
+		return
 	}
 }
 

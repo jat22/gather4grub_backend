@@ -9,13 +9,15 @@ class Connections{
 					u.username, 
 					u.first_name AS "firstName", 
 					u.last_name AS "lastName", 
-					u.email,
-					u.avatar_url AS "avatarUrl",
-					u.tag_line AS "tagLine"
+					u.email AS "email",
+					u.tag_line AS "tagLine",
+					a.url AS "avatarUrl"
 				FROM connections AS c
 				JOIN users AS u 
 					ON (c.user1_username = u.username AND c.user1_username != $1) 
 					OR (c.user2_username = u.username AND c.user2_username != $1)
+				LEFT JOIN avatars AS a
+					ON u.avatar_id = a.id
 				WHERE c.user1_username = $1
 					OR c.user2_username = $1`,
 				[username]);
@@ -30,11 +32,13 @@ class Connections{
 					u.first_name AS "firstName", 
 					u.last_name AS "lastName", 
 					u.email,
-					u.avatar_url AS "avatarUrl",
+					a.url AS "avatarUrl",
 					u.tag_line AS "tagLine"
 				FROM connection_requests AS r
 				JOIN users AS u
 					ON r.from_username = u.username
+				LEFT JOIN avatars AS a
+					ON u.avatar_id = a.id
 				WHERE r.to_username = $1`,
 				[username]);
 		return result.rows

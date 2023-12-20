@@ -104,6 +104,35 @@ const updatePassword = async(req,res,next) => {
 	}	
 }
 
+const getAllAvatars = async(req,res,next) => {
+	try{
+		const avatars = await userServices.getAllAvatars();
+		return res.json({ avatars })
+	}catch(err){
+		return next(err)
+	};
+};
+
+const getAvatar = async(req,res,next) => {
+	try{
+		const username = req.params.username
+		const avatar = await userServices.getAvatar(username);
+		return res.json({ avatar })
+	}catch(err){
+		return next(err)
+	};
+};
+
+const updateAvatar = async(req,res,next) => {
+	try{
+		const username = req.params.username;
+		const avatarId = req.body.avatarId;
+		const avatar = await userServices.updateAvatar(username, avatarId);
+		return res.status(201).json({ avatar })
+	}catch(err){
+		return next(err)
+	}
+}
 
 module.exports = {
 	getUserAccount,
@@ -111,5 +140,8 @@ module.exports = {
 	updateUser,
 	deleteUser,
 	findUsers,
-	updatePassword
+	updatePassword,
+	getAllAvatars,
+	getAvatar,
+	updateAvatar
 };

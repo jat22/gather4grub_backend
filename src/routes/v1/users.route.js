@@ -17,6 +17,15 @@ router
 	.get(userControllers.findUsers)
 
 router
+	.route('/avatars')
+	.get(userControllers.getAllAvatars)
+
+router
+	.route('/:username/avatar')
+	.get(userControllers.getAvatar)
+	.patch(ensureCorrectUser, userControllers.updateAvatar)
+
+router
 	.route('/:username')
 	.all(ensureCorrectUser)
 	.get(userControllers.getUserAccount)

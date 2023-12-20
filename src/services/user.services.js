@@ -192,6 +192,22 @@ const updatePassword = async (username, data) => {
 	return result
 }
 
+const getAllAvatars = async () => {
+	const avatars = await User.getAllAvatars();
+	return avatars
+}
+
+const getAvatar = async(username) => {
+	const avatar = await User.getAvatar(username);
+	return avatar
+}
+
+const updateAvatar = async(username, avatarId) => {
+	await User.updateAvatar(username, avatarId);
+	const avatar = await getAvatar(username)
+	return avatar
+}
+
 module.exports = {
 	getUserAccount,
 	getUserProfile,
@@ -201,5 +217,8 @@ module.exports = {
 	checkIfUserExists,
 	findUsers,
 	updatePassword,
-	checkIfEmailExists
+	checkIfEmailExists,
+	getAllAvatars,
+	getAvatar,
+	updateAvatar
 }

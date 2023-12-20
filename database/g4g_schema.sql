@@ -25,7 +25,7 @@ CREATE TABLE users (
 	tag_line TEXT,
 	bio TEXT,
 	birthdate DATE,
-	avatar_url INTEGER
+	avatar_id INTEGER
 		REFERENCES avatars(id) ON DELETE SET NULL
 );
 

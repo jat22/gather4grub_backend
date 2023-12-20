@@ -16,7 +16,8 @@ INSERT INTO avatars
 		('evil', 'https://cdn.pixabay.com/photo/2017/03/21/13/27/evil-2162179_1280.png'),
 		('gnome', 'https://cdn.pixabay.com/photo/2022/09/08/17/19/gnome-7441442_1280.png'),
 		('witch', 'https://cdn.pixabay.com/photo/2020/10/12/23/25/witch-5650399_1280.png'),
-		('unicorn', 'https://cdn.pixabay.com/photo/2016/04/01/11/29/avatar-1300370_1280.png');
+		('unicorn', 'https://cdn.pixabay.com/photo/2016/04/01/11/29/avatar-1300370_1280.png'),
+		('default', 'https://cdn.pixabay.com/photo/2016/08/20/05/51/avatar-1606939_1280.png');
 
 
 INSERT INTO users 
