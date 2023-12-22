@@ -23,8 +23,6 @@ const Guest = require("../models/guest.model")
 const getEventGuests = async(eventId) => {
 	const guests =
 		await Guest.findForEvent(eventId);
-		
-
 	return guests;
 };
 

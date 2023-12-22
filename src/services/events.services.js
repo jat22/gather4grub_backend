@@ -199,21 +199,22 @@ const getHostingUpcoming = async(username) => {
 }
 
 const getUpcomingEvents = async(username) => {
-	const guestEvents = await Event.getUsers(username);
-	const allGuestEventsSorted = guestEvents ? sortEventsByDate(guestEvents) : null;
-	const upcomingHostEvents = await getHostingUpcoming(username);
-	const upcomingGuestEvents = allGuestEventsSorted ? sortPastUpcoming(allGuestEventsSorted).upcoming : null;
-	if(!upcomingGuestEvents && !upcomingHostEvents) return null
+	const events = await Event.getUsers(username);
+	const eventsChronOrder = events ? sortEventsByDate(events) : null;
+	const sortedEvents = sortPastUpcoming(eventsChronOrder)
+	// const upcomingHostEvents = await getHostingUpcoming(username);
+	// const upcomingGuestEvents = allGuestEventsSorted ? sortPastUpcoming(allGuestEventsSorted).upcoming : null;
+	// if(!upcomingGuestEvents && !upcomingHostEvents) return null
 
-	const allUpcoming = upcomingGuestEvents ? [...upcomingGuestEvents] : []
-	if(upcomingHostEvents){
-		upcomingHostEvents.forEach(e => {
-			e['isHost'] = true;
-			allUpcoming.push(e)
-		})
-	} 
-	const allUpcomingSorted = sortEventsByDate(allUpcoming)
-	return allUpcomingSorted
+	// const allUpcoming = upcomingGuestEvents ? [...upcomingGuestEvents] : []
+	// if(upcomingHostEvents){
+	// 	upcomingHostEvents.forEach(e => {
+	// 		e['isHost'] = true;
+	// 		allUpcoming.push(e)
+	// 	})
+	// } 
+	// const allUpcomingSorted = sortEventsByDate(allUpcoming)
+	return sortedEvents
 }	
 
 const getUserInvitations = async(username) => {

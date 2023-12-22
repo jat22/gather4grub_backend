@@ -16,6 +16,7 @@ const token = async (req, res, next) => {
 
 		return res.json({ token })
 	} catch(err){
+		console.log(err)
 		return next(err)
 	}
 	

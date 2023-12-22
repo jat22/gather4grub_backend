@@ -95,7 +95,7 @@ const newConnectionRequest = async(req, res, next) => {
 const requestAcceptance = async(req,res,next) => {
 	try {
 		await connectionServices.handleRequestAccepted(req.params.username, req.params.reqId);
-		return res.status(200).send()
+		return res.status(204).send()
 	} catch(err) {
 		return next(err)
 	}

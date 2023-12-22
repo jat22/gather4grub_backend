@@ -1,81 +1,447 @@
-INSERT INTO avatars
-		(name, url)
-	VALUES
-		('boy', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png'),
-		('smily star eyes', 'https://cdn.pixabay.com/photo/2016/09/01/08/25/smiley-1635456_1280.png'),
-		('smily', 'https://cdn.pixabay.com/photo/2016/09/01/08/24/smiley-1635449_1280.png'),
-		('man portrait', 'https://cdn.pixabay.com/photo/2016/10/07/12/35/man-1721463_1280.png'),
-		('cartoon dog', 'https://cdn.pixabay.com/photo/2016/03/31/20/27/avatar-1295773_1280.png'),
-		('blank woman', 'https://cdn.pixabay.com/photo/2014/04/02/14/10/female-306407_1280.png'),
-		('kitten', 'https://cdn.pixabay.com/photo/2020/10/11/19/51/cat-5646889_1280.jpg'),
-		('man maze head', 'https://cdn.pixabay.com/photo/2019/11/05/20/02/man-4604423_1280.png'),
-		('cute peguin face', 'https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295429_1280.png'),
-		('goatee man', 'https://cdn.pixabay.com/photo/2014/03/25/15/23/man-296678_1280.png'),
-		('red vamp face', 'https://cdn.pixabay.com/photo/2013/07/12/16/34/vampire-151178_1280.png'),
-		('smily money eyes', 'https://cdn.pixabay.com/photo/2016/09/01/08/25/smiley-1635464_1280.png'),
-		('evil', 'https://cdn.pixabay.com/photo/2017/03/21/13/27/evil-2162179_1280.png'),
-		('gnome', 'https://cdn.pixabay.com/photo/2022/09/08/17/19/gnome-7441442_1280.png'),
-		('witch', 'https://cdn.pixabay.com/photo/2020/10/12/23/25/witch-5650399_1280.png'),
-		('unicorn', 'https://cdn.pixabay.com/photo/2016/04/01/11/29/avatar-1300370_1280.png'),
-		('default', 'https://cdn.pixabay.com/photo/2016/08/20/05/51/avatar-1606939_1280.png');
+-- INSERT INTO avatars
+-- 		(name, url)
+-- 	VALUES
+-- 		('boy', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png'),
+-- 		('smily star eyes', 'https://cdn.pixabay.com/photo/2016/09/01/08/25/smiley-1635456_1280.png'),
+-- 		('smily', 'https://cdn.pixabay.com/photo/2016/09/01/08/24/smiley-1635449_1280.png'),
+-- 		('man portrait', 'https://cdn.pixabay.com/photo/2016/10/07/12/35/man-1721463_1280.png'),
+-- 		('cartoon dog', 'https://cdn.pixabay.com/photo/2016/03/31/20/27/avatar-1295773_1280.png'),
+-- 		('blank woman', 'https://cdn.pixabay.com/photo/2014/04/02/14/10/female-306407_1280.png'),
+-- 		('kitten', 'https://cdn.pixabay.com/photo/2020/10/11/19/51/cat-5646889_1280.jpg'),
+-- 		('man maze head', 'https://cdn.pixabay.com/photo/2019/11/05/20/02/man-4604423_1280.png'),
+-- 		('cute peguin face', 'https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295429_1280.png'),
+-- 		('goatee man', 'https://cdn.pixabay.com/photo/2014/03/25/15/23/man-296678_1280.png'),
+-- 		('red vamp face', 'https://cdn.pixabay.com/photo/2013/07/12/16/34/vampire-151178_1280.png'),
+-- 		('smily money eyes', 'https://cdn.pixabay.com/photo/2016/09/01/08/25/smiley-1635464_1280.png'),
+-- 		('evil', 'https://cdn.pixabay.com/photo/2017/03/21/13/27/evil-2162179_1280.png'),
+-- 		('gnome', 'https://cdn.pixabay.com/photo/2022/09/08/17/19/gnome-7441442_1280.png'),
+-- 		('witch', 'https://cdn.pixabay.com/photo/2020/10/12/23/25/witch-5650399_1280.png'),
+-- 		('unicorn', 'https://cdn.pixabay.com/photo/2016/04/01/11/29/avatar-1300370_1280.png'),
+-- 		('default', 'https://cdn.pixabay.com/photo/2016/08/20/05/51/avatar-1606939_1280.png');
 
 
-INSERT INTO users 
-		(username, password, first_name, last_name, email)
-	VALUES
-		(
-			'testuser1', 
-			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
-			'test1',
-			'user1',
-			'test1@testuser.com'
-		),
-		(
-			'testuser2', 
-			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
-			'test2',
-			'user2',
-			'test2@testuser.com'
-		),
-		(
-			'testuser3', 
-			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
-			'test3',
-			'user3',
-			'test3@testuser.com'
-		),
-		(
-			'testuser4', 
-			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
-			'test4',
-			'user4',
-			'test4@testuser.com'
-		),
-		(
-			'testuser5', 
-			'$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
-			'test5',
-			'user5',
-			'test5@testuser.com'
-		);
+-- INSERT INTO users 
+-- 		(username, password, first_name, last_name, email)
+-- 	VALUES
+-- 		('testuser1', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'John', 'Smith', 'john.smith@example.com'),
+--     	('testuser2', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'Emma', 'Johnson', 'emma.johnson@example.com'),
+--     	('testuser3', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'Michael', 'Williams', 'michael.williams@example.com'),
+-- 		('testuser4', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'Olivia', 'Brown', 'olivia.brown@example.com'),
+-- 		('testuser5', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'Daniel', 'Davis', 'daniel.davis@example.com'),
+-- 		('testuser6', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'Sophia', 'Miller', 'sophia.miller@example.com'),
+-- 		('testuser7', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'Ethan', 'Wilson', 'ethan.wilson@example.com'),
+-- 		('testuser8', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'Ava', 'Moore', 'ava.moore@example.com'),
+-- 		('testuser9', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'Matthew', 'Taylor', 'matthew.taylor@example.com'),
+-- 		('testuser10', '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q', 'Chloe', 'Anderson', 'chloe.anderson@example.com');
 
-INSERT INTO events
-		(host, title, date)
-	VALUES
-		('testuser1', 'Test Event One', '2023-12-01'),
-		('testuser1', 'Test Event Two', '2023-12-01'),
-		('testuser2', 'Test Event Three', '2023-12-01'),
-		('testuser2', 'Test Event Four', '2023-12-01'),
-		('testuser3', 'Test Event Five', '2023-12-01');
+-- INSERT INTO events
+-- 		(host, title, date, start_time, end_time, location, description)
+-- 	VALUES
+-- 		(
+-- 			'testuser8',
+-- 			'Backyard BBQ',
+-- 			'2024-07-15',
+-- 			'17:00:00',
+-- 			'21:00:00',
+-- 			'Green Haven Park, Seattle, WA',
+-- 			'Join us for a fun-filled BBQ party in the park!'
+-- 		),
+-- 		(
+-- 			'testuser3',
+-- 			'Beach Picnic',
+-- 			'2023-09-05',
+-- 			'11:30:00',
+-- 			'15:00:00',
+-- 			'Sandy Shores, Miami Beach, FL',
+-- 			'Relax and enjoy a sunny day with a beachside picnic.'
+-- 		),
+-- 		(
+-- 			'testuser6',
+-- 			'Movie Night',
+-- 			'2025-04-18',
+-- 			'19:00:00',
+-- 			'22:30:00',
+-- 			'Cineplex Plaza, San Francisco, CA',
+-- 			'Grab your popcorn for a fantastic movie night!'
+-- 		),
+-- 		(
+-- 			'testuser5',
+-- 			'Garden Party',
+-- 			'2024-10-30',
+-- 			'14:30:00',
+-- 			'18:00:00',
+-- 			'Blossom Garden, Boston, MA',
+-- 			'Enjoy a lovely afternoon surrounded by beautiful flowers.'
+-- 		),
+-- 		(
+-- 			'testuser1',
+-- 			'Cooking Class',
+-- 			'2023-12-31',
+-- 			'16:30:00',
+-- 			'20:00:00',
+-- 			'Taste Academy, New York City, NY',
+-- 			'Learn new recipes and techniques at our cooking class!'
+-- 		),
+-- 		(
+-- 			'testuser7',
+-- 			'Board Game Marathon',
+-- 			'2025-08-15',
+-- 			'14:00:00',
+-- 			'20:30:00',
+-- 			'Strategy Cafe, Austin, TX',
+-- 			'Join us for a day of intense board game battles!'
+-- 		),
+-- 		(
+-- 			'testuser2',
+-- 			'Hiking Adventure',
+-- 			'2026-06-22',
+-- 			'09:00:00',
+-- 			'16:00:00',
+-- 			'Wilderness Trail, Denver, CO',
+-- 			'Embark on an adventurous hike with breathtaking views!'
+-- 		),
+-- 		(
+-- 			'testuser4',
+-- 			'Pool Party',
+-- 			'2023-07-08',
+-- 			'12:00:00',
+-- 			'18:00:00',
+-- 			'Sunny Splash Resort, Orlando, FL',
+-- 			'Beat the heat with a refreshing poolside celebration!'
+-- 		),
+-- 		(
+-- 			'testuser10',
+-- 			'Art Exhibition',
+-- 			'2024-09-18',
+-- 			'15:00:00',
+-- 			'19:30:00',
+-- 			'Gallery Muse, Philadelphia, PA',
+-- 			'Experience a showcase of creativity and imagination.'
+-- 		),
+-- 		(
+-- 			'testuser9',
+-- 			'Karaoke Night',
+-- 			'2025-11-10',
+-- 			'20:00:00',
+-- 			'23:00:00',
+-- 			'Melody Lounge, Las Vegas, NV',
+-- 			'Sing your heart out at our karaoke extravaganza!'
+-- 		),
+-- 		(
+-- 			'testuser8',
+-- 			'Pajama Party',
+-- 			'2023-05-20',
+-- 			'19:30:00',
+-- 			'23:30:00',
+-- 			'Cozy Corner, Portland, OR',
+-- 			'Get ready for a comfy night in with movies and snacks!'
+-- 		),
+-- 		(
+-- 			'testuser3',
+-- 			'Wine Tasting',
+-- 			'2026-01-25',
+-- 			'18:00:00',
+-- 			'21:00:00',
+-- 			'Vineyard View, Napa Valley, CA',
+-- 			'Savor an evening of exquisite wines and gourmet bites.'
+-- 		),
+-- 		(
+-- 			'testuser6',
+-- 			'Fitness Bootcamp',
+-- 			'2024-03-08',
+-- 			'07:00:00',
+-- 			'09:30:00',
+-- 			'FitZone Arena, Houston, TX',
+-- 			'Revitalize yourself with a high-energy fitness session!'
+-- 		),
+-- 		(
+-- 			'testuser5',
+-- 			'Tech Conference',
+-- 			'2025-12-02',
+-- 			'09:30:00',
+-- 			'17:00:00',
+-- 			'Innovate Hub, San Jose, CA',
+-- 			'Explore the latest trends and innovations in technology.'
+-- 		),
+-- 		(
+-- 			'testuser1',
+-- 			'Baking Workshop',
+-- 			'2023-11-11',
+-- 			'14:00:00',
+-- 			'17:30:00',
+-- 			'Sweet Sensations, Chicago, IL',
+-- 			'Learn the art of baking delicious pastries and desserts!'
+-- 		),
+-- 		(
+-- 			'testuser7',
+-- 			'Yoga Retreat',
+-- 			'2025-07-05',
+-- 			'08:30:00',
+-- 			'12:00:00',
+-- 			'Zen Sanctuary, Sedona, AZ',
+-- 			'Relax and rejuvenate your body and mind with yoga.'
+-- 		),
+-- 		(
+-- 			'testuser2',
+-- 			'Outdoor Concert',
+-- 			'2026-08-30',
+-- 			'18:30:00',
+-- 			'23:00:00',
+-- 			'Harmony Park, Nashville, TN',
+-- 			'Enjoy live music under the stars at our outdoor concert!'
+-- 		),
+-- 		(
+-- 			'testuser4',
+-- 			'Cocktail Masterclass',
+-- 			'2024-02-14',
+-- 			'17:00:00',
+-- 			'19:30:00',
+-- 			'Mixology Lounge, Miami, FL',
+-- 			'Unleash your inner mixologist in our cocktail workshop!'
+-- 		),
+-- 		(
+-- 			'testuser10',
+-- 			'Pottery Workshop',
+-- 			'2023-10-10',
+-- 			'11:00:00',
+-- 			'14:00:00',
+-- 			'Artisan Studio, Santa Fe, NM',
+-- 			'Create beautiful pottery pieces with expert guidance.'
+-- 		),
+-- 		(
+-- 			'testuser9',
+-- 			'Fashion Show',
+-- 			'2025-05-28',
+-- 			'19:00:00',
+-- 			'22:00:00',
+-- 			'Chic Plaza, New York City, NY',
+-- 			'Witness stunning designs and runway glamour.'
+-- 		),
+-- 		(
+-- 			'testuser8',
+-- 			'Coffee Tasting',
+-- 			'2023-06-14',
+-- 			'10:30:00',
+-- 			'12:30:00',
+-- 			'Roastery Cafe, Seattle, WA',
+-- 			'Discover unique flavors in our specialty coffee tasting.'
+-- 		),
+-- 		(
+-- 			'testuser3',
+-- 			'DIY Workshop',
+-- 			'2024-12-01',
+-- 			'13:00:00',
+-- 			'16:00:00',
+-- 			'Handcraft Haven, Portland, OR',
+-- 			'Craft your own home decor in our creative workshop!'
+-- 		),
+-- 		(
+-- 			'testuser6',
+-- 			'Book Club Meeting',
+-- 			'2025-09-09',
+-- 			'16:30:00',
+-- 			'19:00:00',
+-- 			'Novel Nook, Boston, MA',
+-- 			'Discuss and share thoughts on our latest book pick.'
+-- 		),
+-- 		(
+-- 			'testuser5',
+-- 			'Nature Photography Tour',
+-- 			'2024-04-28',
+-- 			'08:00:00',
+-- 			'11:00:00',
+-- 			'Wilderness Trails, Denver, CO',
+-- 			'Capture the beauty of nature on our guided tour.'
+-- 		),
+-- 		(
+-- 			'testuser1',
+-- 			'Dance Workshop',
+-- 			'2023-08-22',
+-- 			'15:30:00',
+-- 			'18:00:00',
+-- 			'Rhythmic Moves, Los Angeles, CA',
+-- 			'Learn new dance styles and grooves in our workshop!'
+-- 		),
+-- 		(
+-- 			'testuser7',
+-- 			'Science Fair',
+-- 			'2026-10-12',
+-- 			'11:00:00',
+-- 			'15:00:00',
+-- 			'Discovery Center, San Francisco, CA',
+-- 			'Explore fascinating exhibits at our interactive fair.'
+-- 		),
+-- 		(
+-- 			'testuser2',
+-- 			'Burger Cook-off',
+-- 			'2025-02-17',
+-- 			'12:30:00',
+-- 			'16:00:00',
+-- 			'Grilltopia, Austin, TX',
+-- 			'Compete in a delicious burger cook-off challenge!'
+-- 		),
+-- 		(
+-- 			'testuser4',
+-- 			'Live Comedy Show',
+-- 			'2024-11-04',
+-- 			'20:00:00',
+-- 			'22:30:00',
+-- 			'Laugh Lounge, Chicago, IL',
+-- 			'Laugh out loud with our lineup of hilarious comedians.'
+-- 		),
+-- 		(
+-- 			'testuser10',
+-- 			'Fitness Challenge',
+-- 			'2023-03-26',
+-- 			'06:00:00',
+-- 			'09:00:00',
+-- 			'FitFusion Gym, Houston, TX',
+-- 			'Push your limits in our ultimate fitness challenge!'
+-- 		),
+-- 		(
+-- 			'testuser9',
+-- 			'Gardening Workshop',
+-- 			'2025-06-09',
+-- 			'09:30:00',
+-- 			'12:00:00',
+-- 			'Botanic Bliss, Philadelphia, PA',
+-- 			'Discover the secrets to a thriving garden.'
+-- 		);
 
-INSERT INTO connections
-		(user1_username, user2_username)
-	VALUES
-		('testuser1', 'testuser2'),
-		('testuser1', 'testuser3'),
-		('testuser1', 'testuser4'),
-		('testuser1', 'testuser5'),
-		('testuser2', 'testuser4'),
-		('testuser2', 'testuser5'),
-		('testuser5', 'testuser4'),
-		('testuser5', 'testuser3');
+
+-- INSERT INTO connections
+-- 		(user1_username, user2_username)
+-- 	VALUES
+-- 		('testuser3', 'testuser8'),
+-- 		('testuser1', 'testuser8'),
+-- 		('testuser2', 'testuser9'),
+-- 		('testuser4', 'testuser7'),
+-- 		('testuser5', 'testuser6'),
+-- 		('testuser4', 'testuser9'),
+-- 		('testuser1', 'testuser9'),
+-- 		('testuser6', 'testuser10'),
+-- 		('testuser4', 'testuser10'),
+-- 		('testuser1', 'testuser7'),
+-- 		('testuser2', 'testuser6'),
+-- 		('testuser3', 'testuser7'),
+-- 		('testuser2', 'testuser10'),
+-- 		('testuser3', 'testuser9'),
+-- 		('testuser5', 'testuser8'),
+-- 		('testuser2', 'testuser5'),
+-- 		('testuser1', 'testuser5'),
+-- 		('testuser3', 'testuser4'),
+-- 		('testuser1', 'testuser10'),
+-- 		('testuser2', 'testuser7'),
+-- 		('testuser4', 'testuser5'),
+-- 		('testuser5', 'testuser9'),
+-- 		('testuser3', 'testuser6'),
+-- 		('testuser1', 'testuser6'),
+-- 		('testuser2', 'testuser8');
+
+
+-- INSERT INTO courses
+-- 		(event_id, name)
+-- 	VALUES
+-- 		(1, 'Appetizers'),
+-- 		(2, 'Appetizers'),
+-- 		(3, 'Appetizers'),
+-- 		(4, 'Appetizers'),
+-- 		(5, 'Appetizers'),
+-- 		(6, 'Appetizers'),
+-- 		(7, 'Appetizers'),
+-- 		(8, 'Appetizers'),
+-- 		(9, 'Appetizers'),
+-- 		(10, 'Appetizers'),
+-- 		(11, 'Appetizers'),
+-- 		(12, 'Appetizers'),
+-- 		(13, 'Appetizers'),
+-- 		(14, 'Appetizers'),
+-- 		(15, 'Appetizers'),
+-- 		(16, 'Appetizers'),
+-- 		(17, 'Appetizers'),
+-- 		(18, 'Appetizers'),
+-- 		(19, 'Appetizers'),
+-- 		(20, 'Appetizers'),
+-- 		(21, 'Appetizers'),
+-- 		(22, 'Appetizers'),
+-- 		(23, 'Appetizers'),
+-- 		(24, 'Appetizers'),
+-- 		(25, 'Appetizers'),
+-- 		(26, 'Appetizers'),
+-- 		(27, 'Appetizers'),
+-- 		(28, 'Appetizers'),
+-- 		(29, 'Appetizers'),
+-- 		(30, 'Appetizers'),
+-- 		(1, 'Mains'),
+-- 		(2, 'Mains'),
+-- 		(3, 'Mains'),
+-- 		(4, 'Mains'),
+-- 		(5, 'Mains'),
+-- 		(6, 'Mains'),
+-- 		(7, 'Mains'),
+-- 		(8, 'Mains'),
+-- 		(9, 'Mains'),
+-- 		(10, 'Mains'),
+-- 		(11, 'Mains'),
+-- 		(12, 'Mains'),
+-- 		(13, 'Mains'),
+-- 		(14, 'Mains'),
+-- 		(15, 'Mains'),
+-- 		(16, 'Mains'),
+-- 		(17, 'Mains'),
+-- 		(18, 'Mains'),
+-- 		(19, 'Mains'),
+-- 		(20, 'Mains'),
+-- 		(21, 'Mains'),
+-- 		(22, 'Mains'),
+-- 		(23, 'Mains'),
+-- 		(24, 'Mains'),
+-- 		(25, 'Mains'),
+-- 		(26, 'Mains'),
+-- 		(27, 'Mains'),
+-- 		(28, 'Mains'),
+-- 		(29, 'Mains'),
+-- 		(30, 'Mains'),
+-- 		(1, 'Desserts'),
+-- 		(2, 'Desserts'),
+-- 		(3, 'Desserts'),
+-- 		(4, 'Desserts'),
+-- 		(5, 'Desserts'),
+-- 		(6, 'Desserts'),
+-- 		(7, 'Desserts'),
+-- 		(8, 'Desserts'),
+-- 		(9, 'Desserts'),
+-- 		(10, 'Desserts'),
+-- 		(11, 'Desserts'),
+-- 		(12, 'Desserts'),
+-- 		(13, 'Desserts'),
+-- 		(14, 'Desserts'),
+-- 		(15, 'Desserts'),
+-- 		(16, 'Desserts'),
+-- 		(17, 'Desserts'),
+-- 		(18, 'Desserts'),
+-- 		(19, 'Desserts'),
+-- 		(20, 'Desserts'),
+-- 		(21, 'Desserts'),
+-- 		(22, 'Desserts'),
+-- 		(23, 'Desserts'),
+-- 		(24, 'Desserts'),
+-- 		(25, 'Desserts'),
+-- 		(26, 'Desserts'),
+-- 		(27, 'Desserts'),
+-- 		(28, 'Desserts'),
+-- 		(29, 'Desserts'),
+-- 		(30, 'Desserts');
+
+
+INSERT INTO connection_requests
+	(from_username, to_username)
+	VALUES 
+		('testuser1', 'testuser10'),
+		('testuser2', 'testuser10'),
+		('testuser4', 'testuser10'),
+		('testuser5', 'testuser10'),
+		('testuser6', 'testuser10'),
+		('testuser7', 'testuser10'),
+		('testuser8', 'testuser10'),
+		('testuser9', 'testuser10');

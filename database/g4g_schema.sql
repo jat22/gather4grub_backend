@@ -23,8 +23,6 @@ CREATE TABLE users (
 	state VARCHAR(2),
 	zip VARCHAR(5),
 	tag_line TEXT,
-	bio TEXT,
-	birthdate DATE,
 	avatar_id INTEGER
 		REFERENCES avatars(id) ON DELETE SET NULL
 );
@@ -35,8 +33,7 @@ CREATE TABLE connection_requests(
 		REFERENCES users(username) ON DELETE CASCADE,
 	to_username VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
-	request_date TIMESTAMP DEFAULT NOW(),
-	CONSTRAINT unique_from_to_username UNIQUE (from_username, to_username)
+	request_date TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE connections (
@@ -45,9 +42,9 @@ CREATE TABLE connections (
 		REFERENCES users(username) ON DELETE CASCADE,
 	user2_username VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE CASCADE,
-	connect_date TIMESTAMP DEFAULT NOW(),
-	CONSTRAINT unique_user_connections UNIQUE (user1_username, user2_username)
+	connect_date TIMESTAMP DEFAULT NOW()
 );
+
 
 CREATE TABLE events (
 	id SERIAL PRIMARY KEY,
@@ -98,3 +95,108 @@ CREATE TABLE comments (
 	author VARCHAR NOT NULL
 		REFERENCES users(username) ON DELETE SET NULL
 );
+
+-- Auxiliary table
+CREATE TABLE normalized_request_pairs (
+    id SERIAL PRIMARY KEY,
+    username1 VARCHAR(255) NOT NULL,
+    username2 VARCHAR(255) NOT NULL,
+    CONSTRAINT unique_requests UNIQUE (username1, username2)
+);
+
+CREATE TABLE normalized_connection_pairs (
+    id SERIAL PRIMARY KEY,
+    username1 VARCHAR(255) NOT NULL,
+    username2 VARCHAR(255) NOT NULL,
+    CONSTRAINT unique_connections UNIQUE (username1, username2)
+);
+
+-- Triggers
+
+-- Connection Requests check unique
+CREATE OR REPLACE FUNCTION check_unique_request_pair()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO normalized_request_pairs (username1, username2)
+    VALUES (
+        LEAST(NEW.from_username, NEW.to_username),
+        GREATEST(NEW.from_username, NEW.to_username)
+    ) ON CONFLICT DO NOTHING;
+    
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Duplicate connection request.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_unique_request_pair
+BEFORE INSERT OR UPDATE OF from_username, to_username
+ON connection_requests
+FOR EACH ROW
+EXECUTE FUNCTION check_unique_request_pair();
+
+
+-- Connections check unique
+CREATE OR REPLACE FUNCTION check_unique_connection_pair()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO normalized_connection_pairs (username1, username2)
+    VALUES (
+        LEAST(NEW.user1_username, NEW.user2_username),
+        GREATEST(NEW.user1_username, NEW.user2_username)
+    ) ON CONFLICT DO NOTHING;
+    
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Duplicate connection.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_unique_connection_pair
+BEFORE INSERT OR UPDATE OF user1_username, user2_username
+ON connections
+FOR EACH ROW
+EXECUTE FUNCTION check_unique_connection_pair();
+
+
+-- Delete unique connection requests 
+CREATE OR REPLACE FUNCTION remove_deleted_request_pair()
+RETURNS TRIGGER AS $$
+BEGIN
+	DELETE FROM normalized_request_pairs
+	WHERE 
+		(username1 = OLD.from_username AND username2 = OLD.to_username ) 
+		OR
+		(username1 = OLD.to_username AND username2 = OLD.from_username);
+	
+	RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER removed_deleted_request_pair
+AFTER DELETE ON connection_requests
+FOR EACH ROW
+EXECUTE FUNCTION remove_deleted_request_pair();
+
+
+-- Delete unique connections
+CREATE OR REPLACE FUNCTION remove_deleted_connection_pair()
+RETURNS TRIGGER AS $$
+BEGIN
+	DELETE FROM normalized_connection_pairs
+	WHERE 
+		(username1 = OLD.user1_username AND username2 = OLD.user2_username ) OR
+		(username1 = OLD.user2_username AND username2 = OLD.user1_username);
+	
+	RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER removed_deleted_connection_pair
+AFTER DELETE ON connections
+FOR EACH ROW
+EXECUTE FUNCTION remove_deleted_connection_pair();

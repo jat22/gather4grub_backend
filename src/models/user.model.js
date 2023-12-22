@@ -152,12 +152,14 @@ class User {
 
 	static async findUsers(input){
 		const result = await db.query(
-			`SELECT username,
-					first_name AS "firstName",
-					last_name AS "lastName",
-					email,
-					avatar_url AS avatarUrl
-				FROM users
+			`SELECT u.username,
+					u.first_name AS "firstName",
+					u.last_name AS "lastName",
+					u.email AS "email",
+					a.url AS "avatarUrl"
+				FROM users AS u
+				LEFT JOIN avatars AS a
+					ON u.avatar_id = a.id
 				WHERE email=$1 OR username=$1`,
 			[input])
 		return result.rows

@@ -100,21 +100,20 @@ class Event {
 
 	static async getUsers(username){
 		const result = await db.query(
-			`SELECT g.id,
-					g.host,
-					g.title,
-					g.date,
-					g.start_time AS "startTime",
-					g.end_time AS "endTime",
-					g.location,
-					g.description,
-					guests.rsvp AS "rsvp"
-			FROM events AS g
-			LEFT JOIN guests
-				ON g.id = guests.event_id
-			WHERE guests.username = $1`,
+			`SELECT e.id,
+					e.host,
+					e.title,
+					e.date,
+					e.start_time AS "startTime",
+					e.end_time AS "endTime",
+					e.location,
+					e.description,
+					g.rsvp AS "rsvp"
+			FROM events AS e
+			LEFT JOIN guests AS g
+				ON e.id = g.event_id
+			WHERE g.username = $1`,
 			[username]);
-		
 		return result.rows
 	}
 

@@ -2,7 +2,7 @@
 
 const Connections = require("../models/connection.model")
 const userServices = require("../services/user.services")
-const { BadRequestError, NotFoundError, InternalServerError, UnauthorizedError } = require("../expressError");
+const { BadRequestError, NotFoundError, InternalServerError, UnauthorizedError, GeneralDatabaseError } = require("../expressError");
 
 /**
  * Retrieves a user's list of connections.
@@ -32,13 +32,24 @@ const getConnectionRequestsForUser = async (username) => {
  * @returns {num} connection request id
  */
 const createConnectionRequest = async (fromUsername, toUsername) => {
-	userServices.checkIfUserExists(toUsername)
-	const connectionRequest = 
-		await Connections.createConnectionRequest(fromUsername, toUsername);	
-	if(!connectionRequest) {
-		throw new InternalServerError("Database Error")
+	if(fromUsername === toUsername){
+		throw new BadRequestError('From and to user can not be the same user.')
+	}
+	try{
+		await Connections.checkExistingAssociations(fromUsername, toUsername);
+
+		const connectionRequest = 
+			await Connections.createConnectionRequest(fromUsername, toUsername);
+
+		if(!connectionRequest){
+			throw new GeneralDatabaseError()
+		}
+		return connectionRequest.id
+	}catch(err){
+		if(err.code === 'P0001'){
+			throw new BadRequestError(err.message)
+		} else throw err;
 	};
-	return connectionRequest.id	
 };
 
 /**
@@ -48,22 +59,33 @@ const createConnectionRequest = async (fromUsername, toUsername) => {
  * @returns {undefined}
  */
 const handleRequestAccepted = async (username, reqId) => {
-	const connectionRequest = await Connections.getRequest(reqId);
-	if(!connectionRequest) throw new NotFoundError("request does not exist");
-	if(connectionRequest.toUsername !== username) throw new UnauthorizedError();
+	try{
+		const connectionRequest = await Connections.getRequest(reqId);
+		if(!connectionRequest) {
+			throw new BadRequestError('Connecttion request does not exist.');
+		} else if(connectionRequest.fromUsername === username){
+			throw new BadRequestError('User can not have a connection with itself.');
+		};
 
-	const acceptResult = 
-		await Connections.createConnection(username, connectionRequest.fromUsername);
-	if(!acceptResult) {
-		throw new InternalServerError("database error: connection request acceptance not processed")
-	};
+		const acceptResult = 
+			await Connections.createConnection(username, connectionRequest.fromUsername);
+		if(!acceptResult) {
+			throw new GeneralDatabaseError("DatabaseError: new connection not created.");
+		};
 
-	const removeRequestResult = await Connections.deleteConnectionRequest(reqId);
-	if(!removeRequestResult) {
-		throw new InternalServerError("database error: connection request not removed.")
+		const removeRequestResult = await Connections.deleteConnectionRequest(reqId);
+		if(!removeRequestResult) {
+			throw new GeneralDatabaseError("DatabaseError: connection request not removed.")
+		}
+	
+		return acceptResult
+	}catch(err){
+		if(err.code === 'P0001'){
+			throw new BadRequestError(err.message)
+		} else throw err
 	}
 
-	return
+
 };
 /**
  * Removes connection request.
@@ -90,7 +112,8 @@ const handleRequestDenial = async(username, reqId) => {
  */
 const deleteExistingConnection = async (connectionId, username) => {
 	const connection = await Connections.getConnection(connectionId);
-	if(connection.user1 !== username || connection.user2 !== username){
+
+	if(connection.user1 !== username && connection.user2 !== username){
 		throw new UnauthorizedError();
 	}
 	const result = await Connections.deleteConnectionWithId(connectionId, username)

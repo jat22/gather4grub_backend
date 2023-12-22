@@ -5,11 +5,20 @@ const SqlUtils = require('../../src/utils/sql.utils')
 class Guest {
 	static async findForEvent(eventId){
 		const result = await db.query(
-			`SELECT id,
-					username,
-					rsvp
-			FROM guests
-			WHERE event_id = $1`,
+			`SELECT g.id AS "guestId",
+					g.username AS "username",
+					g.rsvp AS "rsvp",
+					u.first_name AS "firstName",
+					u.last_name AS "lastName",
+					u.email AS "email",
+					u.tag_line AS "tagLine",
+					a.url AS "avatarUrl"
+			FROM guests AS g
+			JOIN users AS u
+				ON g.username = u.username
+			LEFT JOIN avatars AS a
+				ON u.avatar_id = a.id
+			WHERE g.event_id = $1`,
 			[eventId]
 		);
 

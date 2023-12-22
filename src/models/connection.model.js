@@ -1,6 +1,7 @@
 "use strict";
 
 const db = require("../db");
+const { GeneralDatabaseError, BadRequestError } = require("../expressError");
 
 class Connections{
 	static async listUserConnections(username) {
@@ -45,13 +46,24 @@ class Connections{
 	};
 
 	static async createConnectionRequest(fromUsername, toUsername){
-		const result = await db.query(
-			`INSERT INTO connection_requests
-				(from_username, to_username)
-				VALUES ($1, $2)
-				RETURNING id`,
-				[fromUsername, toUsername]);
-		return result.rows[0]
+		try{
+			const result = await db.query(
+				`INSERT INTO connection_requests
+					(from_username, to_username)
+					VALUES ($1, $2)
+					RETURNING id`,
+					[fromUsername, toUsername]);
+			const newRequestId =  result.rows[0];
+			if(!newRequestId){
+				throw new GeneralDatabaseError();
+			} 
+			return newRequestId
+		} catch(err){
+			if(err.code === 'P0001'){
+				throw new BadRequestError(err.message)
+			} else throw err
+		}
+		
 	};
 
 	static async deleteConnectionRequest(reqId){
@@ -104,6 +116,35 @@ class Connections{
 			[connectionId] 
 		)
 		return result.rows[0]
+	}
+
+	static async checkExistingAssociations(username1, username2){
+		const requestsResult = await db.query(
+			`SELECT id
+				FROM normalized_request_pairs
+				WHERE 
+					(username1=$1 AND username2=$2)
+					OR
+					(username2=$1 AND username1=$2)`,
+			[username1, username2]
+		);
+		const connectionsResult = await db.query(
+			`SELECT id
+				FROM normalized_connection_pairs
+				WHERE 
+					(username1=$1 AND username2=$2)
+					OR
+					(username2=$1 AND username1=$2)`,
+			[username1, username2]
+		);
+
+		if(requestsResult.rows[0]){
+			throw new BadRequestError('A connection request already exists.')
+		} else if(connectionsResult.rows[0]){
+			throw new BadRequestError('Users are already connected.')
+		};
+
+		return false
 	}
 
 	static _connectionsTable = "connections";

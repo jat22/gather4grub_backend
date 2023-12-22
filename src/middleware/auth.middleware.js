@@ -47,8 +47,6 @@ const ensureLoggedIn = (req, res, next) => {
 const ensureCorrectUser = (req, res, next) => {
 	try {
 		const currUser = res.locals.user;
-		console.log('currUser')
-		console.log(currUser)
 		const paramUsername = req.params.username
 		if (!(currUser && currUser.username === paramUsername)){
 			throw new UnauthorizedError();

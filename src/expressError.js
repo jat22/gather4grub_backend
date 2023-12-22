@@ -42,11 +42,18 @@ class InternalServerError extends ExpressError {
 	}
 }
 
+class GeneralDatabaseError extends ExpressError {
+	constructor(message = 'Database Error'){
+		super(message, 500)
+	}
+}
+
 module.exports = {
 	ExpressError,
 	NotFoundError,
 	UnauthorizedError,
 	ForbiddenError,
 	BadRequestError,
-	InternalServerError
+	InternalServerError,
+	GeneralDatabaseError
 }
