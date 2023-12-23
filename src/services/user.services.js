@@ -208,6 +208,38 @@ const updateAvatar = async(username, avatarId) => {
 	return avatar
 }
 
+const getPotentialConnections = async(searchInput, currUsername) => {
+	const searchResults = await findUsers(searchInput);
+	// [{users: username, ...., relation: {type, id}]
+
+	const connectionPromises = searchResults.map(r => {
+		return User.getUsersConnectionId(r.username, currUsername)
+	})
+	// {username : {type: 'connections or request', id:'num'}}
+	const requestPromises = searchResults.map(r => {
+		return User.getUsersRequestId(r.username, currUsername)
+	})
+
+	const results = await Promise.all([...connectionPromises, ...requestPromises])
+
+	const relationMap = {};
+
+	results.forEach(r=> {
+		if(!r) return
+		else {
+			relationMap[r.searchedUser] = {type:r.type, id: r.id}
+		};
+	});
+
+
+	const users = searchResults.map(r => {
+		const relation = relationMap[r.username];
+		return {...r, relation: relation}
+	})
+
+	return users
+}
+
 module.exports = {
 	getUserAccount,
 	getUserProfile,
@@ -220,5 +252,6 @@ module.exports = {
 	checkIfEmailExists,
 	getAllAvatars,
 	getAvatar,
-	updateAvatar
+	updateAvatar,
+	getPotentialConnections
 }

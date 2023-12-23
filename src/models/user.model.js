@@ -206,6 +206,56 @@ class User {
 			[avatarId, username])
 		return
 	}
+
+	static async getUsersConnectionId(searchedUser, currUser){
+		const result = await db.query (
+			`SELECT id
+				FROM connections
+				WHERE
+					(user1_username = $1
+						OR user2_username = $1)
+					AND
+					(user1_username = $2
+						OR user2_username = $2)`,
+			[searchedUser, currUser]
+		);
+
+		const connectionId = result.rows[0]?.id;
+		if(!connectionId) return null;
+
+		return (
+			{
+				searchedUser: searchedUser, 
+				id : connectionId,
+				type : 'connection'
+			}
+		)
+	}
+
+	static async getUsersRequestId(searchedUser, currUser){
+		const result = await db.query(
+			`SELECT id
+			FROM connection_requests
+			WHERE
+				(from_username = $1
+					AND to_username = $2)
+				OR
+				(from_username = $2
+					AND to_username=$1)`,
+			[searchedUser, currUser]
+		);
+
+		const requestId = result.rows[0]?.id
+		if(!requestId) return null
+
+		return (
+			{
+				searchedUser: searchedUser, 
+				id : requestId,
+				type : 'request'
+			}
+		);
+	};
 }
 
 module.exports = User;

@@ -15,13 +15,9 @@ const authenticateToken = async (req, res, next) => {
 	try {
 
 		const authHeader = req.headers && req.headers.authorization;
-		console.log('authHeader');
-		console.log(authHeader)
 		if (authHeader) {
 		  const token = authHeader.replace(/^[Bb]earer /, "").trim();
 		  res.locals.user = await jwt.verify(token, SECRET_KEY);
-		  console.log('locals.user')
-		  console.log(res.locals.user)
 		}
 		return next();
 	} catch (err) {

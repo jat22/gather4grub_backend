@@ -94,6 +94,18 @@ const findUsers = async(req,res,next) => {
 	}
 }
 
+const findPotentialConnections = async(req,res,next) => {
+	try{
+		const searchInput = req.params.input;
+		const currUser = req.query.currUser
+		const users = 
+			await userServices.getPotentialConnections(searchInput, currUser)
+		return res.json({ users })
+	}catch(err){
+		return next(err)
+	}
+}
+
 const updatePassword = async(req,res,next) => {
 	try{
 		const username = req.params.username;
@@ -143,5 +155,6 @@ module.exports = {
 	updatePassword,
 	getAllAvatars,
 	getAvatar,
-	updateAvatar
+	updateAvatar,
+	findPotentialConnections
 };

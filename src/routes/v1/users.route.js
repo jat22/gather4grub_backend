@@ -14,7 +14,7 @@ const router = express.Router()
 
 router
 	.route('/find/:input')
-	.get(userControllers.findUsers)
+	.get(userControllers.findPotentialConnections)
 
 router
 	.route('/avatars')
