@@ -1,67 +1,77 @@
 "use strict";
-const { BadRequestError } = require("../expressError");
 const authServices = require("../services/auth.services");
 const tokenServices = require("../services/token.services");
 const userServices = require("../services/user.services")
 
-/** Handles "auth/token" route
- *	sends json response
-	{ "token" : <token string> }
-*/
+
+/**
+ * @route POST  '/auth/token'
+ * @desc Generate user auth token
+ * @access Public
+ */
 const token = async (req, res, next) => {
 	try {
 		const username = req.body.username;
 		const password = req.body.password;
 		const token = await authServices.getToken(username, password);
 
-		return res.json({ token })
+		return res.json({ token });
 	} catch(err){
-		console.log(err)
-		return next(err)
-	}
+		return next(err);
+	};
 	
-}
+};
 
-/** Handles auth/register route.
- * 	Allows new user to register
- * 	sends json response
- * { "token" : <token string> }
+/**
+ * @route POST  '/auth/register'
+ * @desc Register a new user
+ * @access Public
  */
 const register = async (req, res, next) => {
 	try{
-		const newUserInfo = req.body
+		const newUserInfo = req.body;
 		const user = await userServices.createUser(newUserInfo);
-		const token = tokenServices.generateToken(user);
+		const token = await tokenServices.generateToken(user);
 
-		return res.status(201).json({ token, user })
+		return res.status(201).json({ token, user });
 	} catch(err){
-		return next(err)
-	}
-}
+		return next(err);
+	};
+};
 
+/**
+ * @route GET 'auth/check/username'
+ * @desc Check if a username already exists
+ * @access Public
+ */
 const checkUsername = async(req,res,next) => {
 	try{
-		const usernameToCheck = req.query.username
-		const usernameExists = await userServices.checkIfUserExists(usernameToCheck)
-		return res.json({usernameExists})
+		const usernameToCheck = req.query.username;
+		const usernameExists = await userServices.checkIfUserExists(usernameToCheck);
+		return res.json({usernameExists});
 	} catch(err){
-		return next(err)
-	}
-}
+		return next(err);
+	};
+};
 
+/**
+ * @route GET 'auth/check/email
+ * @desc Check if email address is already in use.
+ * @access Public
+ */
 const checkEmail = async(req,res,next) => {
 	try{
-		const emailToCheck = req.query.email
-		const emailExists = await userServices.checkIfEmailExists(emailToCheck)
-		return res.json({emailExists})
+		const emailToCheck = req.query.email;
+		const emailExists = await userServices.checkIfEmailExists(emailToCheck);
+		return res.json({emailExists});
 	} catch(err){
-		return next(err)
-	}
-}
+		return next(err);
+	};
+};
 
 module.exports = {
 	token,
 	register,
 	checkUsername,
 	checkEmail
-}
+};

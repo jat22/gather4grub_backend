@@ -77,7 +77,7 @@ const getUserProfile = async(username) => {
 	return profile
 }
 
-/**
+/**USED
  * 
  * @param {Object} UserRegistration 
  * @returns {User} The user object.
@@ -151,7 +151,7 @@ const deleteUser = async(username, password) => {
 	return false;
 };
 
-/**
+/**USED
  * check if username exists
  * @param {string} username 
  * @returns {boolean} true if does exist
@@ -161,7 +161,7 @@ const checkIfUserExists = async(username) => {
 	return userExists
 }
 
-/**
+/** USED
  * check if email exists
  * @param {string} email 
  * @returns {boolean} true if does exist
@@ -210,12 +210,11 @@ const updateAvatar = async(username, avatarId) => {
 
 const getPotentialConnections = async(searchInput, currUsername) => {
 	const searchResults = await findUsers(searchInput);
-	// [{users: username, ...., relation: {type, id}]
 
 	const connectionPromises = searchResults.map(r => {
 		return User.getUsersConnectionId(r.username, currUsername)
 	})
-	// {username : {type: 'connections or request', id:'num'}}
+
 	const requestPromises = searchResults.map(r => {
 		return User.getUsersRequestId(r.username, currUsername)
 	})

@@ -14,16 +14,16 @@ const router = express.Router()
 
 router
 	.route('/find/:input')
-	.get(userControllers.findPotentialConnections)
+	.get(userControllers.findPotentialConnections);
 
 router
 	.route('/avatars')
-	.get(userControllers.getAllAvatars)
+	.get(userControllers.getAllAvatars);
 
 router
 	.route('/:username/avatar')
 	.get(userControllers.getAvatar)
-	.patch(ensureCorrectUser, userControllers.updateAvatar)
+	.patch(ensureCorrectUser, userControllers.updateAvatar);
 
 router
 	.route('/:username')
@@ -31,66 +31,64 @@ router
 	.get(userControllers.getUserAccount)
 	.patch(
 		validate(userUpdateSchema), 
-		userControllers.updateUser)
-	.delete(userControllers.deleteUser);
+		userControllers.updateUser);
 
 router
 	.route('/:username/password')
 	.patch(
-		userControllers.updatePassword
-	)
+		userControllers.updatePassword);
 
 router
 	.route('/:username/profile')
-	.get(userControllers.getUserProfile)
+	.get(userControllers.getUserProfile);
 
 router
 	.route('/:username/connections')
 	.get(
 		ensureCorrectUser, 
-		connectionControllers.listConnections)
+		connectionControllers.listConnections);
 
 router
 	.route('/:username/connections/:connectionId')
 	.delete(
-		ensureCorrectUser, 
-		connectionControllers.removeConnection)
+		ensureCorrectUser,
+		connectionControllers.removeConnection);
 
 router
 	.route('/:username/connections/requests')
 	.all(ensureCorrectUser)
 	.get(connectionControllers.listConnectionRequests)
-	.post(connectionControllers.newConnectionRequest)
+	.post(connectionControllers.newConnectionRequest);
 
 router
 	.route('/:username/connections/requests/:reqId')
 	.all(ensureCorrectUser)
 	.put(connectionControllers.requestAcceptance)
-	.delete(connectionControllers.requestDenial)
-
-router
-	.route('/:username/events/all')
-	.all(ensureCorrectUser)
-	.get(eventControllers.getUsersEvents)
+	.delete(connectionControllers.requestDenial);
 
 router
 	.route('/:username/events/upcoming')
 	.all(ensureCorrectUser)
-	.get(eventControllers.getUpcomingEvents)
-
-router
-	.route('/:username/events/hosting')
-	.all(ensureCorrectUser)
-	.get(eventControllers.getUpcomingHosting)
+	.get(eventControllers.getUpcomingEvents);
 
 router
 	.route('/:username/invitations')
 	.all(ensureCorrectUser)
-	.get(eventControllers.getUserInvitations)
+	.get(eventControllers.getUserInvitations);
 
-router
-	.route('/:username/dishes')
-	.all(ensureLoggedIn)
-	.get(dishControllers.getUsersDishes)
+module.exports = router;
 
-module.exports = router
+// router
+// 	.route('/:username/events/all')
+// 	.all(ensureCorrectUser)
+// 	.get(eventControllers.getUsersEvents)
+
+// router
+// 	.route('/:username/events/hosting')
+// 	.all(ensureCorrectUser)
+// 	.get(eventControllers.getUpcomingHosting)
+
+// router
+// 	.route('/:username/dishes')
+// 	.all(ensureLoggedIn)
+// 	.get(dishControllers.getUsersDishes)

@@ -2,309 +2,162 @@
 
 const eventServices = require('../services/events.services');
 
-/** Handle Post request to create a new event.
- * Request Data - 
- * 		body
- * 			{
- * 				title:<string>, REQ
- * 				date:<YYYY/MM/DD> , REQ
- * 				startTime:<HH:MM:SS>,
- * 				endTime:<HH:MM:SS>,
- * 				location:<string>,
- * 				theme:<string>,
- * 				description:<string>,
- * 				coverImg:<string>
- * 			}
- * Return response with json body.
- * 		{
- * 			"event": {
-				"id":<num>,
-				"host": <string>,
-				"title": "<string>,
-				"date": <string>,
-				"startTime": <string>,
-				"endTime": <string>,
-				"location": <string>,
-				"theme": <string>,
-				"description": <string>,
-				"coverImg": <string>
-			}
- * 		}
+/**
+ * @route POST '/events/'
+ * @desc create a new event
+ * @access Token
  */
 const createEvent = async(req,res,next) => {
 	try{
 		const host = res.locals.user.username;
-		const partyDetails = req.body
-		const event = await eventServices.createEvent(host, partyDetails)
-		return res.json({ event })
+		const partyDetails = req.body;
+		const event = await eventServices.createEvent(host, partyDetails);
+		return res.json({ event });
 	} catch(err){
-		return next(err)
-	}
+		return next(err);
+	};
 };
 
-/** Handle get request for basic details of a event, ie. date, time, location,etc.
- * 
- * Request Data - 
- * 		params.eventId
- * Return response with json body
- * 		{
- * 			"event": {
-				"id": <num>,
-				"host": <string>,
-				"title": <string>,
-				"date": <string: YYYY/MM/DD>,
-				"startTime": <string: HH:MM:SS>,
-				"endTime": <string: HH:MM:SS>,
-				"location": <string>,
-				"theme": <string>,
-				"description": <string>,
-				"coverImg": <string>
-			}
- * 		}
+/**
+ * @route GET '/events/:eventId/basic'
+ * @desc Get the basic details of an event
+ * @access Restricted - must be event participant
  */
 const getBasicDetailsOfEvent = async(req,res,next) => {
 	try{
-		const eventId = req.params.eventId
+		const eventId = req.params.eventId;
 		const event = 
 			await eventServices.getBasicDetailsOfEvent(eventId);
-		return res.json({ event })
+		return res.json({ event });
 	} catch(err){
-		return next(err)
-	}
-}
+		return next(err);
+	};
+};
 
-/** Handle get request for full details of a event, includes guest list, dishes, and posts.
- * 
- * Request Data - 
- * 		params.eventId
- * Return response with json body
- * 		{
- * 			"event": {
- * 				"basic: {
-					"id": <num>,
-					"host": <string>,
-					"title": <string>,
-					"date": <string: YYYY/MM/DD>,
-					"startTime": <string: HH:MM:SS>,
-					"endTime": <string: HH:MM:SS>,
-					"location": <string>,
-					"description": <string>,
- 				},
-				"guests": [
-					{
-						"id": <num>,
-						"username": <string>,
-						"rsvp": "rsvp": <string: pending(default), accept, decline>
-					}
-				],
-				"menu" : [
-					{
-						courseName: <string>,
-						courseId:<num>
-						items: [
-							{	
-								id:<num>
-								name:<string>,
-								description:<string>,
-								user:<string>
-							}
-						]
-					}
-				],
-				"comments" : [
-					{
-						"id": <string>,
-						"content": <string>,
-						"user": <string>
-					}
-				]
-			}
- * 		}
+/**
+ * @route GET '/events/:eventId/full'
+ * @desc Gets all event information, including, guests, menu and comments.
+ * @access Restricted - must be event participant
  */
 const getFullDetailsOfEvent = async(req,res,next) => {
 	try{
-		const username = res.locals.user.username
+		const username = res.locals.user.username;
 		const event = 
 			await eventServices.getFullDetailsOfEvent(username, req.params.eventId);
-		return res.json({ event })
+		return res.json({ event });
 	} catch(err){
-		return next(err)
-	}
+		return next(err);
+	};
 };
-/** Handle put request to edit basic details of a event.
- * Request Data -
- * 		params.eventId
- * 		body:	{
- * 					title:<string>,
- * 					date:<string:YYYY/MM/DD>,
- * 					startTime:<string: HH:MM:SS>,
- * 					endTime:<string: HH:MM:SS>,
- * 					location:<string>,
- * 					theme:<string>,
- * 					description:<string>,
- * 					coverImg:<string>
- * 				} ALL OPTIONAL
- * Return response with json body
- * 		{
- * 			"event": {
-				"id": <num>,
-				"host": <string>,
-				"title": <string>,
-				"date": <string: YYYY/MM/DD>,
-				"startTime": <string: HH:MM:SS>,
-				"endTime": <string: HH:MM:SS>,
-				"location": <string>,
-				"theme": <string>,
-				"description": <string>,
-				"coverImg": <string>
-			}
- * 		}
+
+/**
+ * @route PUT '/events/:eventId:/basic
+ * @desc Update basic details of an event
+ * @access Restricted - event host only
  */
 const updateBasicDetails = async(req,res,next) => {
 	try{
 		const eventId = req.params.eventId;
-		const input = req.body
+		const input = req.body;
 		const event = 
 			await eventServices.updateBasicDetails(eventId, input);
-		return res.json({ event })
+		return res.json({ event });
 	} catch(err){
-		return next(err)
-	}
+		return next(err);
+	};
 };
-/** Handle delete request to delete a event.
- * Request data - 
- * 		params.eventId
- * Return response status 204 with empty body.
+
+/**
+ * @route DELETE '/events/:eventId/basic'
+ * @desc deletes event
+ * @access Restricted - event host only
  */
 const deleteEvent = async(req,res,next) => {
 	try{
 		const eventId = req.params.eventId;
 		await eventServices.deleteEvent(eventId);
-		return res.status(204).send()
+		return res.status(204).send();
 	} catch(err){
-		return next(err)
-	}
+		return next(err);
+	};
 };
 
-/** Handles get request to retreive events that user is associated with.
- * Request data - 
- * 		params.username
- * Return response with json body
- * 		{
- * 			"events": {
-				"guest": [
-					{
-						"id": <num>,
-						"host": <string>,
-						"title": <string>,
-						"date": "<string: YYYY-MM-DD>,
-						"startTime": <string: HH:MM:SS>,
-						"location": <string>,
-						"theme": <string,
-						"description": <string>,
-						"coverImg": <string,
-						"rsvp": <string: pending(default), accept, decline>
-					}
-				],
-				"host": [
-					{
-						"id": <num>,
-						"host": <string>,
-						"title": <string>,
-						"date": "<string: YYYY-MM-DD>,
-						"startTime": <string: HH:MM:SS>,
-						"location": <string>,
-						"theme": <string,
-						"description": <string>,
-						"coverImg": <string
-					}
-				]
-			}
- * 		}
+/**
+ * @route GET '/users/:username/events/upcoming'
+ * @desc get upcoming events that the user is a participant on
+ * @access Owner
  */
-const getUsersEvents = async(req,res,next) => {
-	try{
-		const user = req.params.username
-		const events = await eventServices.getUsersEvents(user)
-		return res.json({ events })
-	} catch(err){
-		return next(err)
-	}
-}
-
 const getUpcomingEvents = async(req,res,next) => {
 	try{
-		const user = req.params.username
-		const events = await eventServices.getUpcomingEvents(user)
-		return res.json({ events })
+		const user = req.params.username;
+		const events = await eventServices.getUpcomingEvents(user);
+		return res.json({ events });
 	} catch(err){
-		return next(err)
-	}
-}
+		return next(err);
+	};
+};
 
-const getUpcomingHosting = async(req,res,next) => {
-	try{
-		const user = req.params.username
-		const events = await eventServices.getHostingUpcoming(user)
-		return res.json({ events })
-	} catch(err){
-		return next(err)
-	}
-}
-
+/**
+ * @route GET '/users/:username/invitations'
+ * @desc get invitations for a user
+ * @access Owner
+ */
 const getUserInvitations = async(req,res,next) => {
 	try{
 		const user = req.params.username;
-		const invitations = await eventServices.getUserInvitations(user)
-		return res.json({ invitations })
+		const invitations = await eventServices.getUserInvitations(user);
+		return res.json({ invitations });
 	} catch(err){
-		return next(err)
-	}
-}
+		return next(err);
+	};
+};
 
+/**
+ * @route GET '/events/:eventId/menu/categories'
+ * @desc  get menu categories for event
+ * @access Restricted - event participants only
+ */
 const getMenuCategories = async(req,res,next) => {
 	try{
-		const eventId = req.params.eventId
-		const categories = await eventServices.getMenuCategories(eventId)
-		return res.json({ categories})
+		const eventId = req.params.eventId;
+		const categories = await eventServices.getMenuCategories(eventId);
+		return res.json({ categories});
 	} catch(err){
-		return next(err)
-	}
-}
+		return next(err);
+	};
+};
 
+/**
+ * @route GET '/events/:eventId/menu'
+ * @desc get menu for event
+ * @access Restricted - event participants only
+ */
 const getMenu = async(req,res,next) => {
 	try{
-		const eventId = req.params.eventId
-		const menu = await eventServices.getMenu(eventId)
-		return res.json({menu})
+		const eventId = req.params.eventId;
+		const menu = await eventServices.getMenu(eventId);
+		return res.json({menu});
 	} catch(err){
-		return next(err)
-	}
-}
+		return next(err);
+	};
+};
 
+/**
+ * @route POST '/events/:eventId/menu'
+ * @desc add item to event menu
+ * @access Restricted - event participants only
+ */
 const addMenuItem = async(req,res,next) => {
 	try{
-		const eventId = req.params.eventId
-		const newItem = req.body.newItem
-		await eventServices.addMenuItem({...newItem, eventId:eventId})
-		const menu = await eventServices.getMenu(eventId)
-		return res.json({menu})
-	} catch(err){
-		return next(err)
-	}
-}
-
-const removeMenuItem = async(req,res,next) => {
-	try{
 		const eventId = req.params.eventId;
-		const dishId = req.params.body.dishId;
-		await eventServices.removeMenuItem(dishId)
-		return res.status(204)
+		const newItem = req.body.newItem;
+		await eventServices.addMenuItem({...newItem, eventId:eventId});
+		const menu = await eventServices.getMenu(eventId);
+		return res.json({menu});
 	} catch(err){
-		return next(err)
-	}
-}
-
+		return next(err);
+	};
+};
 
 module.exports = {
 	createEvent,
@@ -312,11 +165,53 @@ module.exports = {
 	getFullDetailsOfEvent,
 	updateBasicDetails,
 	deleteEvent,
-	getUsersEvents,
 	getUserInvitations,
 	getUpcomingEvents,
-	getUpcomingHosting,
 	getMenuCategories,
 	getMenu,
-	addMenuItem
+	addMenuItem,
 }
+
+// /**
+//  * @route 
+//  * @desc 
+//  * @access 
+//  */
+// const removeMenuItem = async(req,res,next) => {
+// 	try{
+// 		const eventId = req.params.eventId;
+// 		const dishId = req.params.body.dishId;
+// 		await eventServices.removeMenuItem(dishId)
+// 		return res.status(204)
+// 	} catch(err){
+// 		return next(err)
+// 	}
+// }
+// /**
+//  * @route 
+//  * @desc 
+//  * @access 
+//  */
+// const getUpcomingHosting = async(req,res,next) => {
+// 	try{
+// 		const user = req.params.username
+// 		const events = await eventServices.getHostingUpcoming(user)
+// 		return res.json({ events })
+// 	} catch(err){
+// 		return next(err)
+// 	}
+// }
+// /**
+//  * @route 
+//  * @desc 
+//  * @access 
+//  */
+// const getUsersEvents = async(req,res,next) => {
+// 	try{
+// 		const user = req.params.username
+// 		const events = await eventServices.getUsersEvents(user)
+// 		return res.json({ events })
+// 	} catch(err){
+// 		return next(err)
+// 	}
+// }

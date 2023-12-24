@@ -208,6 +208,7 @@ const dishAddedBy = async(dishId) => {
  */
 const deleteDish = async(dishId) => {
 	const result = await Dish.remove(dishId);
+	console.log(dishId)
 	if(!result) throw new InternalServerError("Database error")
 	return
 }

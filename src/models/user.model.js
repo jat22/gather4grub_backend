@@ -40,7 +40,7 @@ class User {
 		)
 		return result.rows[0]
 	}
-	/**
+	/**USED
 	 * Query user credentials by username
 	 * @param {string} username 
 	 * @returns {Promise<{username:string, password:string, role:string}>}
@@ -48,8 +48,7 @@ class User {
 	static async getUserCredentials(username) {
 		const result = await db.query(
 			`SELECT username,
-					password,
-					role
+					password
 				FROM users
 				WHERE username = $1`,
 				[username])
