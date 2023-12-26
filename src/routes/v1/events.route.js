@@ -89,7 +89,7 @@ router
 	.route('/:eventId/comments/:commentId')
 	.all(ensureParticipant)
 	.put(
-		commentControllers.edit)
+		commentControllers.editComment)
 	.delete(
 		commentControllers.deleteComment);
 
