@@ -1,6 +1,6 @@
 "use strict";
 
-const { BadRequestError, NotFoundError } = require("../expressError");
+const { BadRequestError, NotFoundError, GeneralDatabaseError } = require("../expressError");
 const Guest = require("../models/guest.model")
 
 /**
@@ -16,9 +16,9 @@ const Guest = require("../models/guest.model")
  */
 
 /**
- * 
+ * get guests for a particular event
  * @param {number} eventId 
- * @returns {Array.<Guest>} guests
+ * @returns {Array} guests - array of guest objects.
  */
 const getEventGuests = async(eventId) => {
 	const guests =
@@ -30,19 +30,31 @@ const getEventGuests = async(eventId) => {
 /**
  * Add a guest to a event.
  * @param {number} eventId 
- * @param {string} username 
- * @returns {Guest}
+ * @param {Array} usernames 
+ * @returns {Array} guestList - updated guest list for event 
  */
 const addGuestsToEvent = async(eventId, usernames) => {
-	const guestPromises = usernames.map(u => Guest.addToEvent(eventId, u));
-	await Promise.all(guestPromises);
-	
-	const guestList = await Guest.findForEvent(eventId);
-	return guestList
+	try{
+		const guestPromises = usernames.map(u => Guest.addToEvent(eventId, u));
+		const result = await Promise.all(guestPromises);
+		if(result.length === 0){
+			throw new GeneralDatabaseError()
+		}
+	}catch(err){
+		throw new GeneralDatabaseError('Guests not added.')
+	}
+
+	try{
+		const guestList = await Guest.findForEvent(eventId);
+		return guestList
+	}catch(err){
+		throw new GeneralDatabaseError('Upable to retrieve updated guest list.')
+	}
+
 };
 
 /**
- * 
+ * Remove a guest from an event entirely
  * @param {number} eventId 
  * @param {string} username 
  * @returns {undefined}
@@ -58,19 +70,31 @@ const removeGuestFromEvent = async(eventId, username) => {
  * @param {number} eventId 
  * @param {number} guestId 
  * @param {string} rsvp 
- * @returns {Guest}
+ * @returns {Object} updatedRsvp 
  */
 const updateEventRSVP = async(inviteId, rsvp) => {
 	const result = await Guest.updateRsvp(inviteId, rsvp);
 	return result
 };
 
+/**
+ * Check if a guests is associated with an event
+ * @param {string} username 
+ * @param {number} eventId 
+ * @returns {Boolean}
+ */
 const checkIfGuestExistsOnEvent = async(username, eventId) => {
 	const guest = await Guest.getEventGuestId(username, eventId);
 	if(!guest) return false;
 	return true;
 }
 
+/**
+ * get a user's rsvp for a particular event
+ * @param {string} username 
+ * @param {number} eventId 
+ * @returns {Object} rsvp
+ */
 const getUserRsvp = async(username, eventId) => {
 	const rsvp = await Guest.getUserRsvp(username, eventId)
 	return rsvp

@@ -1,6 +1,7 @@
 "use strict";
 
 const eventServices = require('../services/events.services');
+const dishServices = require('../services/dishes.services')
 
 /**
  * @route POST '/events/'
@@ -90,7 +91,7 @@ const deleteEvent = async(req,res,next) => {
 const getUpcomingEvents = async(req,res,next) => {
 	try{
 		const user = req.params.username;
-		const events = await eventServices.getUpcomingEvents(user);
+		const events = await eventServices.getAllEventsForUser(user);
 		return res.json({ events });
 	} catch(err){
 		return next(err);
@@ -159,6 +160,53 @@ const addMenuItem = async(req,res,next) => {
 	};
 };
 
+/**
+ * @route POST '/events/:eventId/menu/categories'
+ * @desc add a new menu category for event
+ * @access Restrictied - event host only
+ */
+const addMenuCategory = async(req,res,next) => {
+	try{
+		const eventId = req.params.eventId;
+		const newCategory = req.body.newCategory;
+		const updatedMenu = await dishServices.addDishCategory(eventId, newCategory);
+		return res.json({menu : updatedMenu});
+	} catch(err){
+		return next(err);
+	};
+};
+
+/**
+  * @route DELETE '/events/:eventId/menu/categories'
+  * @desc remove a menu category
+  * @access Restrictied - event host only
+  */
+ const removeMenuCategory = async(req,res,next) => {
+ 	try{
+ 		const eventId = req.params.eventId;
+ 		const updatedMenu = await dishServices.removeDishCategory(eventId, newCategory);
+ 		return res.json({menu : updatedMenu});
+ 	} catch(err){
+ 		return next(err);
+ 	};
+ };
+
+/**
+ * @route DELETE '/events/:eventId/menu/:itemId'
+ * @desc remove a dish from event menu
+ * @access Restrictied - event host or dish owner only
+ */
+const deleteMenuItem = async(req,res,next) =>{
+	try{
+		const dishId = req.params.itemId;
+		await dishServices.deleteDish(dishId);
+		return res.status(204).send();
+	} catch(err) {
+		return next(err);
+	};
+};
+
+
 module.exports = {
 	createEvent,
 	getBasicDetailsOfEvent,
@@ -170,6 +218,9 @@ module.exports = {
 	getMenuCategories,
 	getMenu,
 	addMenuItem,
+	addMenuCategory,
+	removeMenuCategory,
+	deleteMenuItem
 }
 
 // /**

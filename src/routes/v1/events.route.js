@@ -7,8 +7,7 @@ const { ensureParticipant, ensureHost, ensureCommentAuthor, ensureCommentAuthorO
 const { validate } = require("../../middleware/validate.middleware");
 const eventControllers = require("../../controllers/events.controller");
 const guestControllers = require("../../controllers/guest.controller")
-const dishControllers = require('../../controllers/dishes.controller');
-const postControllers = require('../../controllers/posts.controller');
+const commentControllers = require('../../controllers/comment.controller');
 const newEventSchema = require("../../validators/newEvent.schema.json");
 const updateEventSchema = require('../../validators/updateEvent.schema.json');
 const rsvpSchema = require("../../validators/rsvp.schema.json");
@@ -71,28 +70,28 @@ router
 		eventControllers.getMenuCategories)
 	.post(
 		ensureParticipant,
-		dishControllers.addDishCategory)
+		eventControllers.addMenuCategory)
 	.delete(
 		ensureHost,
-		dishControllers.removeDishCategory);
+		eventControllers.removeMenuCategory);
 
 router
 	.route('/:eventId/menu/:itemId')
-	.delete(dishControllers.deleteDish);
+	.delete(eventControllers.deleteMenuItem);
 
 router
 	.route('/:eventId/comments')
 	.all(ensureParticipant)
-	.get(postControllers.getEventComments)
-	.post(postControllers.createComment);
+	.get(commentControllers.getEventComments)
+	.post(commentControllers.createComment);
 	
 router
 	.route('/:eventId/comments/:commentId')
 	.all(ensureParticipant)
 	.put(
-		postControllers.editPost)
+		commentControllers.editComment)
 	.delete(
-		postControllers.deleteComment);
+		commentControllers.deleteComment);
 
 // 
 router
@@ -124,7 +123,7 @@ module.exports = router;
 // router
 // 	.route('/:eventId/posts/:postId/comments')
 // 	.all(ensureParticipant)
-// 	.post(postControllers.createComment)
+// 	.post(commentControllers.createComment)
 
 // router
 // 	.route('/:eventId/posts/:postId/comments/:commentId')

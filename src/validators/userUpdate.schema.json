@@ -26,9 +26,6 @@
 		"type": "string",
 		"format": "email"
  	  },
-	  "phone": {
-		"type": ["string", "null"]
-	  },
 	  "streetAddress": {
 		"type": ["string", "null"]
 	  },
@@ -46,16 +43,6 @@
 		"maxLength": 5
 	  },
 	  "tagLine": {
-		"type": ["string", "null"]
-	  },
-	  "bio": {
-		"type": ["string", "null"]
-	  },
-	  "birthdate": {
-		"type" :["string", "null"],
-		"format": "date-time"
-	  },
-	  "avatarUrl": {
 		"type": ["string", "null"]
 	  }
 	},

@@ -12,15 +12,11 @@ const bcrypt = require("bcrypt")
  * @property {string} firstName 
  * @property {string} lastName
  * @property {string} email
- * @property {string} role
- * @property {string} phone - can be null
  * @property {string} streetAddress - can be null
  * @property {string} city - can be null
  * @property {string} state - can be null
  * @property {string} zip - can be null
  * @property {string} tagLine - can be null
- * @property {string} bio - can be null
- * @property {string} birthdate - can be null
  * @property {string} avatarUrl - can be null
  */
 
@@ -31,40 +27,24 @@ const bcrypt = require("bcrypt")
  * @property {string} firstName 
  * @property {string} lastName
  * @property {string} email
- * @property {string} phone - can be null
- * @property {string} streetAddress - can be null
- * @property {string} city - can be null
- * @property {string} state - can be null
- * @property {string} zip - can be null
- * @property {string} tagLine - can be null
- * @property {string} bio - can be null
- * @property {string} birthdate - can be null
- * @property {string} avatarUrl - can be null
  */
 
 /**
  * @typedef {Object} UserUpdateInput
- * @property {string} currentPassword
- * @property {string} newPassword - can be null
- * @property {string} confirmNewPassword - can be null
  * @property {string} firstName - can be null
  * @property {string} lastName - can be null
  * @property {string} email - can be null
- * @property {string} phone - can be null
  * @property {string} streetAddress - can be null
  * @property {string} city - can be null
  * @property {string} state - can be null
  * @property {string} zip - can be null
  * @property {string} tagLine - can be null
- * @property {string} bio - can be null
- * @property {string} birthdate - can be null
- * @property {string} avatarUrl - can be null
  */
 
 /**
  * Get user's account information
  * @param {string} username
- * @return {User} The user object.
+ * @return {User} user
  */
 const getUserAccount = async(username) => {
 	const user = await User.getAccount(username);
@@ -72,15 +52,20 @@ const getUserAccount = async(username) => {
 	return user;
 };
 
+/**
+ * Get public information
+ * @param {string} username 
+ * @returns {Object} profile
+ */
 const getUserProfile = async(username) => {
 	const profile = await User.getUserProfile(username);
 	return profile
 }
 
-/**USED
- * 
+/**
+ * Create a new user account
  * @param {Object} UserRegistration 
- * @returns {User} The user object.
+ * @returns {User} user.
  */
 const createUser = async(userInput) => {
 	const hashedPassword = await bcrypt.hash(
@@ -97,38 +82,12 @@ const createUser = async(userInput) => {
 /**
  * Update user information
  * @param {string} username 
- * @param {UserUpdateInput} body 
+ * @param {UserUpdateInput} body
  * @returns {User}
  */
 const updateUser = async(username, body) => {
-	// if(!authSerivces.checkUsernamePassword(username, body.currentPassword)){
-	// 	throw new BadRequestError("Invalid password");
-	// };
-	// delete body.currentPassword;
-
-	// if(body.email){
-	// 	const checkEmail = await User.emailExists(body.email);
-	// 	console.log(checkEmail)
-	// 	if(checkEmail?.username !== username){
-	// 		throw new BadRequestError(`${body.email} is already associated with an account`);
-	// 	};
-	// };
-
-	if(body.newPassword && body.newPassword !== body.confirmNewPassword){
-		throw new BadRequestError(`New Password does not match.`);
-	};
-
-	if(body.newPassword){
-		const hashedPassword = await bcrypt.hash(
-						body.newPassword, BCRYPT_WORK_FACTOR);
-		delete body.confirmNewPassword;
-		delete body.newPassword;
-
-		body.password = hashedPassword;
-	}
-	
+	delete body.avatarUrl
 	const user = await User.update(username, body);
-	
 	return user;
 };
 
@@ -151,31 +110,32 @@ const deleteUser = async(username, password) => {
 	return false;
 };
 
-/**USED
+/**
  * check if username exists
  * @param {string} username 
  * @returns {boolean} true if does exist
  */
 const checkIfUserExists = async(username) => {
-	const userExists = await User.usernameExists(username)
-	return userExists
-}
+	const userExists = await User.usernameExists(username);
+	return userExists;
+};
 
-/** USED
+/**
  * check if email exists
  * @param {string} email 
  * @returns {boolean} true if does exist
  */
 const checkIfEmailExists = async(email) => {
-	const userExists = await User.emailExists(email)
-	return userExists
-}
+	const userExists = await User.emailExists(email);
+	return userExists;
+};
 
-const findUsers = async(input) => {
-	const users = await User.findUsers(input)
-	return users
-}
-
+/**
+ * Update user's password
+ * @param {string} username 
+ * @param {Object} password 
+ * @returns {Object} user
+ */
 const updatePassword = async (username, data) => {
 	if(data.newPassword !== data.confirmNew){
 		throw new BadRequestError("New password does not match")
@@ -192,24 +152,45 @@ const updatePassword = async (username, data) => {
 	return result
 }
 
+/**
+ * Get all stored avatars
+ * @returns {Array} avatars - array of avatar objects
+ */
 const getAllAvatars = async () => {
 	const avatars = await User.getAllAvatars();
 	return avatars
 }
 
+/**
+ * get a user's avatar
+ * @param {string} username 
+ * @returns {Object} avatar
+ */
 const getAvatar = async(username) => {
 	const avatar = await User.getAvatar(username);
 	return avatar
 }
 
+/**
+ * update a user's
+ * @param {string} username 
+ * @param {number} avatarId 
+ * @returns {Object} avatar
+ */
 const updateAvatar = async(username, avatarId) => {
 	await User.updateAvatar(username, avatarId);
 	const avatar = await getAvatar(username)
 	return avatar
 }
 
-const getPotentialConnections = async(searchInput, currUsername) => {
-	const searchResults = await findUsers(searchInput);
+/**
+ * Find other users based on search input
+ * @param {string} searchInput 
+ * @param {string} currUsername 
+ * @returns {Array} users - array of user objects.
+ */
+const findUsersByEmailOrUsername = async(searchInput, currUsername) => {
+	const searchResults = await User.findUsers(searchInput);
 
 	const connectionPromises = searchResults.map(r => {
 		return User.getUsersConnectionId(r.username, currUsername)
@@ -220,7 +201,6 @@ const getPotentialConnections = async(searchInput, currUsername) => {
 	})
 
 	const results = await Promise.all([...connectionPromises, ...requestPromises])
-
 	const relationMap = {};
 
 	results.forEach(r=> {
@@ -232,6 +212,9 @@ const getPotentialConnections = async(searchInput, currUsername) => {
 
 
 	const users = searchResults.map(r => {
+		if(r.username === currUsername){
+			return {...r, relation: {type:'self', id:null}}
+		}
 		const relation = relationMap[r.username];
 		return {...r, relation: relation}
 	})
@@ -246,11 +229,28 @@ module.exports = {
 	updateUser,
 	deleteUser,
 	checkIfUserExists,
-	findUsers,
 	updatePassword,
 	checkIfEmailExists,
 	getAllAvatars,
 	getAvatar,
 	updateAvatar,
-	getPotentialConnections
+	findUsersByEmailOrUsername
 }
+
+	// if(body.newPassword && body.newPassword !== body.confirmNewPassword){
+	// 	throw new BadRequestError(`New Password does not match.`);
+	// };
+	// if(body.newPassword){
+	// 	const hashedPassword = await bcrypt.hash(
+	// 					body.newPassword, BCRYPT_WORK_FACTOR);
+	// 	delete body.confirmNewPassword;
+	// 	delete body.newPassword;
+
+	// 	body.password = hashedPassword;
+	// }
+
+
+// const findUsers = async(input) => {
+// 	const users = await User.findUsers(input)
+// 	return users
+// }

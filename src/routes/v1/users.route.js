@@ -6,7 +6,6 @@ const { ensureCorrectUser, ensureLoggedIn } = require("../../middleware/auth.mid
 const userControllers = require("../../controllers/user.controller");
 const connectionControllers = require("../../controllers/connections.controller");
 const eventControllers = require("../../controllers/events.controller");
-const dishControllers = require("../../controllers/dishes.controller")
 const userUpdateSchema = require("../../validators/userUpdate.schema.json")
 const { validate } = require("../../middleware/validate.middleware");
 

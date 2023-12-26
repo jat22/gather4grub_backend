@@ -56,7 +56,7 @@ const findPotentialConnections = async(req,res,next) => {
 		const searchInput = req.params.input;
 		const currUser = req.query.currUser;
 		const users = 
-			await userServices.getPotentialConnections(searchInput, currUser);
+			await userServices.findUsersByEmailOrUsername(searchInput, currUser);
 		return res.json({ users });
 	}catch(err){
 		return next(err);

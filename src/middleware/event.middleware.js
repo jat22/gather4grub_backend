@@ -4,7 +4,6 @@ const { UnauthorizedError } = require('../expressError');
 const eventServices = require('../services/events.services');
 const guestServices = require("../services/guests.services");
 const dishServices = require("../services/dishes.services");
-const Post = require("../models/posts.model");
 const Event = require('../models/events.model');
 const Comment = require('../models/comments.model')
 
@@ -66,7 +65,7 @@ const ensurePostAuthor = async(req,res,next) => {
 	try{
 		const user = res.locals.user.username;
 		const postId = req.params.postId;
-		const author = await Post.getAuthor(postId);
+		const author = await Comment.getAuthor(postId);
 
 		if(user !== author) throw new UnauthorizedError();
 		return next();
@@ -81,7 +80,7 @@ const ensurePostAuthorOrHost = async(req,res,next) => {
 		const postId = req.params.postId;
 		const eventId = req.params.eventId;
 		const host = await Event.getHost(eventId);
-		const author = await Post.getAuthor(postId);
+		const author = await Comment.getAuthor(postId);
 
 		if(user === author || user === host) return next();
 		throw new UnauthorizedError();

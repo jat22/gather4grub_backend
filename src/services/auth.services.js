@@ -1,11 +1,29 @@
 "use strict"
 
-const tokenService = require("../services/token.services");
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const { UnauthorizedError } = require("../expressError");
+const jwt = require('jsonwebtoken');
+const { SECRET_KEY, TOKEN_EXPIRATION } = require('../config')
 
-/** USED
+/**
+ * Generate token
+ * @param {Object} user
+ * @param {string} user.username
+ * @param {string} user.role
+ * @returns {string} JWT Token
+ */
+const generateToken = (user) => {
+	let payload = {
+		username : user.username,
+		role : user.role
+	};
+
+	return jwt.sign(payload, SECRET_KEY);
+};
+
+
+/**
  * get a token
  * @param {string} username 
  * @param {string} password 
@@ -16,12 +34,12 @@ const getToken = async (username, password) => {
 	if(!credentials){
 		throw new UnauthorizedError("Invalid username/password");
 	};
-	const token = tokenService.generateToken(credentials);
+	const token = generateToken(credentials);
 
 	return token;
-}
+};
 
-/** USED
+/**
  * Check input password against stored password.
  * @param {string} username 
  * @param {string} password 
@@ -41,5 +59,6 @@ const checkUsernamePassword = async(username, password) => {
 
 module.exports = {
 	getToken,
-	checkUsernamePassword
+	checkUsernamePassword,
+	generateToken
 };

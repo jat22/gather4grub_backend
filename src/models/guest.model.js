@@ -1,8 +1,15 @@
 "use strict";
 const db = require("../db")
-const SqlUtils = require('../../src/utils/sql.utils')
 
+/**
+ * Class for all guest related queries.
+ */
 class Guest {
+	/**
+	 * get all guests for an event
+	 * @param {number} eventId 
+	 * @returns  {Array} guests
+	 */
 	static async findForEvent(eventId){
 		const result = await db.query(
 			`SELECT g.id AS "guestId",
@@ -21,20 +28,34 @@ class Guest {
 			WHERE g.event_id = $1`,
 			[eventId]
 		);
+		return result.rows;
+	};
 
-		return result.rows
-	}
-
+	/**
+	 * add a guest to an event
+	 * @param {number} eventId 
+	 * @param {string} username 
+	 * @param {string} rsvp 
+	 * @returns {undefined}
+	 */
 	static async addToEvent(eventId, username, rsvp="pending"){
 		const result = await db.query(
 			`INSERT INTO guests
 				(event_id, username, rsvp)
-			VALUES ($1, $2, $3)`,
+			VALUES ($1, $2, $3)
+			RETURNING
+				id`,
 			[eventId, username, rsvp]
 		);
-		return 
-	}
+		return result.rows;
+	};
 
+	/**
+	 * Remove a guest from an event entirely
+	 * @param {number} eventId 
+	 * @param {string} username 
+	 * @returns {Object}
+	 */
 	static async removeFromEvent(eventId, username){
 		const result = await db.query(
 			`DELETE FROM guests
@@ -43,10 +64,15 @@ class Guest {
 			RETURNING id`,
 			[eventId, username]
 		);
-
 		return result.rows[0];
-	}
+	};
 
+	/**
+	 * update a guest's RSVP
+	 * @param {number} guestId 
+	 * @param {string} rsvp 
+	 * @returns {Object}
+	 */
 	static async updateRsvp(guestId, rsvp){
 		const result = await db.query(
 			`UPDATE guests
@@ -55,10 +81,15 @@ class Guest {
 				RETURNING id, rsvp`,
 			[rsvp,guestId]
 		);
+		return result.rows[0];
+	};
 
-		return result.rows[0]
-	}
-
+	/**
+	 * Retrieve's a guest id for a particular user on a particular event
+	 * @param {string} username 
+	 * @param {number} eventId 
+	 * @returns {Object}
+	 */
 	static async getEventGuestId(username, eventId){
 		const result = await db.query(
 			`SELECT id
@@ -67,9 +98,14 @@ class Guest {
 					AND event_id = $2`,
 			[username, eventId]
 		);
-		return result.rows[0]
-	}
+		return result.rows[0];
+	};
 
+	/**
+	 * get all pending invitiations for a user
+	 * @param {string} username 
+	 * @returns {Array} invitiations - array of invitation objects
+	 */
 	static async getInvitations(username){
 		const result = await db.query(
 			`SELECT guests.id AS id,
@@ -81,20 +117,25 @@ class Guest {
 					ON guests.event_id = events.id
 				WHERE guests.username = $1 AND guests.rsvp = 'pending'`,
 				[username]
-		)
-		return result.rows
-	}
+		);
+		return result.rows;
+	};
 
+	/**
+	 * get a particular user's rsvp to a particular event.
+	 * @param {string} username 
+	 * @param {number} eventId 
+	 * @returns {Object}
+	 */
 	static async getUserRsvp(username, eventId){
-		console.log(username)
 		const result = await db.query(
 			`SELECT id, rsvp
 			FROM guests
 			WHERE username=$1 AND event_id=$2`,
 			[username, eventId]
-		)
-		return result.rows[0]
-	}
-}
+		);
+		return result.rows[0];
+	};
+};
 
 module.exports = Guest

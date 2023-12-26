@@ -1,6 +1,5 @@
 "use strict";
 const authServices = require("../services/auth.services");
-const tokenServices = require("../services/token.services");
 const userServices = require("../services/user.services")
 
 
@@ -31,7 +30,7 @@ const register = async (req, res, next) => {
 	try{
 		const newUserInfo = req.body;
 		const user = await userServices.createUser(newUserInfo);
-		const token = await tokenServices.generateToken(user);
+		const token = await authServices.generateToken(user);
 
 		return res.status(201).json({ token, user });
 	} catch(err){

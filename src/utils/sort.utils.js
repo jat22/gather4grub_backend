@@ -1,6 +1,10 @@
 "use strict";
 
-
+/**
+ * Sort events chronologically, past ==> future
+ * @param {Array} events 
+ * @returns {Array} events - array of event objects
+ */
 const sortEventsByDate = (events) => {
 	if(!events || events.length < 1) return null
 	const result = events.sort((a,b) => {
@@ -15,26 +19,37 @@ const sortEventsByDate = (events) => {
 	return result
 }
 
-const sortPastUpcoming = (sortedEvents) => {
-	if(!sortedEvents) return null
+/**
+ * Takes an array of ordered Events and seperates them into past and upcoming.
+ * @param {Array} orderedEvents - array of event objects
+ * @returns {Object} sortedEvents
+ */
+const sortPastUpcoming = (orderedEvents) => {
+	if(!orderedEvents) return null
 
 	const upcoming = [];
 	const past = [];
 	const now = new Date();
 
-	for(let i = 0; i < sortedEvents.length; i++) {
-		const e = sortedEvents[i]
+	for(let i = 0; i < orderedEvents.length; i++) {
+		const e = orderedEvents[i]
 		const date = new Date(e.date)
 		
 		if(date < now) past.push(e);
 		if(date > now) {
-			upcoming.push(...sortedEvents.slice(i, sortedEvents.length))
+			upcoming.push(...orderedEvents.slice(i, orderedEvents.length))
 			break
 		}
 	}
 	return {past: past, upcoming: upcoming}
 }
 
+/**
+ * sorts dishes into appropriate course and returns array
+ * @param {Array} courses 
+ * @param {Array} dishes 
+ * @returns {Array} menu - course objects with item arrays.
+ */
 const buildMenu = (courses, dishes) => {
 	const courseMap = {}
 

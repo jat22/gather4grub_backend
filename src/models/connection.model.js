@@ -1,9 +1,17 @@
 "use strict";
-
 const db = require("../db");
-const { GeneralDatabaseError, BadRequestError } = require("../expressError");
+const { BadRequestError } = require("../expressError");
 
+
+/**
+ * Class for users' connection related database queries
+ */
 class Connections{
+	/**
+	 * Get a list of a user's connections
+	 * @param {string} username 
+	 * @returns {Array} users - array of user objects.
+	 */
 	static async listUserConnections(username) {
 		const result = await db.query(
 			`SELECT c.id AS "connectionId",
@@ -23,9 +31,14 @@ class Connections{
 					OR c.user2_username = $1`,
 				[username]);
 
-		return result.rows
+		return result.rows;
 	};
 
+	/**
+	 * get a list of a user's connection requets
+	 * @param {string} username 
+	 * @returns {Array} users = array of user objects
+	 */
 	static async listUserConnectionRequests(username){
 		const result = await db.query(
 			`SELECT r.id AS "requestId",
@@ -42,9 +55,15 @@ class Connections{
 					ON u.avatar_id = a.id
 				WHERE r.to_username = $1`,
 				[username]);
-		return result.rows
+		return result.rows;
 	};
 
+	/** 
+	 * Create a connection request
+	 * @param {string} fromUsername 
+	 * @param {string} toUsername 
+	 * @returns {Object} request 
+	 */
 	static async createConnectionRequest(fromUsername, toUsername){
 		try{
 			const result = await db.query(
@@ -53,38 +72,58 @@ class Connections{
 					VALUES ($1, $2)
 					RETURNING id`,
 					[fromUsername, toUsername]);
-			const newRequestId =  result.rows[0];
-			if(!newRequestId){
-				throw new GeneralDatabaseError();
-			} 
-			return newRequestId
+			const newRequest =  result.rows[0];
+
+			return newRequest;
 		} catch(err){
 			if(err.code === 'P0001'){
-				throw new BadRequestError(err.message)
-			} else throw err
-		}
-		
+				throw new BadRequestError(err.message);
+			} else throw err;
+		};
 	};
 
+	/**
+	 * delete a connection request
+	 * @param {number} reqId 
+	 * @returns {Object} request - object containing deleted request Id
+	 */
 	static async deleteConnectionRequest(reqId){
 		const result = await db.query(
-			`DELETE FROM ${this._requestsTable}
+			`DELETE FROM connection_requests
 				WHERE id = $1
 				RETURNING id`,
 				[reqId]);
-		return result.rows[0]
+		return result.rows[0];
 	};
 
+	/**
+	 * create a connection between two users
+	 * @param {string} username1 
+	 * @param {string} username2 
+	 * @returns {Object} connection - object containing connectionId
+	 */
 	static async createConnection(username1, username2){
-		const result = await db.query(
-			`INSERT INTO ${this._connectionsTable}
-				(user1_username, user2_username)
-				VALUES ($1, $2)
-				RETURNING id`,
-				[username1, username2]);
-		return result.rows[0]
+		try{
+			const result = await db.query(
+				`INSERT INTO connections
+					(user1_username, user2_username)
+					VALUES ($1, $2)
+					RETURNING id`,
+					[username1, username2]);
+			return result.rows[0];
+		}catch(err){
+			if(err.code === 'P0001'){
+				throw new BadRequestError(err.message);
+			} else throw err;
+		};
 	}
 
+	/**
+	 * delete a connection between users
+	 * @param {number} connectionId 
+	 * @param {string} username 
+	 * @returns {Object} connection - Object containing id of deleted connection
+	 */
 	static async deleteConnectionWithId(connectionId, username){
 		const result = await db.query(
 			`DELETE FROM connections
@@ -92,32 +131,31 @@ class Connections{
 					AND (user1_username = $2 OR user2_username = $2)
 				RETURNING id`,
 			[connectionId, username]);
-		return result.rows[0]
+		return result.rows[0];
 	};
 
+	/**
+	 * get a particular connection request
+	 * @param {number} reqId 
+	 * @returns {Object} request
+	 */
 	static async getRequest(reqId){
 		const result = await db.query(
 			`SELECT id, 
 					from_username AS "fromUsername",
 					to_username AS "toUsername"
-				FROM ${this._requestsTable}
+				FROM connection_requests
 				WHERE id = $1`,
 				[reqId]);
-		return result.rows[0]
-	}
+		return result.rows[0];
+	};
 
-	static async getConnection(connectionId){
-		const result = await db.query(
-			`SELECT id,
-					user1_username AS user1,
-					user2_username AS user2
-			FROM connections
-			WHERE id = $1`,
-			[connectionId] 
-		)
-		return result.rows[0]
-	}
-
+	/**
+	 * check for a connection or a connection request between two users.
+	 * @param {string} username1 
+	 * @param {string} username2 
+	 * @returns {Object} associations -Object with a boolean for request and connection
+	 */
 	static async checkExistingAssociations(username1, username2){
 		const requestsResult = await db.query(
 			`SELECT id
@@ -138,24 +176,26 @@ class Connections{
 			[username1, username2]
 		);
 
-		if(requestsResult.rows[0]){
-			throw new BadRequestError('A connection request already exists.')
-		} else if(connectionsResult.rows[0]){
-			throw new BadRequestError('Users are already connected.')
-		};
+		const requestExists = requestsResult.rows.length > 0;
+		const connectionExists = connectionsResult.rows.length > 0;
 
-		return false
-	}
 
-	static _connectionsTable = "connections";
-	static _requestsTable = "connection_requests";
- 	static _listColumns = 
-		`u.username, 
-		u.first_name AS firstName, 
-		u.last_name AS lastName, 
-		u.email,
-		u.avatar_url AS avatarUrl,
-		u.tag_line AS tagLine`;
-}
+		return {request:requestExists, connection:connectionExists};
+	};
+};
 
-module.exports = Connections
+module.exports = Connections;
+
+
+
+	// static async getConnection(connectionId){
+	// 	const result = await db.query(
+	// 		`SELECT id,
+	// 				user1_username AS user1,
+	// 				user2_username AS user2
+	// 		FROM connections
+	// 		WHERE id = $1`,
+	// 		[connectionId] 
+	// 	)
+	// 	return result.rows[0]
+	// }

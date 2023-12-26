@@ -2,21 +2,30 @@
 const db = require("../db");
 const sql = require("../utils/sql.utils");
 
-
+/**
+ * Class for user related database queries.
+ */
 class User {
 
+	/**
+	 * Get a user's private account info
+	 * @param {string} username 
+	 * @returns {Object} user
+	 */
 	static async getAccount(username) {
 		const result = await db.query(
 			`SELECT u.first_name AS "firstName",
 					u.last_name AS "lastName",
 					u.email AS "email",
-					u.phone AS "phone",
 					u.street_address AS "streetAddress",
 					u.city AS "city",
 					u.state AS "state",
 					u.zip AS "zip",
-					u.tag_line AS "tagLine"
+					u.tag_line AS "tagLine",
+					a.url AS "avatarUrl"
 				FROM users AS u
+				LEFT JOIN avatars AS a
+					ON u.avatar_id = a.id
 				WHERE u.username = $1`,
 				[username]);
 
@@ -24,6 +33,11 @@ class User {
 		return user;
 	}
 
+	/**
+	 * Get user's public information
+	 * @param {string} username 
+	 * @returns {Object} user
+	 */
 	static async getUserProfile(username) {
 		const result = await db.query(
 			`SELECT username,
@@ -37,10 +51,11 @@ class User {
 				ON u.avatar_id = a.id
 			WHERE username=$1`,
 			[username]
-		)
-		return result.rows[0]
-	}
-	/**USED
+		);
+		return result.rows[0];
+	};
+
+	/**
 	 * Query user credentials by username
 	 * @param {string} username 
 	 * @returns {Promise<{username:string, password:string, role:string}>}
@@ -51,12 +66,12 @@ class User {
 					password
 				FROM users
 				WHERE username = $1`,
-				[username])
+				[username]);
 		
-		const credentials = result.rows[0]
+		const credentials = result.rows[0];
 		
-		return credentials
-	}
+		return credentials;
+	};
 
 	/**
 	 * Create a new user and return their credentials.
@@ -64,7 +79,7 @@ class User {
 	 * @returns {Promise<username:string, password:string, role:string}>}
 	 */
 	static async create(input) {
-		const { columns, placeholders, values } = sql.formatInsertData(input)
+		const { columns, placeholders, values } = sql.formatInsertData(input);
 
 		const result = await db.query(
 			`INSERT INTO users
@@ -79,6 +94,12 @@ class User {
 		return user;
 	}
 
+	/**
+	 * Update a user's information.
+	 * @param {string} username 
+	 * @param {Object} input 
+	 * @returns {Object} user - updated user object
+	 */
 	static async update(username, input){
 
 		const { columns, values } = sql.formatUpdateData(input);
@@ -99,9 +120,14 @@ class User {
 			[...values, username]);
 		
 		const user = result.rows[0];
-		return user
-	}
+		return user;
+	};
 
+	/**
+	 * delete a specific user
+	 * @param {string} username 
+	 * @returns {Object} user
+	 */
 	static async remove(username){
 		const result = await db.query(
 			`DELETE
@@ -112,25 +138,25 @@ class User {
 		
 		const user = result.rows[0];
 
-		return user
-	}
+		return user;
+	};
+
 	/**
 	 * Check if username exists
 	 * @param {string} username 
 	 * @returns {Promise<boolean>}
 	 */
 	static async usernameExists (username){
-		debugger
 		const result = await db.query(
 			`SELECT username
 				FROM users
 				WHERE username = $1`,
 				[username]);
-		debugger
-		if(result.rows[0]) return true
+		if(result.rows[0]) return true;
 		
-		return false
+		return false;
 	}
+
 	/**
 	 * Check if email exists
 	 * @param {string} email 
@@ -143,12 +169,16 @@ class User {
 				WHERE email = $1`,
 				[email]);
 
-		if(result.rows[0]) return true
+		if(result.rows[0]) return true;
 
-		return false
-	}
+		return false;
+	};
 
-
+	/**
+	 * Find a user based on username or email
+	 * @param {string} input - username or email
+	 * @returns {Array} users - array of user objects
+	 */
 	static async findUsers(input){
 		const result = await db.query(
 			`SELECT u.username,
@@ -160,10 +190,16 @@ class User {
 				LEFT JOIN avatars AS a
 					ON u.avatar_id = a.id
 				WHERE email=$1 OR username=$1`,
-			[input])
-		return result.rows
-	}
+			[input]);
+		return result.rows;
+	};
 
+	/**
+	 * Update a user's password
+	 * @param {string} username 
+	 * @param {string} hashedPassword 
+	 * @returns {Object} user
+	 */
 	static async updatePassword(username, hashedPassword){
 		const result = await db.query(
 			`UPDATE users
@@ -171,20 +207,29 @@ class User {
 				WHERE username = $2
 			RETURNING username`,
 			[hashedPassword, username]
-		)
-		return result.rows[0]
-	}
+		);
+		return result.rows[0];
+	};
 
+	/**
+	 * get all avatars
+	 * @returns {Array} avatars - array of avatar objects
+	 */
 	static async getAllAvatars(){
 		const result = await db.query(
 			`SELECT id,
 					name,
 					url
 				FROM avatars`
-		)
-		return result.rows
-	}
+		);
+		return result.rows;
+	};
 
+	/**
+	 * Get a user's avatar information
+	 * @param {string} username 
+	 * @returns {Object} avatar 
+	 */
 	static async getAvatar(username){
 		const result = await db.query(
 			`SELECT a.id AS id,
@@ -193,19 +238,31 @@ class User {
 				JOIN avatars AS a
 					ON u.avatar_id = a.id
 				WHERE u.username=$1`,
-			[username])
-		return result.rows[0]
-	}
+			[username]);
+		return result.rows[0];
+	};
 
+	/**
+	 * update a user's avatar
+	 * @param {string} username 
+	 * @param {number} avatarId 
+	 * @returns {undefined}
+	 */
 	static async updateAvatar(username, avatarId){
 		const result = await db.query(
 			`UPDATE users
 				SET avatar_id=$1
 				WHERE username=$2`,
-			[avatarId, username])
-		return
-	}
+			[avatarId, username]);
+		return;
+	};
 
+	/**
+	 * Get a connection id if it exsists, between two users
+	 * @param {string} searchedUser 
+	 * @param {string} currUser 
+	 * @returns {null|{searchUser, id, type}} - null or object 
+	 */
 	static async getUsersConnectionId(searchedUser, currUser){
 		const result = await db.query (
 			`SELECT id
@@ -231,6 +288,12 @@ class User {
 		)
 	}
 
+	/**
+	 * Get a connection request id if it exsists, between two users
+	 * @param {string} searchedUser 
+	 * @param {string} currUser 
+	 * @returns {null|{searchUser, id, type}} - null or object 
+	 */
 	static async getUsersRequestId(searchedUser, currUser){
 		const result = await db.query(
 			`SELECT id
@@ -244,8 +307,8 @@ class User {
 			[searchedUser, currUser]
 		);
 
-		const requestId = result.rows[0]?.id
-		if(!requestId) return null
+		const requestId = result.rows[0]?.id;
+		if(!requestId) return null;
 
 		return (
 			{

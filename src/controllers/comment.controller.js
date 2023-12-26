@@ -1,5 +1,5 @@
 
-const postServices = require("../services/posts.services")
+const commentServices = require("../services/comment.services")
 
 /**
  * @route GET '/events/:eventId/comments
@@ -9,7 +9,7 @@ const postServices = require("../services/posts.services")
 const getEventComments = async(req,res,next) => {
 	try{
 		const eventId = req.params.eventId;
-		const posts = await postServices.getEventComments(eventId);
+		const posts = await commentServices.getEventComments(eventId);
 		return res.json({ posts });
 	} catch(err){
 		return next(err);
@@ -26,7 +26,7 @@ const createComment = async(req,res,next) => {
 		const eventId = req.params.eventId;
 		const comment = req.body.comment;
 		const author = req.body.author ;
-		const comments = await postServices.createComment(eventId, comment, author);
+		const comments = await commentServices.createComment(eventId, comment, author);
 		return res.json({ comments });
 	} catch(err){
 		return next(err);
@@ -38,11 +38,11 @@ const createComment = async(req,res,next) => {
  * @desc edit comment
  * @access Restricted - host or comment author only
  */
-const editPost = async(req,res,next) => {
+const editComment = async(req,res,next) => {
 	try{
 		const postId = req.params.postId;
 		const body = req.body;
-		const post = await postServices.editPost(postId, body);
+		const post = await commentServices.editComment(postId, body);
 		return res.json({ post });
 	} catch(err){
 		return next(err);
@@ -57,7 +57,7 @@ const editPost = async(req,res,next) => {
 const deleteComment = async(req,res,next) => {
 	try{
 		const commentId = req.params.commentId;
-		await postServices.deleteComment(commentId);
+		await commentServices.deleteComment(commentId);
 		return res.status(204).send();
 	} catch(err){
 		return next(err);
@@ -67,7 +67,7 @@ const deleteComment = async(req,res,next) => {
 
 module.exports = {
 	getEventComments,
-	editPost,
+	editComment,
 	createComment,
 	deleteComment
 }
@@ -91,7 +91,7 @@ module.exports = {
 // 		const postId = req.params.postId;
 // 		const input = req.body;
 // 		const author = res.locals.user.username
-// 		const comment = await postServices.createComment(postId, input, author);
+// 		const comment = await commentServices.createComment(postId, input, author);
 // 		return res.json({ comment });
 // 	} catch(err){
 // 		return next(err)

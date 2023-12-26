@@ -2,8 +2,16 @@
 
 const db = require("../db");
 const sql = require("../utils/sql.utils")
-
+/**
+ * Class to manage Course queries
+ */
 class Course {
+	/**
+	 * Create a new course for an event
+	 * @param {number} eventId 
+	 * @param {Object} data 
+	 * @returns {Object}
+	 */
 	static async create(eventId, data){
 		const input = {eventId : eventId, name : data}
 
@@ -20,6 +28,11 @@ class Course {
 		return result.rows[0];
 	}
 
+	/**
+	 * remove a course
+	 * @param {number} courseId 
+	 * @returns {Object}
+	 */
 	static async remove(courseId){
 		const result = await db.query(
 			`DELETE FROM courses
@@ -29,6 +42,11 @@ class Course {
 		return result.rows[0];
 	}
 
+	/**
+	 * 
+	 * @param {number} eventId 
+	 * @returns {Array} comments
+	 */
 	static async getForEvent(eventId){
 		const result = await db.query(
 			`SELECT id, name
