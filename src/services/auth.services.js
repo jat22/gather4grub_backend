@@ -18,7 +18,6 @@ const generateToken = (user) => {
 		username : user.username,
 		role : user.role
 	};
-
 	return jwt.sign(payload, SECRET_KEY);
 };
 
@@ -35,7 +34,6 @@ const getToken = async (username, password) => {
 		throw new UnauthorizedError("Invalid username/password");
 	};
 	const token = generateToken(credentials);
-
 	return token;
 };
 

@@ -13,7 +13,7 @@ const createEvent = async(req,res,next) => {
 		const host = res.locals.user.username;
 		const partyDetails = req.body;
 		const event = await eventServices.createEvent(host, partyDetails);
-		return res.json({ event });
+		return res.status(201).json({ event });
 	} catch(err){
 		return next(err);
 	};

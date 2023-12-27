@@ -12,6 +12,7 @@ const token = async (req, res, next) => {
 	try {
 		const username = req.body.username;
 		const password = req.body.password;
+		console.log(username, password)
 		const token = await authServices.getToken(username, password);
 
 		return res.json({ token });

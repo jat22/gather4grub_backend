@@ -22,7 +22,7 @@ class User {
 					u.state AS "state",
 					u.zip AS "zip",
 					u.tag_line AS "tagLine",
-					a.url AS "avatarUrl"
+					a.url AS avatarUrl
 				FROM users AS u
 				LEFT JOIN avatars AS a
 					ON u.avatar_id = a.id

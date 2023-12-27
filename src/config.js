@@ -9,7 +9,7 @@ const PORT = +process.env.PORT || 3001;
 // Set Database URI
 function getDatabaseUri(){
 	return(process.env.NODE_ENV === "test")
-		? "gather4grub_test"
+		? "postgresql:///gather4grub_test"
 		: process.env.DATABASE_URL || "postgresql:///gather4grub";
 }
 

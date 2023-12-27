@@ -34,6 +34,7 @@ const getEventGuests = async(eventId) => {
  * @returns {Array} guestList - updated guest list for event 
  */
 const addGuestsToEvent = async(eventId, usernames) => {
+	console.log(eventId, usernames)
 	try{
 		const guestPromises = usernames.map(u => Guest.addToEvent(eventId, u));
 		const result = await Promise.all(guestPromises);
