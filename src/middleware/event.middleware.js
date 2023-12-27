@@ -26,11 +26,8 @@ const ensureParticipant = async(req,res,next) => {
 
 const ensureHost = async(req,res,next) => {
 	try{
-		console.log(req.params)
-		console.log(req.body)
 		const user = res.locals.user.username;
 		const eventId = req.params.eventId;
-		console.log(eventId)
 		const userIsHost = 
 			await eventServices
 					.isEventHost(user, eventId);
